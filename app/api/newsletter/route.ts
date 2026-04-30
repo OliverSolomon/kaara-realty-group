@@ -1,23 +1,23 @@
 import { NextResponse } from 'next/server';
-import { Resend } from 'resend';
+import { MailtrapClient } from 'mailtrap';
 
-// Initialize Resend lazily to avoid build-time errors if API key is missing
-let resend: Resend | null = null;
+// Initialize Mailtrap lazily to avoid build-time errors if API key is missing
+let client: MailtrapClient | null = null;
 
 export async function POST(request: Request) {
   try {
-    const apiKey = process.env.RESEND_API_KEY;
+    const apiKey = process.env.MAILTRAP_API_KEY;
 
     if (!apiKey) {
-      console.error('RESEND_API_KEY is not defined in environment variables.');
+      console.error('MAILTRAP_API_KEY is not defined in environment variables.');
       return NextResponse.json(
         { error: 'Email service is not configured' },
         { status: 500 }
       );
     }
 
-    if (!resend) {
-      resend = new Resend(apiKey);
+    if (!client) {
+      client = new MailtrapClient({ token: apiKey });
     }
 
     const { email } = await request.json();
@@ -30,9 +30,9 @@ export async function POST(request: Request) {
     }
 
     // Send the email to kiragu@kaararealtygroup.com
-    const { data, error } = await resend.emails.send({
-      from: 'Kaara Realty Collective <onboarding@resend.dev>', // Replace with your verified domain in production
-      to: 'kiragu@kaararealtygroup.com',
+    const response = await client.send({
+      from: { email: 'hello@demomailtrap.com', name: 'Kaara Realty Collective' }, // Replace with your verified domain in production
+      to: [{ email: 'kiragu@kaararealtygroup.com' }],
       subject: 'New Newsletter Subscription: Kaara Realty Group',
       html: `
         <div style="font-family: serif; padding: 20px; color: #100B28; background-color: #f9f9f9;">
@@ -46,16 +46,11 @@ export async function POST(request: Request) {
       `,
     });
 
-    if (error) {
-      console.error('Resend error:', error);
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-
-    return NextResponse.json({ success: true, data });
+    return NextResponse.json({ success: true, data: response });
   } catch (err: any) {
     console.error('API Error:', err);
     return NextResponse.json(
-      { error: 'Internal Server Error' },
+      { error: err.message || 'Internal Server Error' },
       { status: 500 }
     );
   }
