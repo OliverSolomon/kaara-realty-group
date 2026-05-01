@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Search, ChevronDown, User, Heart, Settings, Menu, ArrowRight, Play, Pause, X as CloseIcon, ChevronRight, CheckCircle2, AlertCircle } from "lucide-react";
@@ -40,7 +40,33 @@ const SEARCH_REGIONS = [
   }
 ];
 
-export default function Home() {
+interface VideoSource {
+  title?: string;
+  subtitle?: string;
+  type?: 'file' | 'url';
+  videoUrl?: string;
+  fileUrl?: string;
+}
+
+interface HomeClientProps {
+  data: {
+    heroVideo?: VideoSource;
+    secondaryVideo?: VideoSource;
+    tertiaryVideo?: VideoSource;
+    quaternaryVideo?: VideoSource;
+    featuredProperties?: any[];
+    featuredEvent?: {
+      title: string;
+      description: string;
+      location: string;
+      date: string;
+      imageUrl: string;
+      media: any[];
+    };
+  }
+}
+
+export default function HomeClient({ data }: HomeClientProps) {
   const [isPlaying, setIsPlaying] = useState(true);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -55,13 +81,14 @@ export default function Home() {
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
 
   const togglePlay = () => {
-    setIsPlaying(!isPlaying);
+    const newState = !isPlaying;
+    setIsPlaying(newState);
     videoRefs.current.forEach((video) => {
       if (video) {
-        if (isPlaying) {
-          video.pause();
-        } else {
+        if (newState) {
           video.play();
+        } else {
+          video.pause();
         }
       }
     });
@@ -97,9 +124,16 @@ export default function Home() {
     }
   };
 
-  const vAmethyst = "/videos/amethyst.mp4";
-  const v1 = "https://res.cloudinary.com/dk92v0fkk/video/upload/w_1870,h_947,c_fill/v1773870636/production/inrthpxt4vwiblfpko8j.mp4#t=0.1";
-  const v2 = "https://res.cloudinary.com/dk92v0fkk/video/upload/w_1870,h_947,c_fill/v1724088268/staging/yv4bjz9n4wggkcgxvgqt.mp4#t=0.1";
+  const getVideoSrc = (source?: VideoSource, fallback?: string) => {
+    if (!source) return fallback;
+    if (source.type === 'url') return source.videoUrl || fallback;
+    return source.fileUrl || fallback;
+  };
+
+  const vHero = getVideoSrc(data?.heroVideo, "/videos/amethyst.mp4");
+  const vSecondary = getVideoSrc(data?.secondaryVideo, "https://res.cloudinary.com/dk92v0fkk/video/upload/w_1870,h_947,c_fill/v1724088268/staging/yv4bjz9n4wggkcgxvgqt.mp4#t=0.1");
+  const vTertiary = getVideoSrc(data?.tertiaryVideo, "https://res.cloudinary.com/dk92v0fkk/video/upload/w_1870,h_947,c_fill/v1773870636/production/inrthpxt4vwiblfpko8j.mp4#t=0.1");
+  const vQuaternary = getVideoSrc(data?.quaternaryVideo, "https://res.cloudinary.com/dk92v0fkk/video/upload/w_1870,h_947,c_fill/v1724088268/staging/yv4bjz9n4wggkcgxvgqt.mp4#t=0.1");
 
   const SectionBottomNav = () => (
     <div className="absolute bottom-0 w-full z-50 px-6 py-8 lg:px-12 lg:py-12 flex justify-between items-center text-[9px] lg:text-[10px] font-sans tracking-[0.3em] text-white font-bold uppercase">
@@ -175,13 +209,11 @@ export default function Home() {
       {/* Search Overlay */}
       {isSearchOpen && (
         <div className="fixed inset-0 z-[200] flex flex-col items-center justify-center p-4 lg:p-8">
-          {/* Backdrop */}
           <div 
             className="absolute inset-0 bg-[#100B28]/95 backdrop-blur-2xl cursor-pointer" 
             onClick={() => setIsSearchOpen(false)}
           />
           
-          {/* Top Controls in Modal */}
           <div className="absolute top-0 w-full px-6 py-6 lg:px-8 lg:py-8 flex justify-center items-start z-[210]">
             <button 
               onClick={() => setIsSearchOpen(false)}
@@ -192,9 +224,7 @@ export default function Home() {
             </button>
           </div>
 
-          {/* Modal Content */}
           <div className="relative z-[210] w-full max-w-5xl bg-[#100B28]/80 border border-white/10 rounded-2xl overflow-hidden flex flex-col lg:flex-row h-[85vh] lg:h-[600px] shadow-2xl">
-            {/* Regions List */}
             <div className="w-full lg:w-1/3 border-b lg:border-b-0 lg:border-r border-white/10 overflow-y-auto py-8 lg:py-12">
               <p className="px-10 mb-6 text-[8px] tracking-[0.4em] text-white/30 uppercase font-bold lg:hidden">Regions</p>
               {SEARCH_REGIONS.map((region, idx) => (
@@ -210,7 +240,6 @@ export default function Home() {
               ))}
             </div>
 
-            {/* Districts List */}
             <div className="w-full lg:w-1/3 border-b lg:border-b-0 lg:border-r border-white/10 overflow-y-auto py-8 lg:py-12 px-10 lg:px-12">
               <p className="mb-8 text-[8px] tracking-[0.4em] text-white/30 uppercase font-bold lg:hidden">Districts</p>
               <div className="grid grid-cols-1 gap-6 lg:gap-8">
@@ -226,7 +255,6 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Featured Image */}
             <div className="hidden lg:block lg:w-1/3 relative">
               <Image 
                 src={SEARCH_REGIONS[activeRegionIdx].image}
@@ -245,7 +273,7 @@ export default function Home() {
         </div>
       )}
 
-      {/* Hero Section (Section 1) - Now using Amethyst Video */}
+      {/* Hero Section (Section 1) */}
       <section className="relative h-screen w-full flex flex-col justify-center items-center text-center overflow-hidden">
         <video 
           ref={(el) => { videoRefs.current[0] = el; }}
@@ -255,28 +283,25 @@ export default function Home() {
           playsInline 
           className="absolute inset-0 w-full h-full object-cover z-0"
         >
-          <source src={vAmethyst} type="video/mp4" />
+          <source src={vHero} type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-[#100B28]/30 z-10" />
 
-        {/* Logo - Top Centre */}
         <nav className="absolute top-0 w-full z-50 px-6 py-8 lg:px-12 lg:py-12 flex justify-center items-center">
           <Link href="/" className="text-lg lg:text-[1.75rem] font-serif tracking-[0.4em] text-white text-center whitespace-nowrap uppercase">
             KAARA REALTY GROUP
           </Link>
         </nav>
 
-        {/* Section Text - Top Left, Left Aligned */}
         <div className="absolute top-24 lg:top-32 left-6 lg:left-16 z-20 text-left max-w-xl">
           <h1 className="text-xl lg:text-[1.75rem] font-serif text-white tracking-[0.15em] uppercase leading-tight mb-2">
-            WHERE DO YOU WANT TO GO?
+            {data?.heroVideo?.title || "WHERE DO YOU WANT TO GO?"}
           </h1>
           <p className="text-[8px] lg:text-[0.6rem] font-sans tracking-[0.2em] text-white/70 font-light uppercase">
-            Leaders in Luxury Vertical Living • Nairobi
+            {data?.heroVideo?.subtitle || "Leaders in Luxury Vertical Living • Nairobi"}
           </p>
         </div>
         
-        {/* Center Content - Search Button */}
         <div className="relative z-20 flex flex-col items-center justify-center">
           <button 
             onClick={() => setIsSearchOpen(true)}
@@ -295,21 +320,23 @@ export default function Home() {
         <video 
           ref={(el) => { videoRefs.current[1] = el; }}
           autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover z-0">
-          <source src={v2} type="video/mp4" />
+          <source src={vSecondary} type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-[#100B28]/40 z-10" />
         
-        {/* Section Text - Top Left, Left Aligned */}
         <div className="absolute top-12 lg:top-24 left-6 lg:left-16 z-20 text-left">
            <h2 className="text-xl lg:text-[2.5rem] font-serif text-white tracking-[0.1em] lg:tracking-[0.2em] uppercase leading-tight">
-             UNRIVALED EXCLUSIVITY
+             {data?.secondaryVideo?.title || "UNRIVALED EXCLUSIVITY"}
            </h2>
+           {data?.secondaryVideo?.subtitle && (
+             <p className="text-[8px] lg:text-sm tracking-[0.2em] lg:tracking-[0.3em] text-white/80 uppercase font-light mt-4">{data.secondaryVideo.subtitle}</p>
+           )}
         </div>
 
         <SectionBottomNav />
       </section>
 
-      {/* Property Showcase (Dark Mode) */}
+      {/* Property Showcase */}
       <section className="pt-24 lg:pt-40 pb-24 lg:pb-32 px-4 lg:px-6 bg-[#100B28] text-white">
         <div className="max-w-[1400px] mx-auto flex flex-col items-center mb-16 lg:mb-24 text-center">
           <p className="font-sans text-[8px] lg:text-[11px] tracking-[0.4em] text-white/60 uppercase mb-4 lg:mb-6 font-bold">Local Experts, Global Reach</p>
@@ -327,16 +354,10 @@ export default function Home() {
         </div>
 
         <div className="max-w-[1800px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[2px] lg:gap-1">
-          {/* Nairobi Premium Listings - Now including The Amethyst */}
-          {[
-            { id: 1, image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80", title: "The Amethyst", details: "Westlands • Exclusive Penthouse", price: "KSh 520,000,000" },
-            { id: 2, image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80", title: "Symphony Residence", details: "3 BR | 4 BA, 1 HALF BA", price: "KSh 135,000,000" },
-            { id: 3, image: "https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=800&q=80", title: "37byINEZA", details: "3 BR | 2 BA, 1 HALF BA", price: "KSh 85,000,000" },
-            { id: 4, image: "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=800&q=80", title: "The Diplomat", details: "9 BR | 7 BA, 4 HALF BA", price: "KSh 320,000,000" },
-          ].map((property) => (
-            <div key={property.id} className="group relative h-[500px] lg:h-[650px] w-full cursor-pointer overflow-hidden bg-[#100B28]">
+          {(data?.featuredProperties || []).map((property: any) => (
+            <div key={property._id} className="group relative h-[500px] lg:h-[650px] w-full cursor-pointer overflow-hidden bg-[#100B28]">
               <Image 
-                src={property.image}
+                src={property.imageUrl}
                 alt={property.title}
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
@@ -345,7 +366,7 @@ export default function Home() {
               <div className="absolute inset-0 bg-gradient-to-t from-[#100B28]/95 via-[#100B28]/20 to-transparent opacity-90 group-hover:opacity-100 transition-opacity duration-700" />
               <div className="absolute bottom-0 left-0 right-0 p-8 lg:p-12 text-center flex flex-col items-center z-10 transition-transform duration-700">
                 <h3 className="font-serif text-2xl lg:text-3xl mb-3 lg:mb-4 text-white tracking-[0.05em] uppercase">{property.title}</h3>
-                <p className="font-sans text-[8px] lg:text-[9px] tracking-[0.3em] lg:tracking-[0.4em] text-white/70 mb-2 lg:mb-3 uppercase font-bold">{property.details}</p>
+                <p className="font-sans text-[8px] lg:text-[9px] tracking-[0.3em] lg:tracking-[0.4em] text-white/70 mb-2 lg:mb-3 uppercase font-bold">{property.district} • {property.county}</p>
                 <p className="font-serif text-[13px] lg:text-[15px] text-white italic">{property.price}</p>
               </div>
             </div>
@@ -364,21 +385,23 @@ export default function Home() {
         <video 
           ref={(el) => { videoRefs.current[2] = el; }}
           autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover z-0">
-          <source src={v1} type="video/mp4" />
+          <source src={vTertiary} type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-[#100B28]/40 z-10" />
         
-        {/* Section Text - Top Left, Left Aligned */}
         <div className="absolute top-12 lg:top-24 left-6 lg:left-16 z-20 text-left">
            <h2 className="text-xl lg:text-[2.5rem] font-serif text-white tracking-[0.1em] lg:tracking-[0.2em] uppercase leading-tight">
-             LIVE THE EXTRAORDINARY
+             {data?.tertiaryVideo?.title || "LIVE THE EXTRAORDINARY"}
            </h2>
+           {data?.tertiaryVideo?.subtitle && (
+             <p className="text-[8px] lg:text-sm tracking-[0.2em] lg:tracking-[0.3em] text-white/80 uppercase font-light mt-4">{data.tertiaryVideo.subtitle}</p>
+           )}
         </div>
 
         <SectionBottomNav />
       </section>
 
-      {/* Spotlight Section (Dark Mode) */}
+      {/* Spotlight Section */}
       <section className="py-24 lg:py-32 px-6 lg:px-16 bg-[#100B28] text-white">
         <div className="max-w-[1500px] mx-auto">
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-12 lg:mb-16 gap-8">
@@ -398,8 +421,8 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
             <div className="relative h-[450px] lg:h-[650px] group overflow-hidden bg-[#100B28]">
               <Image 
-                src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80" 
-                alt="88 Nairobi" 
+                src={data.featuredEvent?.imageUrl || "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80"} 
+                alt={data.featuredEvent?.title || "Spotlight Event"} 
                 fill 
                 sizes="(max-width: 768px) 100vw, 33vw"
                 className="object-cover transition-transform duration-[2.5s] group-hover:scale-110 filter desaturate-[0.2]" 
@@ -407,8 +430,8 @@ export default function Home() {
             </div>
             <div className="relative h-[450px] lg:h-[650px] group overflow-hidden bg-[#100B28]">
               <Image 
-                src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80" 
-                alt="37byINEZA" 
+                src={data.featuredEvent?.media?.[0]?.url || "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80"} 
+                alt="Spotlight Media" 
                 fill 
                 sizes="(max-width: 768px) 100vw, 33vw"
                 className="object-cover transition-transform duration-[2.5s] group-hover:scale-110 filter desaturate-[0.2]" 
@@ -417,11 +440,15 @@ export default function Home() {
             <div className="bg-[#0b0b14] p-10 lg:p-16 flex flex-col justify-between h-[450px] lg:h-[650px] shadow-xl relative overflow-hidden group border border-white/5">
               <div className="relative z-10">
                 <h3 className="text-2xl lg:text-3xl font-serif mb-6 lg:mb-8 leading-[1.3] text-white tracking-[0.02em] uppercase italic">
-                  Spotlight on Vertical Cities: The Symphony & 88 Nairobi
+                  {data.featuredEvent?.title || "Spotlight on Vertical Cities: The Symphony & 88 Nairobi"}
                 </h3>
                 <div className="w-12 lg:w-16 h-[1.5px] bg-white/20 mb-8 lg:mb-10 group-hover:w-24 lg:group-hover:w-32 transition-all duration-1000"></div>
-                <p className="text-[8px] lg:text-[10px] tracking-[0.4em] lg:tracking-[0.5em] text-white/50 uppercase mb-3 font-bold">Innovation Summit 2026</p>
-                <p className="text-[10px] lg:text-[11px] tracking-[0.2em] lg:tracking-[0.3em] text-white uppercase font-bold">Upper Hill | June 15TH</p>
+                <p className="text-[8px] lg:text-[10px] tracking-[0.4em] lg:tracking-[0.5em] text-white/50 uppercase mb-3 font-bold">
+                  {data.featuredEvent?.description || "Innovation Summit 2026"}
+                </p>
+                <p className="text-[10px] lg:text-[11px] tracking-[0.2em] lg:tracking-[0.3em] text-white uppercase font-bold">
+                  {data.featuredEvent?.location} | {data.featuredEvent?.date}
+                </p>
               </div>
               <div className="flex items-center gap-4 relative z-10">
                  <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-full border border-white/30 flex items-center justify-center text-[9px] lg:text-[11px] font-serif text-white uppercase">K</div>
@@ -437,48 +464,23 @@ export default function Home() {
         <video 
           ref={(el) => { videoRefs.current[3] = el; }}
           autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover z-0">
-          <source src={v2} type="video/mp4" />
+          <source src={vQuaternary} type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-[#100B28]/40 z-10" />
         
-        {/* Section Text - Top Left, Left Aligned */}
         <div className="absolute top-12 lg:top-24 left-6 lg:left-16 z-20 text-left">
            <h2 className="text-xl lg:text-[2.5rem] font-serif text-white tracking-[0.1em] lg:tracking-[0.2em] mb-4 lg:mb-8 uppercase leading-tight">
-             88 NAIROBI CONDOMINIUM
+             {data?.quaternaryVideo?.title || "88 NAIROBI CONDOMINIUM"}
            </h2>
-           <p className="text-[8px] lg:text-sm tracking-[0.2em] lg:tracking-[0.3em] text-white/80 uppercase font-light">The Apex of Upper Hill • Handover May 2026</p>
+           <p className="text-[8px] lg:text-sm tracking-[0.2em] lg:tracking-[0.3em] text-white/80 uppercase font-light">
+             {data?.quaternaryVideo?.subtitle || "The Apex of Upper Hill • Handover May 2026"}
+           </p>
         </div>
 
         <SectionBottomNav />
       </section>
 
-      {/* Newsletter Section (Dark Mode) */}
-      <section className="py-24 lg:py-40 px-6 lg:px-16 bg-[#100B28] text-white border-t border-white/5">
-        <div className="max-w-[1400px] mx-auto flex flex-col lg:flex-row justify-between items-center gap-12 lg:gap-16">
-          <div className="lg:w-3/5 text-center lg:text-left">
-            <h2 className="text-3xl lg:text-[3.25rem] font-serif italic leading-[1.2] text-white tracking-tight">
-              The latest in luxury property, vertical living & culture, curated just for you.
-            </h2>
-          </div>
-          <div className="lg:w-2/5 w-full">
-            <form onSubmit={handleNewsletterSubmit} className="relative border-b border-white/20 pb-4 flex items-center group transition-all duration-500 hover:border-white">
-              <input 
-                type="email" 
-                value={newsletterEmail}
-                onChange={(e) => setNewsletterEmail(e.target.value)}
-                placeholder={isSubmitting ? "SENDING..." : "ENTER YOUR EMAIL"} 
-                disabled={isSubmitting}
-                className="bg-transparent border-none outline-none flex-grow text-[10px] lg:text-[11px] tracking-[0.3em] lg:tracking-[0.4em] font-sans placeholder:text-white/20 text-white font-bold uppercase"
-              />
-              <button type="submit" disabled={isSubmitting}>
-                <ArrowRight size={20} className={`text-white/40 group-hover:text-white transition-all duration-500 cursor-pointer ${isSubmitting ? 'opacity-0' : 'group-hover:translate-x-2'}`} />
-              </button>
-            </form>
-          </div>
-        </div>
-      </section>
-
-      {/* World of Kaara (Nairobi Context) */}
+      {/* World of Kaara */}
       <section className="relative py-32 lg:py-48 flex flex-col justify-center items-center text-center px-6 overflow-hidden">
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-[#100B28]/85 z-10" />
@@ -503,10 +505,9 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Master Footer (Premium Dark Palette) */}
+      {/* Master Footer */}
       <footer className="bg-[#100B28] text-white pt-24 lg:pt-40 pb-12 lg:pb-16 px-6 lg:px-20 border-t border-white/5">
         <div className="max-w-[1700px] mx-auto">
-          {/* Logo Bar */}
           <div className="flex flex-col md:flex-row justify-center items-center gap-4 mb-20 lg:mb-32 group cursor-pointer text-center">
             <div className="text-center">
               <span className="text-xl lg:text-[2rem] tracking-[0.4em] lg:tracking-[0.6em] font-serif uppercase text-white inline-block mb-3">KAARA REALTY GROUP</span>

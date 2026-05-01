@@ -9,6 +9,20 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: '/webmail',
+        destination: 'https://webmail.kaararealtygroup.com', // This will redirect to the cPanel webmail.  
+        permanent: true,
+      },
+      {
+        source: '/cpanel',
+        destination: 'https://cpanel.kaararealtygroup.com', // This will redirect to cPanel.
+        permanent: true,
+      }
+    ];
+  },
 };
 
 export default nextConfig;
