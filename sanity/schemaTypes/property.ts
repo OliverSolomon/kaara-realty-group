@@ -81,6 +81,8 @@ export const property = defineType({
           { title: 'Townhouse', value: 'townhouse' },
           { title: 'Commercial', value: 'commercial' },
           { title: 'Land', value: 'land' },
+          { title: 'Ranch', value: 'ranch' },
+          { title: 'Farm', value: 'farm' },
         ],
       },
     }),

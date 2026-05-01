@@ -32,10 +32,13 @@ export const HOME_PAGE_QUERY = defineQuery(`*[_type == "homePage"][0]{
   featuredProperties[]-> {
     _id,
     title,
+    buildingName,
     price,
     "imageUrl": image.asset->url,
-    county,
-    district
+    "county": county->name,
+    "district": district->name,
+    details,
+    propertyType
   },
   featuredEvent-> {
     title,

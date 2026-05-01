@@ -71,6 +71,7 @@ export default function HomeClient({ data }: HomeClientProps) {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeRegionIdx, setActiveRegionIdx] = useState(0);
+  const [activeFilter, setActiveFilter] = useState("CITY SKYLINES");
   const [newsletterEmail, setNewsletterEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [toast, setToast] = useState<{ show: boolean; message: string; type: 'success' | 'error' }>({ 
@@ -345,16 +346,65 @@ export default function HomeClient({ data }: HomeClientProps) {
           <div className="w-[1px] h-12 lg:h-20 bg-white/20 mb-8 lg:mb-12"></div>
           
           <div className="flex flex-wrap justify-center gap-6 lg:gap-16 text-[9px] lg:text-[11px] font-sans tracking-[0.2em] lg:tracking-[0.3em] uppercase text-white/50 font-bold mb-12 lg:mb-16">
-            <button className="text-white border-b-[1.5px] border-white pb-1.5">CITY SKYLINES</button>
-            <button className="hover:text-white transition-all duration-300">WATER VIEWS</button>
-            <button className="hover:text-white transition-all duration-300">FARM & RANCH</button>
-            <button className="hover:text-white transition-all duration-300">JUST LISTED</button>
-            <button className="hover:text-white transition-all duration-300">UNDER $20 MILLION</button>
+            {["CITY SKYLINES", "WATER VIEWS", "FARM & RANCH", "JUST LISTED", "UNDER $20 MILLION"].map((filter) => (
+              <button 
+                key={filter}
+                onClick={() => setActiveFilter(filter)}
+                className={`transition-all duration-300 ${activeFilter === filter ? 'text-white border-b-[1.5px] border-white pb-1.5' : 'hover:text-white'}`}
+              >
+                {filter}
+              </button>
+            ))}
           </div>
         </div>
 
         <div className="max-w-[1800px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[2px] lg:gap-1">
-          {(data?.featuredProperties || []).map((property: any) => (
+          {(data?.featuredProperties?.length ? data.featuredProperties : [
+            {
+              _id: "fallback-1",
+              title: "THE AMETHYST",
+              details: "WESTLANDS • EXCLUSIVE PENTHOUSE",
+              price: "KSh 520,000,000",
+              imageUrl: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
+              propertyType: "penthouse"
+            },
+            {
+              _id: "fallback-2",
+              title: "SYMPHONY RESIDENCE",
+              details: "3 BR | 4 BA, 1 HALF BA",
+              price: "KSh 135,000,000",
+              imageUrl: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80",
+              propertyType: "apartment"
+            },
+            {
+              _id: "fallback-3",
+              title: "37BYINEZA",
+              details: "3 BR | 2 BA, 1 HALF BA",
+              price: "KSh 85,000,000",
+              imageUrl: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=1200&q=80",
+              propertyType: "apartment"
+            },
+            {
+              _id: "fallback-4",
+              title: "THE DIPLOMAT",
+              details: "2 BR | 7 BA, 4 HALF BA",
+              price: "KSh 370,000,000",
+              imageUrl: "https://images.unsplash.com/photo-1600607687940-c52af096999c?auto=format&fit=crop&w=1200&q=80",
+              propertyType: "apartment"
+            }
+          ])
+            .filter((p: any) => {
+              if (activeFilter === "CITY SKYLINES") return p.propertyType === 'penthouse' || p.propertyType === 'apartment' || !p.propertyType;
+              if (activeFilter === "WATER VIEWS") return p.propertyType === 'villa' || p.propertyType === 'townhouse';
+              if (activeFilter === "FARM & RANCH") return p.propertyType === 'land' || p.propertyType === 'ranch' || p.propertyType === 'farm';
+              if (activeFilter === "JUST LISTED") return true;
+              if (activeFilter === "UNDER $20 MILLION") {
+                const price = parseInt(p.price?.replace(/[^0-9]/g, '') || "0");
+                return price < 20000000;
+              }
+              return true;
+            })
+            .map((property: any) => (
             <div key={property._id} className="group relative h-[500px] lg:h-[650px] w-full cursor-pointer overflow-hidden bg-[#100B28]">
               <Image 
                 src={property.imageUrl}
@@ -366,7 +416,9 @@ export default function HomeClient({ data }: HomeClientProps) {
               <div className="absolute inset-0 bg-gradient-to-t from-[#100B28]/95 via-[#100B28]/20 to-transparent opacity-90 group-hover:opacity-100 transition-opacity duration-700" />
               <div className="absolute bottom-0 left-0 right-0 p-8 lg:p-12 text-center flex flex-col items-center z-10 transition-transform duration-700">
                 <h3 className="font-serif text-2xl lg:text-3xl mb-3 lg:mb-4 text-white tracking-[0.05em] uppercase">{property.title}</h3>
-                <p className="font-sans text-[8px] lg:text-[9px] tracking-[0.3em] lg:tracking-[0.4em] text-white/70 mb-2 lg:mb-3 uppercase font-bold">{property.district} • {property.county}</p>
+                <p className="font-sans text-[8px] lg:text-[9px] tracking-[0.3em] lg:tracking-[0.4em] text-white/70 mb-2 lg:mb-3 uppercase font-bold">
+                  {property.details || `${property.district || ''}${property.district && property.propertyType ? ' • ' : ''}${property.propertyType || ''}`.trim() || "EXCLUSIVE LISTING"}
+                </p>
                 <p className="font-serif text-[13px] lg:text-[15px] text-white italic">{property.price}</p>
               </div>
             </div>
