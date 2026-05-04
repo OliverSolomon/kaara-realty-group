@@ -7,11 +7,17 @@ export const metadata = {
   description: "Browse luxury properties across Nairobi and beyond. Find your next home with Kaara Realty Group.",
 };
 
+import { Suspense } from "react";
+
 export default async function PropertiesPage() {
   const [{ data: properties }, { data: siteSettings }] = await Promise.all([
     sanityFetch({ query: PROPERTIES_QUERY }),
     sanityFetch({ query: SITE_SETTINGS_QUERY })
   ]);
 
-  return <PropertiesClient initialProperties={properties} settings={siteSettings} />;
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-white" />}>
+      <PropertiesClient initialProperties={properties} settings={siteSettings} />
+    </Suspense>
+  );
 }
