@@ -13,6 +13,17 @@ export const property = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: 'slug',
+      title: 'Slug',
+      type: 'slug',
+      description: 'The unique URL for this property',
+      options: {
+        source: 'title',
+        maxLength: 96,
+      },
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
       name: 'buildingName',
       title: 'Building Name',
       description: 'The specific name of the building or residence complex',
@@ -57,6 +68,13 @@ export const property = defineType({
       rows: 3,
     }),
     defineField({
+      name: 'longDescription',
+      title: 'In-depth Description',
+      description: 'Detailed information about the property, its features, and neighborhood',
+      type: 'array',
+      of: [{ type: 'block' }],
+    }),
+    defineField({
       name: 'details',
       title: 'Property Summary Details',
       description: 'Key specs shown on the card (e.g., 3 BR | 4 BA, 1 HALF BA)',
@@ -65,14 +83,37 @@ export const property = defineType({
     defineField({
       name: 'price',
       title: 'Price',
-      description: 'The asking price (e.g., KSh 520,000,000)',
-      type: 'string',
+      description: 'The asking price and currency',
+      type: 'object',
+      fields: [
+        {
+          name: 'amount',
+          title: 'Amount',
+          type: 'string',
+          description: 'The numeric price (e.g., 520,000,000)',
+        },
+        {
+          name: 'currency',
+          title: 'Currency',
+          type: 'string',
+          options: {
+            list: [
+              { title: 'KSh (Kenyan Shilling)', value: 'KSh' },
+              { title: 'USD (US Dollar)', value: 'USD' },
+              { title: 'EUR (Euro)', value: 'EUR' },
+              { title: 'GBP (British Pound)', value: 'GBP' },
+            ],
+          },
+          initialValue: 'KSh',
+        }
+      ]
     }),
     defineField({
       name: 'propertyType',
       title: 'Property Type',
-      description: 'Used for filtering (e.g., Penthouse, Apartment, Villa)',
-      type: 'string',
+      description: 'Select all that apply (e.g., Commercial and Apartment for mixed use)',
+      type: 'array',
+      of: [{ type: 'string' }],
       options: {
         list: [
           { title: 'Penthouse', value: 'penthouse' },
@@ -99,7 +140,7 @@ export const property = defineType({
     defineField({
       name: 'media',
       title: 'Property Media',
-      description: 'Add multiple images or video URLs for the property gallery',
+      description: 'Add multiple images (files or URLs) or video URLs for the property gallery',
       type: 'array',
       of: [
         defineArrayMember({
@@ -111,6 +152,24 @@ export const property = defineType({
               type: 'string',
               title: 'Alternative Text',
               description: 'Describes the image for accessibility',
+            }
+          ]
+        }),
+        defineArrayMember({
+          type: 'object',
+          name: 'externalImage',
+          title: 'External Image URL',
+          fields: [
+            {
+              name: 'url',
+              type: 'url',
+              title: 'Image URL',
+              description: 'Link to an external image',
+            },
+            {
+              name: 'alt',
+              type: 'string',
+              title: 'Alternative Text',
             }
           ]
         }),
@@ -142,6 +201,54 @@ export const property = defineType({
       options: {
         hotspot: true,
       },
+      fields: [
+        {
+          name: 'externalUrl',
+          title: 'External Image URL',
+          type: 'url',
+          description: 'Optionally provide a URL instead of uploading an image'
+        }
+      ]
+    }),
+    defineField({
+      name: 'googleMapsUrl',
+      title: 'Google Maps URL',
+      description: 'Paste the Google Maps location link here. This will be used for mapping.',
+      type: 'url',
+    }),
+    defineField({
+      name: 'amenities',
+      title: 'Amenities',
+      description: 'Select all available amenities (e.g., Pool, Gym, Rooftop Terrace)',
+      type: 'array',
+      of: [{ type: 'string' }],
+      options: {
+        list: [
+          { title: 'Swimming Pool', value: 'pool' },
+          { title: 'Gym / Fitness Center', value: 'gym' },
+          { title: 'Rooftop Terrace', value: 'rooftop' },
+          { title: 'Private Garden', value: 'garden' },
+          { title: 'Elevator', value: 'elevator' },
+          { title: 'Backup Generator', value: 'generator' },
+          { title: 'Borehole', value: 'borehole' },
+          { title: 'CCTV & Security', value: 'security' },
+          { title: 'Concierge', value: 'concierge' },
+          { title: 'Parking', value: 'parking' },
+          { title: 'Staff Quarters', value: 'sq' },
+        ],
+      },
+    }),
+    defineField({
+      name: 'size',
+      title: 'Property Size',
+      description: 'e.g., 2,500 sq. ft. or 0.5 Acres',
+      type: 'string',
+    }),
+    defineField({
+      name: 'yearBuilt',
+      title: 'Year Built / Handover',
+      description: 'e.g., 2025 or Under Construction',
+      type: 'string',
     }),
   ],
   preview: {
