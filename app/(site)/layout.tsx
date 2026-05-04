@@ -5,6 +5,8 @@ import { VisualEditing } from "next-sanity/visual-editing";
 import { draftMode } from "next/headers";
 import "./globals.css";
 import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
+import { CurrencyProvider } from "@/context/CurrencyContext";
+import { LanguageProvider } from "@/context/LanguageContext";
 
 const playfair = Playfair_Display({
   variable: "--font-playfair",
@@ -71,14 +73,18 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning data-scroll-behavior="smooth">
       <body className={`${playfair.variable} ${montserrat.variable} font-sans bg-[#000B1D] text-white antialiased`} suppressHydrationWarning>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
         <ServiceWorkerRegistration />
-        {children}
+        <CurrencyProvider>
+          <LanguageProvider>
+            {children}
+          </LanguageProvider>
+        </CurrencyProvider>
         <SanityLive />
         {(await draftMode()).isEnabled && <VisualEditing />}
       </body>
