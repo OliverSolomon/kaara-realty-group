@@ -1,28 +1,115 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-elliman-navy: #000B1D;
-  --color-elliman-dark: #000814;
-  --color-elliman-light: #ffffff;
-  
+  /* Surfaces. One theme for the whole site: deep indigo navy. */
+  --color-kaara-base: #100b28;
+  --color-kaara-deep: #0b0819;
+  --color-kaara-raised: #171232;
+  --color-kaara-bone: #efebe3;
+
+  /* Single locked accent. Jade reads as "verified" and carries every
+     trust signal on the site: vetting badges, form success, active tabs. */
+  --color-kaara-jade: #2e7d6f;
+  --color-kaara-jade-soft: #4f9d8f;
+
   --font-serif: var(--font-playfair);
   --font-sans: var(--font-montserrat);
+
+  /* Motion. Built-in CSS easings are too weak to read as intentional. */
+  --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out-strong: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
-html, body {
+html,
+body {
   scroll-behavior: smooth;
+  background-color: #100b28;
 }
 
-/* Hide scrollbar for a cleaner luxury look, optional */
+::selection {
+  background: rgba(46, 125, 111, 0.45);
+  color: #efebe3;
+}
+
 ::-webkit-scrollbar {
   width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #000B1D; 
+  background: #0b0819;
 }
 ::-webkit-scrollbar-thumb {
-  background: #333; 
+  background: #2a2450;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #555; 
+  background: #3a3268;
+}
+
+/* Keyboard focus stays visible everywhere. Pointer focus does not. */
+:focus-visible {
+  outline: 2px solid #4f9d8f;
+  outline-offset: 3px;
+}
+
+/* Pressable elements confirm the interface heard the user. */
+.press {
+  transition: transform 160ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.press:active {
+  transform: scale(0.97);
+}
+
+/* Enter animation for scroll-revealed blocks. Transform + opacity only. */
+@keyframes kaara-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.reveal {
+  opacity: 0;
+}
+.reveal[data-visible="true"] {
+  animation: kaara-rise 420ms cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+/* Hover effects only where a real pointer exists. Touch taps otherwise
+   latch the hover state and the card looks stuck. */
+@media (hover: hover) and (pointer: fine) {
+  .hover-lift {
+    transition: transform 260ms cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  .hover-lift:hover {
+    transform: translateY(-4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html,
+  body {
+    scroll-behavior: auto;
+  }
+  .reveal,
+  .reveal[data-visible="true"] {
+    opacity: 1;
+    animation: none;
+  }
+  .press:active {
+    transform: none;
+  }
+  .hover-lift:hover {
+    transform: none;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

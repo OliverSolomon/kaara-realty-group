@@ -29,12 +29,14 @@ export const generalSettings = defineType({
       type: 'string',
       options: {
         list: [
+          { title: 'KES - Kenyan Shilling', value: 'KES' },
           { title: 'USD - US Dollar', value: 'USD' },
-          { title: 'KSH - Kenyan Shilling', value: 'KSH' },
+          { title: 'GBP - British Pound', value: 'GBP' },
           { title: 'EUR - Euro', value: 'EUR' },
+          { title: 'AED - UAE Dirham', value: 'AED' },
         ],
       },
-      initialValue: 'USD',
+      initialValue: 'KES',
     }),
     defineField({
       name: 'defaultLanguage',

@@ -81,7 +81,16 @@ export const PROPERTIES_QUERY = defineQuery(`*[_type == "property"] | order(_cre
   googleMapsUrl,
   amenities,
   size,
+  sizeSqm,
+  bedrooms,
+  bathrooms,
   yearBuilt,
+  listingType,
+  ownerVetted,
+  floorNumber,
+  facingDirection,
+  dailyRate,
+  viewCount,
   media[] {
     ...,
     _type == "image" => {
@@ -120,7 +129,18 @@ export const PROPERTY_DETAIL_QUERY = defineQuery(`*[_type == "property" && slug.
   googleMapsUrl,
   amenities,
   size,
+  sizeSqm,
+  bedrooms,
+  bathrooms,
   yearBuilt,
+  listingType,
+  ownerVetted,
+  floorNumber,
+  facingDirection,
+  dailyRate,
+  viewCount,
+  virtualTourUrl,
+  "developer": developer->{name, "slug": slug.current, "logoUrl": coalesce(logo.asset->url, logo.externalUrl), website},
   media[] {
     ...,
     _type == "image" => {
@@ -179,8 +199,100 @@ export const SITE_SETTINGS_QUERY = defineQuery(`{
     "logoWhite": logoWhite.asset->url,
     "favicon": favicon.asset->url
   },
-  "contact": *[_type == "contactSettings"][0],
+  "contact": *[_type == "contactSettings"][0]{
+    ...,
+    "registrationQrUrl": registrationQr.asset->url
+  },
   "socials": *[_type == "socialSettings"][0]
+}`)
+
+/* Shared projection for every listing card across Buy, Sell and Stay. */
+const LISTING_CARD_FIELDS = `
+  _id,
+  title,
+  "slug": slug.current,
+  buildingName,
+  listingType,
+  price,
+  dailyRate,
+  "imageUrl": coalesce(
+    image.asset->url,
+    image.externalUrl,
+    media[_type == "image"][0].asset->url,
+    media[_type == "externalImage"][0].url
+  ),
+  "county": county->name,
+  "district": district->name,
+  "developer": developer->{name, "slug": slug.current},
+  details,
+  propertyType,
+  shortDescription,
+  amenities,
+  size,
+  sizeSqm,
+  bedrooms,
+  bathrooms,
+  yearBuilt,
+  ownerVetted,
+  floorNumber,
+  facingDirection,
+  viewCount,
+  virtualTourUrl
+`
+
+export const LISTINGS_BY_TYPE_QUERY =
+  defineQuery(`*[_type == "property" && listingType == $listingType] | order(_createdAt desc) {
+  ${LISTING_CARD_FIELDS}
+}`)
+
+export const TESTIMONIALS_QUERY = defineQuery(`*[_type == "testimonial"] | order(order asc) [0...6] {
+  _id,
+  quote,
+  name,
+  role,
+  "portraitUrl": portrait.asset->url
+}`)
+
+export const DEVELOPERS_QUERY = defineQuery(`*[_type == "developer"] | order(order asc) {
+  _id,
+  name,
+  "slug": slug.current,
+  "logoUrl": coalesce(logo.asset->url, logo.externalUrl),
+  website,
+  summary,
+  projectsDelivered
+}`)
+
+export const ABOUT_QUERY = defineQuery(`*[_type == "aboutPage"][0] {
+  headline,
+  standfirst,
+  "heroImageUrl": coalesce(heroImage.asset->url, heroImage.externalUrl),
+  body,
+  mission,
+  commitments
+}`)
+
+export const INSIGHTS_QUERY = defineQuery(`*[_type == "post" && defined(slug.current)] | order(publishedAt desc) {
+  _id,
+  title,
+  "slug": slug.current,
+  category,
+  excerpt,
+  publishedAt,
+  readingMinutes,
+  "coverUrl": coalesce(coverImage.asset->url, coverImage.externalUrl)
+}`)
+
+export const INSIGHT_QUERY = defineQuery(`*[_type == "post" && slug.current == $slug][0] {
+  _id,
+  title,
+  "slug": slug.current,
+  category,
+  excerpt,
+  publishedAt,
+  readingMinutes,
+  "coverUrl": coalesce(coverImage.asset->url, coverImage.externalUrl),
+  content
 }`)
 
 export const SEARCH_QUERY = defineQuery(`*[_type == "district"] {

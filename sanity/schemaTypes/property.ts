@@ -24,6 +24,30 @@ export const property = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: 'listingType',
+      title: 'Listing Type',
+      description:
+        'Which section of the site this listing belongs to. Buy = new and active listings. Sell = owner resale units. Stay = luxury short stays.',
+      type: 'string',
+      options: {
+        list: [
+          { title: 'Buy (active listing)', value: 'buy' },
+          { title: 'Sell (owner resale)', value: 'sell' },
+          { title: 'Stay (short stay)', value: 'stay' },
+        ],
+        layout: 'radio',
+      },
+      initialValue: 'buy',
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: 'developer',
+      title: 'Developer',
+      description: 'The developer partner behind this project',
+      type: 'reference',
+      to: [{ type: 'developer' }],
+    }),
+    defineField({
       name: 'buildingName',
       title: 'Building Name',
       description: 'The specific name of the building or residence complex',
@@ -245,22 +269,128 @@ export const property = defineType({
       type: 'string',
     }),
     defineField({
+      name: 'sizeSqm',
+      title: 'Size in Square Metres',
+      description:
+        'Numeric only. The site converts this to square feet for international buyers, so enter 148 rather than "148 sqm".',
+      type: 'number',
+    }),
+    defineField({
+      name: 'bedrooms',
+      title: 'Bedrooms',
+      type: 'number',
+    }),
+    defineField({
+      name: 'bathrooms',
+      title: 'Bathrooms',
+      type: 'number',
+    }),
+    defineField({
       name: 'yearBuilt',
       title: 'Year Built / Handover',
       description: 'e.g., 2025 or Under Construction',
       type: 'string',
     }),
+    defineField({
+      name: 'virtualTourUrl',
+      title: 'Virtual Tour Link',
+      description: 'Matterport, YouTube 360 or any hosted walkthrough',
+      type: 'url',
+    }),
+    defineField({
+      name: 'viewCount',
+      title: 'Recorded Views',
+      description:
+        'Number of recorded viewings of this listing. Shown on the listing page as social proof.',
+      type: 'number',
+      validation: (Rule) => Rule.min(0).max(249),
+    }),
+
+    // Sell section
+    defineField({
+      name: 'ownerVetted',
+      title: 'Owner Vetted',
+      description:
+        'Sell listings only. Confirms Kaara has verified ownership and title documents for this resale unit.',
+      type: 'boolean',
+      initialValue: false,
+      hidden: ({ document }) => document?.listingType !== 'sell',
+    }),
+
+    // Stay section
+    defineField({
+      name: 'floorNumber',
+      title: 'Floor Number',
+      description: 'Stay listings only. e.g., 14th floor',
+      type: 'string',
+      hidden: ({ document }) => document?.listingType !== 'stay',
+    }),
+    defineField({
+      name: 'facingDirection',
+      title: 'Facing Direction',
+      description: 'Stay listings only. The aspect the unit looks out on.',
+      type: 'string',
+      options: {
+        list: [
+          { title: 'North', value: 'north' },
+          { title: 'North East', value: 'north-east' },
+          { title: 'East', value: 'east' },
+          { title: 'South East', value: 'south-east' },
+          { title: 'South', value: 'south' },
+          { title: 'South West', value: 'south-west' },
+          { title: 'West', value: 'west' },
+          { title: 'North West', value: 'north-west' },
+        ],
+      },
+      hidden: ({ document }) => document?.listingType !== 'stay',
+    }),
+    defineField({
+      name: 'dailyRate',
+      title: 'Daily Rate',
+      description: 'Stay listings only. The nightly rate for this unit.',
+      type: 'object',
+      hidden: ({ document }) => document?.listingType !== 'stay',
+      fields: [
+        {
+          name: 'amount',
+          title: 'Amount',
+          type: 'number',
+        },
+        {
+          name: 'currency',
+          title: 'Currency',
+          type: 'string',
+          options: {
+            list: [
+              { title: 'KES (Kenyan Shilling)', value: 'KES' },
+              { title: 'USD (US Dollar)', value: 'USD' },
+              { title: 'GBP (British Pound)', value: 'GBP' },
+              { title: 'EUR (Euro)', value: 'EUR' },
+              { title: 'AED (UAE Dirham)', value: 'AED' },
+            ],
+          },
+          initialValue: 'KES',
+        },
+      ],
+    }),
   ],
   preview: {
     select: {
       title: 'title',
-      subtitle: 'district',
+      district: 'district.name',
+      listingType: 'listingType',
       media: 'image',
     },
-    prepare({ title, subtitle, media }) {
+    prepare({ title, district, listingType, media }) {
+      const label: Record<string, string> = {
+        buy: 'Buy',
+        sell: 'Sell',
+        stay: 'Stay',
+      }
+      const parts = [label[listingType as string], district].filter(Boolean)
       return {
         title,
-        subtitle: subtitle ? `District: ${subtitle}` : '',
+        subtitle: parts.join(' / '),
         media,
       }
     },

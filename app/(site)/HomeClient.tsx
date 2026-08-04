@@ -8,6 +8,8 @@ import { FaFacebookF, FaInstagram, FaLinkedinIn } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 
 import SearchOverlay from "@/components/SearchOverlay";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 interface VideoSource {
   title?: string;
@@ -138,20 +140,21 @@ export default function HomeClient({ data, settings }: HomeClientProps) {
         >
           <Search size={18} />
         </button>
-        <Link href="/properties" className="hover:text-white/60 transition-colors hidden sm:block">BUY</Link>
-        <Link href="/properties" className="hover:text-white/60 transition-colors hidden sm:block">RENT</Link>
-        <Link href="/neighborhoods" className="hover:text-white/60 transition-colors hidden sm:block">NEIGHBORHOODS</Link>
+        <Link href="/buy" className="hover:text-white/60 transition-colors hidden sm:block">BUY</Link>
+        <Link href="/sell" className="hover:text-white/60 transition-colors hidden sm:block">SELL</Link>
+        <Link href="/stay" className="hover:text-white/60 transition-colors hidden sm:block">STAY</Link>
       </div>
 
       <div className="hidden lg:flex items-center space-x-12">
-        <Link href="#" className="hover:text-white/60 transition-colors">NEW DEVELOPMENT</Link>
-        <Link href="#" className="hover:text-white/60 transition-colors text-[#E5E5E5]">WORLD OF KAARA</Link>
+        <Link href="/market-insights" className="hover:text-white/60 transition-colors">MARKET INSIGHTS</Link>
+        <Link href="/world-of-kaara" className="hover:text-white/60 transition-colors text-[#E5E5E5]">WORLD OF KAARA</Link>
       </div>
     </div>
   );
 
   return (
-    <main className="min-h-screen bg-[#100B28]">
+    <main className="min-h-screen bg-[#100b28]">
+      <Navbar settings={settings} transparent />
       {/* Custom Toast Notification */}
       <div className={`fixed bottom-8 left-1/2 -translate-x-1/2 z-[500] transition-all duration-700 ${toast.show ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0 pointer-events-none'}`}>
         <div className="bg-white text-[#100B28] px-8 py-4 rounded-full shadow-2xl flex items-center gap-4 border border-white/20 backdrop-blur-xl">
@@ -171,34 +174,6 @@ export default function HomeClient({ data, settings }: HomeClientProps) {
         </button>
       </div>
 
-      {/* Mobile Menu Overlay */}
-      {isMenuOpen && (
-        <div className="fixed inset-0 z-[300] bg-[#100B28] flex flex-col p-8 overflow-y-auto">
-          <div className="flex justify-between items-center mb-16">
-            <Link href="/" className="text-lg font-serif tracking-[0.3em] text-white uppercase">
-              KAARA REALTY
-            </Link>
-            <button onClick={() => setIsMenuOpen(false)} className="text-white">
-              <CloseIcon size={24} />
-            </button>
-          </div>
-          <div className="flex flex-col space-y-8 text-2xl font-serif tracking-[0.1em] uppercase text-white">
-            <Link href="/properties" className="hover:text-white/60 transition-colors" onClick={() => setIsMenuOpen(false)}>BUY</Link>
-            <Link href="#" className="hover:text-white/60 transition-colors" onClick={() => setIsMenuOpen(false)}>RENT</Link>
-            <Link href="#" className="hover:text-white/60 transition-colors" onClick={() => setIsMenuOpen(false)}>SELL</Link>
-            <Link href="#" className="hover:text-white/60 transition-colors" onClick={() => setIsMenuOpen(false)}>AGENTS</Link>
-            <Link href="#" className="hover:text-white/60 transition-colors" onClick={() => setIsMenuOpen(false)}>NEW DEVELOPMENT</Link>
-            <Link href="#" className="hover:text-white/60 transition-colors text-white/50" onClick={() => setIsMenuOpen(false)}>WORLD OF KAARA</Link>
-          </div>
-          <div className="mt-auto pt-16 flex gap-8">
-            <Link href="#" className="text-white/40 hover:text-white"><FaFacebookF size={20} /></Link>
-            <Link href="#" className="text-white/40 hover:text-white"><FaXTwitter size={20} /></Link>
-            <Link href="#" className="text-white/40 hover:text-white"><FaInstagram size={20} /></Link>
-            <Link href="#" className="text-white/40 hover:text-white"><FaLinkedinIn size={20} /></Link>
-          </div>
-        </div>
-      )}
-
       {/* Search Overlay */}
       <SearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
 
@@ -216,13 +191,8 @@ export default function HomeClient({ data, settings }: HomeClientProps) {
         </video>
         <div className="absolute inset-0 bg-[#100B28]/30 z-10" />
 
-        <nav className="absolute top-0 w-full z-50 px-6 py-8 lg:px-12 lg:py-12 flex justify-center items-center">
-          <Link href="/" className="text-lg lg:text-[1.75rem] font-serif tracking-[0.4em] text-white text-center whitespace-nowrap uppercase">
-            {settings?.general?.siteName || "KAARA REALTY GROUP"}
-          </Link>
-        </nav>
 
-        <div className="absolute top-24 lg:top-32 left-6 lg:left-16 z-20 text-left max-w-xl">
+        <div className="absolute top-28 lg:top-36 left-6 lg:left-16 z-20 text-left max-w-xl">
           <h1 className="text-xl lg:text-[1.75rem] font-serif text-white tracking-[0.15em] uppercase leading-tight mb-2">
             {data?.heroVideo?.title || "WHERE DO YOU WANT TO GO?"}
           </h1>
@@ -362,7 +332,7 @@ export default function HomeClient({ data, settings }: HomeClientProps) {
         </div>
 
         <div className="mt-12 lg:mt-20 flex justify-center">
-           <Link href="/properties">
+           <Link href="/buy">
              <button className="bg-transparent border border-white/40 px-10 py-3.5 lg:px-12 lg:py-4 text-[9px] lg:text-[10px] tracking-[0.3em] lg:tracking-[0.4em] font-sans font-bold hover:bg-white hover:text-[#100B28] transition-all duration-500 rounded-full uppercase">
                VIEW ALL LISTINGS
              </button>
@@ -495,94 +465,7 @@ export default function HomeClient({ data, settings }: HomeClientProps) {
         </div>
       </section>
 
-      {/* Master Footer */}
-      <footer className="bg-[#100B28] text-white pt-24 lg:pt-40 pb-12 lg:pb-16 px-6 lg:px-20 border-t border-white/5">
-        <div className="max-w-[1700px] mx-auto">
-          <div className="flex flex-col md:flex-row justify-center items-center gap-4 mb-20 lg:mb-32 group cursor-pointer text-center">
-            <div className="text-center">
-              <span className="text-xl lg:text-[2rem] tracking-[0.4em] lg:tracking-[0.6em] font-serif uppercase text-white inline-block mb-3">
-                {settings?.general?.siteName || "KAARA REALTY GROUP"}
-              </span>
-              <div className="h-[1px] w-0 bg-white/20 mx-auto transition-all duration-1000 group-hover:w-full"></div>
-              <p className="text-[10px] tracking-[0.3em] text-white/40 mt-4 uppercase font-bold">
-                {settings?.contact?.email || "info@kaararealtygroup.com"}
-              </p>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-12 lg:gap-16 mb-24 lg:mb-32 font-sans text-[9px] lg:text-[10px] tracking-[0.3em] lg:tracking-[0.4em] uppercase font-bold text-center sm:text-left">
-            <div className="space-y-6 lg:space-y-8">
-              <h4 className="text-white/40 mb-8 lg:mb-12 font-bold tracking-[0.5em]">The Agency</h4>
-              <ul className="space-y-4 lg:space-y-6 text-white/70">
-                <li><Link href="#" className="hover:text-white transition-all duration-300">About Us</Link></li>
-                <li><Link href="#" className="hover:text-white transition-all duration-300">Leadership</Link></li>
-                <li><Link href="#" className="hover:text-white transition-all duration-300">Vertical Experts</Link></li>
-                <li><Link href="#" className="hover:text-white transition-all duration-300">Press Center</Link></li>
-                <li><Link href="#" className="hover:text-white transition-all duration-300">Careers</Link></li>
-              </ul>
-            </div>
-            <div className="space-y-6 lg:space-y-8">
-              <h4 className="text-white/40 mb-8 lg:mb-12 font-bold tracking-[0.5em]">Intelligence</h4>
-              <ul className="space-y-4 lg:space-y-6 text-white/70">
-                <li><Link href="#" className="hover:text-white transition-all duration-300">Market Reports</Link></li>
-                <li><Link href="#" className="hover:text-white transition-all duration-300">Vertical Insights</Link></li>
-                <li><Link href="#" className="hover:text-white transition-all duration-300">The Journal</Link></li>
-                <li><Link href="#" className="hover:text-white transition-all duration-300">Global Search</Link></li>
-                <li><Link href="#" className="hover:text-white transition-all duration-300">Client Login</Link></li>
-              </ul>
-            </div>
-            <div className="space-y-6 lg:space-y-8">
-              <h4 className="text-white/40 mb-8 lg:mb-12 font-bold tracking-[0.5em]">Districts</h4>
-              <ul className="space-y-4 lg:space-y-6 text-white/70">
-                <li><Link href="#" className="hover:text-white transition-all duration-300">Upper Hill</Link></li>
-                <li><Link href="#" className="hover:text-white transition-all duration-300">Westlands</Link></li>
-                <li><Link href="#" className="hover:text-white transition-all duration-300">Kilimani</Link></li>
-                <li><Link href="#" className="hover:text-white transition-all duration-300">Karen</Link></li>
-                <li><Link href="#" className="hover:text-white transition-all duration-300">Muthaiga</Link></li>
-              </ul>
-            </div>
-            <div className="space-y-8 lg:space-y-10 sm:col-span-2 lg:col-span-2">
-              <h4 className="text-white/40 mb-8 lg:mb-12 font-bold tracking-[0.5em]">The Collective</h4>
-              <p className="text-white/30 normal-case tracking-normal mb-8 lg:mb-10 leading-relaxed max-w-sm mx-auto sm:mx-0 text-xs font-light uppercase">
-                Join our exclusive network for curated updates on vertical developments and luxury estates across Nairobi.
-              </p>
-              <form onSubmit={handleNewsletterSubmit} className="flex max-w-md border-b border-white/10 pb-3 group mx-auto sm:mx-0">
-                <input 
-                  type="email" 
-                  value={newsletterEmail}
-                  onChange={(e) => setNewsletterEmail(e.target.value)}
-                  placeholder={isSubmitting ? "SUBMITTING..." : "SUBSCRIBE"} 
-                  disabled={isSubmitting}
-                  className="bg-transparent border-none outline-none flex-grow text-[10px] lg:text-[11px] tracking-[0.4em] lg:tracking-[0.5em] font-sans placeholder:text-white/10 text-white font-bold uppercase"
-                />
-                <button type="submit" disabled={isSubmitting} className="text-white/20 group-hover:text-white transition-all duration-500 group-hover:translate-x-1">
-                  <ArrowRight size={20} />
-                </button>
-              </form>
-            </div>
-          </div>
-
-          <div className="pt-12 lg:pt-16 border-t border-white/5 flex flex-col lg:flex-row justify-between items-center gap-12 lg:gap-16 text-[8px] lg:text-[9px] tracking-[0.3em] lg:tracking-[0.5em] text-white/30 uppercase text-center">
-             <div className="flex flex-wrap justify-center gap-8 lg:gap-10">
-                <Link href="#" className="hover:text-white transition-colors">Digital Site Map</Link>
-                <Link href="#" className="hover:text-white transition-colors">Legal Terms</Link>
-                <Link href="#" className="hover:text-white transition-colors">Privacy Charter</Link>
-                <Link href="#" className="hover:text-white transition-colors">Cookie Policy</Link>
-             </div>
-             <div className="flex gap-8 lg:gap-12">
-                {settings?.socials?.facebook && <Link href={settings.socials.facebook} target="_blank" className="hover:text-white transition-all duration-500 hover:scale-110"><FaFacebookF size={18} /></Link>}
-                {settings?.socials?.twitter && <Link href={settings.socials.twitter} target="_blank" className="hover:text-white transition-all duration-500 hover:scale-110"><FaXTwitter size={18} /></Link>}
-                {settings?.socials?.instagram && <Link href={settings.socials.instagram} target="_blank" className="hover:text-white transition-all duration-500 hover:scale-110"><FaInstagram size={18} /></Link>}
-                {settings?.socials?.linkedin && <Link href={settings.socials.linkedin} target="_blank" className="hover:text-white transition-all duration-500 hover:scale-110"><FaLinkedinIn size={18} /></Link>}
-             </div>
-          </div>
-
-          <div className="mt-16 lg:mt-24 text-[7px] lg:text-[8px] leading-[2] text-white/20 text-center max-w-5xl mx-auto tracking-[0.15em] lg:tracking-[0.2em] uppercase font-light px-4">
-             <p className="mb-4">{(settings?.general?.siteName || "KAARA REALTY GROUP").toUpperCase()} IS THE PREMIER BROKERAGE FOR VERTICAL LUXURY IN KENYA. ALL MATERIAL PRESENTED HEREIN IS INTENDED FOR INFORMATION PURPOSES ONLY. WHILE THIS INFORMATION IS BELIEVED TO BE CORRECT, IT IS REPRESENTED SUBJECT TO ERRORS, OMISSIONS, CHANGES, OR WITHDRAWAL WITHOUT NOTICE.</p>
-             <p>© {new Date().getFullYear()} {settings?.general?.siteName || "KAARA REALTY GROUP"}. {settings?.general?.footerText || "THE PINNACLE OF KENYAN REAL ESTATE. EQUAL HOUSING OPPORTUNITY."}</p>
-          </div>
-        </div>
-      </footer>
+      <Footer settings={settings} />
     </main>
   );
 }

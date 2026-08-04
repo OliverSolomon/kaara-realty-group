@@ -1,17 +1,59 @@
 import type { StructureResolver } from 'sanity/structure'
-import { CogIcon, UsersIcon, EnvelopeIcon, ImageIcon, EarthAmericasIcon } from '@sanity/icons'
+import {
+  CogIcon,
+  UsersIcon,
+  EnvelopeIcon,
+  ImageIcon,
+  EarthAmericasIcon,
+  HomeIcon,
+  TagIcon,
+  CalendarIcon,
+  CommentIcon,
+  CaseIcon,
+  DocumentTextIcon,
+} from '@sanity/icons'
+
+const listingList = (S: Parameters<StructureResolver>[0], type: string, title: string) =>
+  S.listItem()
+    .title(title)
+    .child(
+      S.documentTypeList('property')
+        .title(title)
+        .filter('_type == "property" && listingType == $type')
+        .params({ type })
+    )
 
 // https://www.sanity.io/docs/structure-builder-cheat-sheet
 export const structure: StructureResolver = (S) =>
   S.list()
     .title('Content')
     .items([
-      S.documentTypeListItem('post').title('Posts'),
-      S.documentTypeListItem('property').title('Properties'),
-      S.documentTypeListItem('event').title('Events'),
-      S.documentTypeListItem('district').title('Districts'),
+      S.listItem()
+        .title('Listings')
+        .icon(HomeIcon)
+        .child(
+          S.list()
+            .title('Listings')
+            .items([
+              listingList(S, 'buy', 'Buy'),
+              listingList(S, 'sell', 'Sell'),
+              listingList(S, 'stay', 'Stay'),
+              S.divider(),
+              S.documentTypeListItem('property').title('All Listings'),
+            ])
+        ),
+      S.documentTypeListItem('post').title('Market Insights').icon(DocumentTextIcon),
+      S.documentTypeListItem('testimonial').title('Testimonials').icon(CommentIcon),
+      S.documentTypeListItem('developer').title('Developer Partners').icon(CaseIcon),
+      S.documentTypeListItem('event').title('Events').icon(CalendarIcon),
+      S.documentTypeListItem('district').title('Districts').icon(TagIcon),
       S.divider(),
-      
+
+      S.listItem()
+        .title('World of Kaara')
+        .icon(EarthAmericasIcon)
+        .child(S.document().schemaType('aboutPage').documentId('aboutPage')),
+
       // Grouped Home Page Sections
       S.listItem()
         .title('Home Page')
@@ -118,11 +160,14 @@ export const structure: StructureResolver = (S) =>
       ...S.documentTypeListItems().filter(
         (listItem) => 
           ![
-            'post', 
-            'property', 
-            'event', 
-            'district', 
+            'post',
+            'property',
+            'event',
+            'district',
             'county',
+            'developer',
+            'testimonial',
+            'aboutPage',
             'generalSettings',
             'brandSettings',
             'contactSettings',
