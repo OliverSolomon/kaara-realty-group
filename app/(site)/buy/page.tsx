@@ -5,7 +5,9 @@ import {
   LISTINGS_BY_TYPE_QUERY,
   SITE_SETTINGS_QUERY,
   DEVELOPERS_QUERY,
+  SECTION_PAGE_QUERY,
 } from "@/sanity/lib/queries";
+import ViewAllPropertiesButton from "@/components/site/ViewAllPropertiesButton";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ListingGrid from "@/components/site/ListingGrid";
@@ -25,11 +27,13 @@ export const metadata: Metadata = {
 };
 
 export default async function BuyPage() {
-  const [{ data: listings }, { data: settings }, { data: developers }] = await Promise.all([
-    sanityFetch({ query: LISTINGS_BY_TYPE_QUERY, params: { listingType: "buy" } }),
-    sanityFetch({ query: SITE_SETTINGS_QUERY }),
-    sanityFetch({ query: DEVELOPERS_QUERY }),
-  ]);
+  const [{ data: listings }, { data: settings }, { data: developers }, { data: page }] =
+    await Promise.all([
+      sanityFetch({ query: LISTINGS_BY_TYPE_QUERY, params: { listingType: "buy" } }),
+      sanityFetch({ query: SITE_SETTINGS_QUERY }),
+      sanityFetch({ query: DEVELOPERS_QUERY }),
+      sanityFetch({ query: SECTION_PAGE_QUERY, params: { type: "buyPage" } }),
+    ]);
 
   const items = (listings || []) as unknown as Listing[];
 
@@ -41,7 +45,9 @@ export default async function BuyPage() {
   ).slice(0, 12);
 
   const heroImage =
-    items.find((l) => l.imageUrl)?.imageUrl || placeholderImage("kaara-buy-nairobi-skyline", 1400, 1700);
+    page?.heroImageUrl ||
+    items.find((l) => l.imageUrl)?.imageUrl ||
+    placeholderImage("kaara-buy-nairobi-skyline", 1400, 1700);
 
   return (
     <>
@@ -52,14 +58,14 @@ export default async function BuyPage() {
         <section className="mx-auto grid max-w-[1500px] grid-cols-1 items-center gap-12 px-5 pb-20 pt-16 lg:grid-cols-12 lg:gap-16 lg:px-10 lg:pb-28 lg:pt-24">
           <div className="lg:col-span-6">
             <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#4f9d8f]">
-              Buy
+              {page?.eyebrow || "Buy"}
             </p>
             <h1 className="mt-6 font-serif text-4xl leading-[1.08] md:text-5xl lg:text-6xl">
-              Buy where the developer has already delivered.
+              {page?.headline || "Buy where the developer has already delivered."}
             </h1>
             <p className="mt-6 max-w-[46ch] text-base leading-relaxed text-white/65">
-              Every listing here comes from a partner with a completed track record, published
-              payment terms and support after handover.
+              {page?.intro ||
+                "Every listing here comes from a partner with a completed track record, published payment terms and support after handover."}
             </p>
             <ContactActions
               contact={settings?.contact}
@@ -85,7 +91,9 @@ export default async function BuyPage() {
         {/* Listings */}
         <section className="mx-auto max-w-[1500px] border-t border-white/10 px-5 py-20 lg:px-10 lg:py-28">
           <div className="mb-14 flex flex-wrap items-baseline justify-between gap-4">
-            <h2 className="font-serif text-3xl leading-tight sm:text-4xl">Active listings</h2>
+            <h2 className="font-serif text-3xl leading-tight sm:text-4xl">
+              {page?.listingsHeading || "Active listings"}
+            </h2>
             <p className="text-sm text-white/45 tabular-nums">
               {items.length} {items.length === 1 ? "listing" : "listings"} available
             </p>
@@ -93,9 +101,15 @@ export default async function BuyPage() {
 
           <ListingGrid
             listings={items}
-            emptyTitle="Nothing is live in this collection right now"
-            emptyBody="New releases are usually allocated before they reach the site. Tell us what you are looking for and we will send the next one that fits."
+            emptyTitle={page?.listingsEmptyTitle || "Nothing is live in this collection right now"}
+            emptyBody={
+              page?.listingsEmptyBody ||
+              "New releases are usually allocated before they reach the site. Tell us what you are looking for and we will send the next one that fits."
+            }
           />
+
+          {/* Buy is one section of the book. This opens the whole thing. */}
+          <ViewAllPropertiesButton className="mt-16" />
         </section>
 
         {/* Amenities, icon led */}

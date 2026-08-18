@@ -19,7 +19,8 @@ export default function CurrencyConverter({
   baseCurrency = "KES",
   className = "",
 }: CurrencyConverterProps) {
-  const { currency, setCurrency, convert, formatIn } = useCurrency();
+  const { currency, setCurrency, convertTo, formatIn, ratesAreIndicative, ratesUpdated } =
+    useCurrency();
   const [custom, setCustom] = useState(amount ? String(amount) : "");
 
   const numeric = parseFloat(custom.replace(/[^0-9.]/g, ""));
@@ -62,7 +63,7 @@ export default function CurrencyConverter({
                 </span>
               </span>
               <span className="font-serif text-lg tabular-nums">
-                {hasValue ? formatIn(convert(numeric, baseCurrency), code) : "-"}
+                {hasValue ? formatIn(convertTo(numeric, baseCurrency, code), code) : "-"}
               </span>
             </button>
           );
@@ -70,8 +71,10 @@ export default function CurrencyConverter({
       </div>
 
       <p className="mt-4 text-xs leading-relaxed text-white/45">
-        Indicative rates for orientation only. Your bank or transfer service sets the rate that
-        applies on the day of settlement.
+        {ratesAreIndicative
+          ? "Indicative rates for orientation only."
+          : `Live mid-market rates${ratesUpdated ? `, updated ${ratesUpdated}` : ""}.`}{" "}
+        Your bank or transfer service sets the rate that applies on the day of settlement.
       </p>
     </div>
   );

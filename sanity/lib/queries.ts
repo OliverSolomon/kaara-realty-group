@@ -25,32 +25,15 @@ export const HOME_PAGE_QUERY = defineQuery(`{
       ),
       "county": county->name,
       "district": district->name,
+      location,
       details,
-      propertyType
+      propertyType,
+      listingType
     }
   },
   "experienceVideo": *[_type == "experienceSection"][0]{
     ...,
     "fileUrl": videoFile.asset->url
-  },
-  "spotlightSection": *[_type == "spotlightSection"][0]{
-    ...,
-    featuredEvent-> {
-      title,
-      description,
-      location,
-      date,
-      "imageUrl": image.asset->url,
-      media[] {
-        ...,
-        _type == "image" => {
-          "url": asset->url
-        },
-        _type == "externalImage" => {
-          "url": url
-        }
-      }
-    }
   },
   "closingVideo": *[_type == "closingSection"][0]{
     ...,
@@ -71,6 +54,7 @@ export const PROPERTIES_QUERY = defineQuery(`*[_type == "property"] | order(_cre
     media[_type == "externalImage"][0].url
   ),
   "county": county->name,
+  location,
   "district": district->{
     name,
     boundary
@@ -115,6 +99,7 @@ export const PROPERTY_DETAIL_QUERY = defineQuery(`*[_type == "property" && slug.
     media[_type == "externalImage"][0].url
   ),
   "county": county->name,
+  location,
   "district": district-> {
     _id,
     "name": name,
@@ -178,19 +163,6 @@ export const PROPERTY_DETAIL_QUERY = defineQuery(`*[_type == "property" && slug.
   }
 }`)
 
-export const NEIGHBORHOOD_QUERY = defineQuery(`*[_type == "district" && slug.current == $slug][0] {
-  _id,
-  name,
-  "slug": slug.current,
-  "county": county->name,
-  description,
-  "mainImage": mainImage.asset->url,
-  "photos": photos[].asset->url,
-  amenities,
-  schools,
-  malls
-}`)
-
 export const SITE_SETTINGS_QUERY = defineQuery(`{
   "general": *[_type == "generalSettings"][0],
   "brand": *[_type == "brandSettings"][0]{
@@ -223,6 +195,7 @@ const LISTING_CARD_FIELDS = `
   ),
   "county": county->name,
   "district": district->name,
+  location,
   "developer": developer->{name, "slug": slug.current},
   details,
   propertyType,
@@ -245,6 +218,13 @@ export const LISTINGS_BY_TYPE_QUERY =
   ${LISTING_CARD_FIELDS}
 }`)
 
+/* Everything on the books, whichever section it belongs to. Powers the
+   "View all properties" index. */
+export const ALL_LISTINGS_QUERY =
+  defineQuery(`*[_type == "property" && defined(slug.current)] | order(_createdAt desc) {
+  ${LISTING_CARD_FIELDS}
+}`)
+
 export const TESTIMONIALS_QUERY = defineQuery(`*[_type == "testimonial"] | order(order asc) [0...6] {
   _id,
   quote,
@@ -264,12 +244,33 @@ export const DEVELOPERS_QUERY = defineQuery(`*[_type == "developer"] | order(ord
 }`)
 
 export const ABOUT_QUERY = defineQuery(`*[_type == "aboutPage"][0] {
+  eyebrow,
   headline,
   standfirst,
   "heroImageUrl": coalesce(heroImage.asset->url, heroImage.externalUrl),
+  "heroImageAlt": heroImage.alt,
+  storyHeading,
   body,
+  "storyImageUrl": coalesce(storyImage.asset->url, storyImage.externalUrl),
+  "storyImageAlt": storyImage.alt,
+  missionEyebrow,
   mission,
-  commitments
+  "missionImageUrl": coalesce(missionImage.asset->url, missionImage.externalUrl),
+  commitmentsHeading,
+  commitments,
+  galleryHeading,
+  galleryIntro,
+  gallery[] {
+    "url": coalesce(asset->url, externalUrl),
+    alt,
+    caption
+  },
+  testimonialsHeading,
+  partnersHeading,
+  ctaHeading,
+  ctaBody,
+  ctaLinkLabel,
+  ctaLinkHref
 }`)
 
 export const INSIGHTS_QUERY = defineQuery(`*[_type == "post" && defined(slug.current)] | order(publishedAt desc) {
@@ -311,19 +312,15 @@ export const SEARCH_QUERY = defineQuery(`*[_type == "district"] {
     )
   }
 }`)
-export const NEIGHBORHOODS_QUERY = defineQuery(`*[_type == "district"] {
-  _id,
-  name,
-  "slug": slug.current,
-  boundary,
-  "properties": *[_type == "property" && district._ref == ^._id] {
-    _id,
-    title,
-    "slug": slug.current,
-    price,
-    "imageUrl": coalesce(image.asset->url, image.externalUrl),
-    googleMapsUrl,
-    "district": district->name,
-    "county": county->name
-  }
+
+/* Buy, Sell and Stay page copy. Same shape for all three, so one query serves
+   each of them with a different $type. */
+export const SECTION_PAGE_QUERY = defineQuery(`*[_type == $type][0] {
+  eyebrow,
+  headline,
+  intro,
+  "heroImageUrl": coalesce(heroImage.asset->url, heroImage.externalUrl),
+  listingsHeading,
+  listingsEmptyTitle,
+  listingsEmptyBody
 }`)

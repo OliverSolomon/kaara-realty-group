@@ -19,6 +19,29 @@ interface VideoSource {
   fileUrl?: string;
 }
 
+interface PropertyFilter {
+  _key?: string;
+  label?: string;
+  mode?: 'types' | 'all' | 'maxPrice';
+  propertyTypes?: string[];
+  maxPrice?: number;
+}
+
+interface FeaturedProperty {
+  _id: string;
+  title?: string;
+  slug?: string;
+  buildingName?: string;
+  price?: { amount?: string; currency?: string };
+  imageUrl?: string;
+  county?: string;
+  district?: string;
+  location?: string;
+  details?: string;
+  propertyType?: string[];
+  listingType?: string;
+}
+
 interface HomeClientProps {
   data: {
     heroVideo?: VideoSource;
@@ -26,20 +49,11 @@ interface HomeClientProps {
     propertiesSection?: {
       title?: string;
       subtitle?: string;
-      featuredProperties?: any[];
+      ctaLabel?: string;
+      filters?: PropertyFilter[];
+      featuredProperties?: FeaturedProperty[];
     };
     experienceVideo?: VideoSource;
-    spotlightSection?: {
-      title?: string;
-      featuredEvent?: {
-        title: string;
-        description: string;
-        location: string;
-        date: string;
-        imageUrl: string;
-        media: any[];
-      };
-    };
     closingVideo?: VideoSource;
   };
   settings?: {
@@ -51,13 +65,66 @@ interface HomeClientProps {
 }
 
 import { useLanguage } from "@/context/LanguageContext";
+import { useCurrency } from "@/context/CurrencyContext";
+
+/* Chips are content now, so they need a stable identity that survives an
+   editor renaming one in the Studio. */
+const filterKey = (filter: PropertyFilter, index?: number) =>
+  filter._key || `${filter.label ?? "filter"}-${index ?? 0}`;
+
+const priceToNumber = (price?: { amount?: string }) =>
+  parseInt(String(price?.amount ?? "").replace(/[^0-9]/g, ""), 10) || 0;
+
+const propertyPlace = (property: FeaturedProperty) =>
+  property.location ||
+  [property.district, property.county].filter(Boolean).join(", ") ||
+  property.details ||
+  "Nairobi";
+
+const matchesFilter = (property: FeaturedProperty, filter?: PropertyFilter) => {
+  if (!filter || filter.mode === "all") return true;
+  if (filter.mode === "maxPrice") {
+    const ceiling = filter.maxPrice ?? 0;
+    if (!ceiling) return true;
+    const amount = priceToNumber(property.price);
+    return amount > 0 && amount < ceiling;
+  }
+  const wanted = filter.propertyTypes || [];
+  if (wanted.length === 0) return true;
+  const types = property.propertyType || [];
+  return types.some((type) => wanted.includes(type));
+};
 
 export default function HomeClient({ data, settings }: HomeClientProps) {
   const { t } = useLanguage();
+  // The home page grid quotes prices in whatever currency is selected in the
+  // navigation, same as every other price on the site.
+  const { formatPrice } = useCurrency();
+
+  const formatListingPrice = (property: FeaturedProperty) => {
+    const amount = property.price?.amount;
+    if (!amount) return t("price_on_request");
+    return formatPrice(amount, property.price?.currency || "KES");
+  };
   const [isPlaying, setIsPlaying] = useState(true);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [activeFilter, setActiveFilter] = useState("CITY SKYLINES");
+  const filters: PropertyFilter[] = (data?.propertiesSection?.filters || []).map((f, i) => ({
+    ...f,
+    _key: filterKey(f, i),
+  }));
+  const featured: FeaturedProperty[] = data?.propertiesSection?.featuredProperties || [];
+  const [activeFilter, setActiveFilter] = useState(filters[0]?._key || "");
+  const selectedFilter = filters.find((f) => f._key === activeFilter) || filters[0];
+  const visibleProperties = featured.filter((property) => matchesFilter(property, selectedFilter));
+
+  // Four tiles is the width of the row. Past that, the fourth tile becomes a
+  // bento box: the fourth property stacked over a link to the rest, so the row
+  // stays one clean line instead of wrapping into a ragged second one.
+  const isOverflowing = visibleProperties.length > 4;
+  const fullTiles = isOverflowing ? visibleProperties.slice(0, 3) : visibleProperties.slice(0, 4);
+  const bentoProperty = isOverflowing ? visibleProperties[3] : undefined;
+  const remainingCount = isOverflowing ? visibleProperties.length - 4 : 0;
   
   // Pause video when search is open
   useEffect(() => {
@@ -235,106 +302,118 @@ export default function HomeClient({ data, settings }: HomeClientProps) {
         <SectionBottomNav />
       </section>
 
-      {/* Property Showcase */}
+      {/* Property Showcase - copy, filter chips and the grid all come from Sanity */}
       <section className="pt-24 lg:pt-40 pb-24 lg:pb-32 px-4 lg:px-6 bg-[#100B28] text-white">
         <div className="max-w-[1400px] mx-auto flex flex-col items-center mb-16 lg:mb-24 text-center">
           <p className="font-sans text-[8px] lg:text-[11px] tracking-[0.4em] text-white/60 uppercase mb-4 lg:mb-6 font-bold">{data?.propertiesSection?.subtitle || "Local Experts, Global Reach"}</p>
           <h2 className="text-2xl lg:text-[2.75rem] font-serif tracking-[0.1em] lg:tracking-[0.2em] uppercase text-white mb-8 lg:mb-12">{data?.propertiesSection?.title || "The Next Move Is Yours"}</h2>
-          
+
           <div className="w-[1px] h-12 lg:h-20 bg-white/20 mb-8 lg:mb-12"></div>
-          
-          <div className="flex flex-wrap justify-center gap-6 lg:gap-16 text-[9px] lg:text-[11px] font-sans tracking-[0.2em] lg:tracking-[0.3em] uppercase text-white/50 font-bold mb-12 lg:mb-16">
-            {["CITY SKYLINES", "WATER VIEWS", "FARM & RANCH", "JUST LISTED", "UNDER $20 MILLION"].map((filter) => (
-              <button 
-                key={filter}
-                onClick={() => setActiveFilter(filter)}
-                className={`transition-all duration-300 ${activeFilter === filter ? 'text-white border-b-[1.5px] border-white pb-1.5' : 'hover:text-white'}`}
+
+          {filters.length > 0 && (
+            <div className="flex flex-wrap justify-center gap-6 lg:gap-16 text-[9px] lg:text-[11px] font-sans tracking-[0.2em] lg:tracking-[0.3em] uppercase text-white/50 font-bold mb-12 lg:mb-16">
+              {filters.map((filter) => {
+                const key = filterKey(filter);
+                return (
+                  <button
+                    key={key}
+                    onClick={() => setActiveFilter(key)}
+                    className={`transition-all duration-300 ${activeFilter === key ? 'text-white border-b-[1.5px] border-white pb-1.5' : 'hover:text-white'}`}
+                  >
+                    {filter.label}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+        {visibleProperties.length > 0 ? (
+          <div className="max-w-[1800px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[2px] lg:gap-1">
+            {fullTiles.map((property) => (
+              <Link
+                key={property._id}
+                href={`/properties/${property.slug}`}
+                className="group relative h-[500px] lg:h-[650px] w-full cursor-pointer overflow-hidden bg-[#100B28]"
               >
-                {filter}
-              </button>
+                <Image
+                  src={property.imageUrl || "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80"}
+                  alt={property.title || "Kaara listing"}
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                  className="object-cover transition-transform duration-[2s] group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#100B28]/95 via-[#100B28]/20 to-transparent opacity-90 group-hover:opacity-100 transition-opacity duration-700" />
+                <div className="absolute bottom-0 left-0 right-0 p-8 lg:p-12 text-center flex flex-col items-center z-10 transition-transform duration-700">
+                  <h3 className="font-serif text-2xl lg:text-3xl mb-3 lg:mb-4 text-white tracking-[0.05em] uppercase">{property.title}</h3>
+                  <p className="font-sans text-[8px] lg:text-[9px] tracking-[0.3em] lg:tracking-[0.4em] text-white/70 mb-2 lg:mb-3 uppercase font-bold">
+                    {propertyPlace(property)}
+                  </p>
+                  <p className="font-serif text-[13px] lg:text-[15px] text-white italic">
+                    {formatListingPrice(property)}
+                  </p>
+                </div>
+              </Link>
             ))}
-          </div>
-        </div>
 
-        <div className="max-w-[1800px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[2px] lg:gap-1">
-          {(data?.propertiesSection?.featuredProperties?.length ? data.propertiesSection.featuredProperties : [
-            {
-              _id: "fallback-1",
-              title: "THE AMETHYST",
-              details: "WESTLANDS • EXCLUSIVE PENTHOUSE",
-              price: "KSh 520,000,000",
-              imageUrl: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
-              propertyType: "penthouse"
-            },
-            {
-              _id: "fallback-2",
-              title: "SYMPHONY RESIDENCE",
-              details: "3 BR | 4 BA, 1 HALF BA",
-              price: "KSh 135,000,000",
-              imageUrl: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80",
-              propertyType: "apartment"
-            },
-            {
-              _id: "fallback-3",
-              title: "37BYINEZA",
-              details: "3 BR | 2 BA, 1 HALF BA",
-              price: "KSh 85,000,000",
-              imageUrl: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=1200&q=80",
-              propertyType: "apartment"
-            },
-            {
-              _id: "fallback-4",
-              title: "THE DIPLOMAT",
-              details: "2 BR | 7 BA, 4 HALF BA",
-              price: "KSh 370,000,000",
-              imageUrl: "https://images.unsplash.com/photo-1600607687940-c52af096999c?auto=format&fit=crop&w=1200&q=80",
-              propertyType: "apartment"
-            }
-          ])
-            .filter((p: any) => {
-              const types = Array.isArray(p.propertyType) ? p.propertyType : [p.propertyType].filter(Boolean);
-              const amount = typeof p.price === 'object' ? parseInt(p.price.amount?.replace(/[^0-9]/g, '') || "0") : parseInt(p.price?.replace(/[^0-9]/g, '') || "0");
+            {/* Bento cell: the fourth property above, the way through to the
+                rest below. */}
+            {bentoProperty && (
+              <div className="flex h-[500px] lg:h-[650px] w-full flex-col gap-[2px] lg:gap-1">
+                <Link
+                  href={`/properties/${bentoProperty.slug}`}
+                  className="group relative flex-[3] w-full cursor-pointer overflow-hidden bg-[#100B28]"
+                >
+                  <Image
+                    src={bentoProperty.imageUrl || "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80"}
+                    alt={bentoProperty.title || "Kaara listing"}
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                    className="object-cover transition-transform duration-[2s] group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#100B28]/95 via-[#100B28]/20 to-transparent opacity-90 group-hover:opacity-100 transition-opacity duration-700" />
+                  <div className="absolute bottom-0 left-0 right-0 p-6 lg:p-8 text-center flex flex-col items-center z-10">
+                    <h3 className="font-serif text-xl lg:text-2xl mb-2 text-white tracking-[0.05em] uppercase">{bentoProperty.title}</h3>
+                    <p className="font-sans text-[8px] tracking-[0.3em] text-white/70 mb-1.5 uppercase font-bold">
+                      {propertyPlace(bentoProperty)}
+                    </p>
+                    <p className="font-serif text-[13px] text-white italic">
+                      {formatListingPrice(bentoProperty)}
+                    </p>
+                  </div>
+                </Link>
 
-              if (activeFilter === "CITY SKYLINES") return types.includes('penthouse') || types.includes('apartment') || types.length === 0;
-              if (activeFilter === "WATER VIEWS") return types.includes('villa') || types.includes('townhouse');
-              if (activeFilter === "FARM & RANCH") return types.includes('land') || types.includes('ranch') || types.includes('farm');
-              if (activeFilter === "JUST LISTED") return true;
-              if (activeFilter === "UNDER $20 MILLION") {
-                return amount < 20000000;
-              }
-              return true;
-            })
-            .map((property: any) => (
-            <Link 
-              key={property._id} 
-              href={`/properties/${property.slug?.current || property.slug}`}
-              className="group relative h-[500px] lg:h-[650px] w-full cursor-pointer overflow-hidden bg-[#100B28]"
-            >
-              <Image 
-                src={property.imageUrl}
-                alt={property.title}
-                fill
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                className="object-cover transition-transform duration-[2s] group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#100B28]/95 via-[#100B28]/20 to-transparent opacity-90 group-hover:opacity-100 transition-opacity duration-700" />
-              <div className="absolute bottom-0 left-0 right-0 p-8 lg:p-12 text-center flex flex-col items-center z-10 transition-transform duration-700">
-                <h3 className="font-serif text-2xl lg:text-3xl mb-3 lg:mb-4 text-white tracking-[0.05em] uppercase">{property.title}</h3>
-                <p className="font-sans text-[8px] lg:text-[9px] tracking-[0.3em] lg:tracking-[0.4em] text-white/70 mb-2 lg:mb-3 uppercase font-bold">
-                  {property.details || `${property.district || ''}${property.district && property.propertyType ? ' • ' : ''}${Array.isArray(property.propertyType) ? property.propertyType.join(', ') : property.propertyType || ''}`.trim() || "EXCLUSIVE LISTING"}
-                </p>
-                <p className="font-serif text-[13px] lg:text-[15px] text-white italic">
-                  {typeof property.price === 'object' ? `${property.price.currency} ${property.price.amount}` : property.price}
-                </p>
+                <Link
+                  href="/properties"
+                  className="group relative flex flex-[2] w-full flex-col items-center justify-center gap-3 overflow-hidden border border-white/10 bg-[#171232] px-6 text-center transition-colors duration-500 hover:bg-[#1d1740]"
+                >
+                  <span className="font-serif text-3xl lg:text-4xl text-white tabular-nums">
+                    +{remainingCount}
+                  </span>
+                  <span className="font-sans text-[9px] lg:text-[10px] font-bold uppercase tracking-[0.3em] text-white/60">
+                    {remainingCount === 1 ? t("more_property") : t("more_properties")}
+                  </span>
+                  <span className="mt-1 inline-flex items-center gap-2 font-sans text-[9px] lg:text-[10px] font-bold uppercase tracking-[0.28em] text-[#4f9d8f]">
+                    {t("see_more")}
+                    <ArrowRight size={12} className="transition-transform duration-300 group-hover:translate-x-1" />
+                  </span>
+                </Link>
               </div>
-            </Link>
-          ))}
-        </div>
+            )}
+          </div>
+        ) : (
+          <div className="max-w-[900px] mx-auto border border-white/10 bg-[#171232] px-8 py-16 text-center">
+            <h3 className="font-serif text-2xl text-[#efebe3]">Nothing in this category yet</h3>
+            <p className="mx-auto mt-4 max-w-[52ch] text-sm leading-relaxed text-white/55">
+              Pick another category above, or view every listing we have live right now.
+            </p>
+          </div>
+        )}
 
         <div className="mt-12 lg:mt-20 flex justify-center">
-           <Link href="/buy">
+           <Link href="/properties">
              <button className="bg-transparent border border-white/40 px-10 py-3.5 lg:px-12 lg:py-4 text-[9px] lg:text-[10px] tracking-[0.3em] lg:tracking-[0.4em] font-sans font-bold hover:bg-white hover:text-[#100B28] transition-all duration-500 rounded-full uppercase">
-               VIEW ALL LISTINGS
+               {data?.propertiesSection?.ctaLabel || "View All Listings"}
              </button>
            </Link>
         </div>
@@ -359,64 +438,6 @@ export default function HomeClient({ data, settings }: HomeClientProps) {
         </div>
 
         <SectionBottomNav />
-      </section>
-
-      {/* Spotlight Section */}
-      <section className="py-24 lg:py-32 px-6 lg:px-16 bg-[#100B28] text-white">
-        <div className="max-w-[1500px] mx-auto">
-          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-12 lg:mb-16 gap-8">
-            <h2 className="text-xl lg:text-[2rem] font-serif tracking-[0.1em] lg:tracking-[0.15em] uppercase leading-tight">
-              {data?.spotlightSection?.title || "ON THE MOVE WITH"} <span className="italic border-b border-white pb-1.5 font-light text-white/70">@kaararealtygroup</span>
-            </h2>
-            <div className="hidden lg:flex gap-6">
-              <button className="w-14 h-14 rounded-full border border-white/10 flex items-center justify-center hover:bg-white hover:text-[#100B28] transition-all duration-500 group shadow-sm">
-                <ChevronDown className="rotate-90 group-hover:scale-110 transition-transform" size={18} />
-              </button>
-              <button className="w-14 h-14 rounded-full border border-white/10 flex items-center justify-center hover:bg-white hover:text-[#100B28] transition-all duration-500 group shadow-sm">
-                <ChevronDown className="-rotate-90 group-hover:scale-110 transition-transform" size={18} />
-              </button>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-            <div className="relative h-[450px] lg:h-[650px] group overflow-hidden bg-[#100B28]">
-              <Image 
-                src={data.spotlightSection?.featuredEvent?.imageUrl || "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80"} 
-                alt={data.spotlightSection?.featuredEvent?.title || "Spotlight Event"} 
-                fill 
-                sizes="(max-width: 768px) 100vw, 33vw"
-                className="object-cover transition-transform duration-[2.5s] group-hover:scale-110 filter desaturate-[0.2]" 
-              />
-            </div>
-            <div className="relative h-[450px] lg:h-[650px] group overflow-hidden bg-[#100B28]">
-              <Image 
-                src={data.spotlightSection?.featuredEvent?.media?.[0]?.url || "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80"} 
-                alt="Spotlight Media" 
-                fill 
-                sizes="(max-width: 768px) 100vw, 33vw"
-                className="object-cover transition-transform duration-[2.5s] group-hover:scale-110 filter desaturate-[0.2]" 
-              />
-            </div>
-            <div className="bg-[#0b0b14] p-10 lg:p-16 flex flex-col justify-between h-[450px] lg:h-[650px] shadow-xl relative overflow-hidden group border border-white/5">
-              <div className="relative z-10">
-                <h3 className="text-2xl lg:text-3xl font-serif mb-6 lg:mb-8 leading-[1.3] text-white tracking-[0.02em] uppercase italic">
-                  {data.spotlightSection?.featuredEvent?.title || "Spotlight on Vertical Cities: The Symphony & 88 Nairobi"}
-                </h3>
-                <div className="w-12 lg:w-16 h-[1.5px] bg-white/20 mb-8 lg:mb-10 group-hover:w-24 lg:group-hover:w-32 transition-all duration-1000"></div>
-                <p className="text-[8px] lg:text-[10px] tracking-[0.4em] lg:tracking-[0.5em] text-white/50 uppercase mb-3 font-bold">
-                  {data.spotlightSection?.featuredEvent?.description || "Innovation Summit 2026"}
-                </p>
-                <p className="text-[10px] lg:text-[11px] tracking-[0.2em] lg:tracking-[0.3em] text-white uppercase font-bold">
-                  {data.spotlightSection?.featuredEvent?.location} | {data.spotlightSection?.featuredEvent?.date}
-                </p>
-              </div>
-              <div className="flex items-center gap-4 relative z-10">
-                 <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-full border border-white/30 flex items-center justify-center text-[9px] lg:text-[11px] font-serif text-white uppercase">K</div>
-                 <span className="text-[9px] lg:text-[11px] tracking-[0.3em] lg:tracking-[0.4em] font-serif uppercase text-white font-bold">KAARA REALTY GROUP</span>
-              </div>
-            </div>
-          </div>
-        </div>
       </section>
 
       {/* Video Section 4 */}

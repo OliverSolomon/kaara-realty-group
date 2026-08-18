@@ -16,19 +16,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/world-of-kaara`, changeFrequency: 'monthly' as const, priority: 0.7 },
     { url: `${baseUrl}/market-insights`, changeFrequency: 'weekly' as const, priority: 0.7 },
     { url: `${baseUrl}/contact`, changeFrequency: 'monthly' as const, priority: 0.6 },
-    { url: `${baseUrl}/neighborhoods`, changeFrequency: 'monthly' as const, priority: 0.6 },
   ].map((route) => ({ ...route, lastModified: now }));
 
   try {
-    const [properties, insights, districts] = await Promise.all([
+    const [properties, insights] = await Promise.all([
       client.fetch<{ slug: string; _updatedAt: string }[]>(
         `*[_type == "property" && defined(slug.current)]{"slug": slug.current, _updatedAt}`
       ),
       client.fetch<{ slug: string; _updatedAt: string }[]>(
         `*[_type == "post" && defined(slug.current)]{"slug": slug.current, _updatedAt}`
-      ),
-      client.fetch<{ slug: string; _updatedAt: string }[]>(
-        `*[_type == "district" && defined(slug.current)]{"slug": slug.current, _updatedAt}`
       ),
     ]);
 
@@ -45,12 +41,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         lastModified: new Date(p._updatedAt),
         changeFrequency: 'monthly' as const,
         priority: 0.6,
-      })),
-      ...districts.map((d) => ({
-        url: `${baseUrl}/neighborhoods/${d.slug}`,
-        lastModified: new Date(d._updatedAt),
-        changeFrequency: 'monthly' as const,
-        priority: 0.5,
       })),
     ];
   } catch {

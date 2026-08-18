@@ -8,6 +8,7 @@ import { district } from './district'
 import { developer } from './developer'
 import { testimonial } from './testimonial'
 import { aboutPage } from './aboutPage'
+import { buyPage, sellPage, stayPage } from './pages/sectionPage'
 import { socialSettings } from './settings/socialSettings'
 import { contactSettings } from './settings/contactSettings'
 import { brandSettings } from './settings/brandSettings'
@@ -16,7 +17,6 @@ import { heroSection } from './home/heroSection'
 import { secondarySection } from './home/secondarySection'
 import { propertiesSection } from './home/propertiesSection'
 import { experienceSection } from './home/experienceSection'
-import { spotlightSection } from './home/spotlightSection'
 import { closingSection } from './home/closingSection'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
@@ -29,6 +29,9 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     developer,
     testimonial,
     aboutPage,
+    buyPage,
+    sellPage,
+    stayPage,
     socialSettings,
     contactSettings,
     brandSettings,
@@ -37,7 +40,6 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     secondarySection,
     propertiesSection,
     experienceSection,
-    spotlightSection,
     closingSection,
   ],
 }

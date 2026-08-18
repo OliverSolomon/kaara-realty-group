@@ -59,6 +59,12 @@ const FALLBACK = {
   ],
 };
 
+interface GalleryItem {
+  url?: string | null;
+  alt?: string | null;
+  caption?: string | null;
+}
+
 export default async function WorldOfKaaraPage() {
   const [{ data: about }, { data: settings }, { data: testimonials }, { data: developers }] =
     await Promise.all([
@@ -68,10 +74,15 @@ export default async function WorldOfKaaraPage() {
       sanityFetch({ query: DEVELOPERS_QUERY }),
     ]);
 
+  const eyebrow = about?.eyebrow || "World of Kaara";
   const headline = about?.headline || FALLBACK.headline;
   const standfirst = about?.standfirst || FALLBACK.standfirst;
+  const storyHeading = about?.storyHeading || "Why we exist";
+  const missionEyebrow = about?.missionEyebrow || "Our mission";
   const mission = about?.mission || FALLBACK.mission;
+  const commitmentsHeading = about?.commitmentsHeading || "What we are working toward";
   const commitments = about?.commitments?.length ? about.commitments : FALLBACK.commitments;
+  const gallery = ((about?.gallery || []) as GalleryItem[]).filter((item) => Boolean(item?.url));
   const heroImage =
     about?.heroImageUrl || placeholderImage("kaara-world-nairobi-city-morning", 2000, 1100);
 
@@ -83,7 +94,7 @@ export default async function WorldOfKaaraPage() {
         {/* Hero */}
         <section className="mx-auto max-w-[1500px] px-5 pb-16 pt-16 lg:px-10 lg:pb-20 lg:pt-24">
           <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#4f9d8f]">
-            World of Kaara
+            {eyebrow}
           </p>
           <h1 className="mt-6 max-w-[18ch] font-serif text-4xl leading-[1.08] md:text-5xl lg:text-6xl">
             {headline}
@@ -95,7 +106,7 @@ export default async function WorldOfKaaraPage() {
           <div className="relative aspect-[16/9] w-full overflow-hidden bg-[#171232] lg:aspect-[21/9]">
             <Image
               src={heroImage}
-              alt="Nairobi city skyline"
+              alt={about?.heroImageAlt || "Nairobi city skyline"}
               fill
               priority
               sizes="100vw"
@@ -104,11 +115,23 @@ export default async function WorldOfKaaraPage() {
           </div>
         </section>
 
-        {/* The story */}
+        {/* The story. The photograph beside it is optional; without one the
+            narrative runs across the wider column on its own. */}
         <section className="mx-auto max-w-[1500px] px-5 py-20 lg:px-10 lg:py-28">
           <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
             <div className="lg:col-span-4">
-              <h2 className="font-serif text-3xl leading-tight sm:text-4xl">Why we exist</h2>
+              <h2 className="font-serif text-3xl leading-tight sm:text-4xl">{storyHeading}</h2>
+              {about?.storyImageUrl && (
+                <div className="relative mt-10 hidden aspect-[3/4] w-full overflow-hidden bg-[#171232] lg:block">
+                  <Image
+                    src={about.storyImageUrl}
+                    alt={about.storyImageAlt || storyHeading}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 30vw"
+                    className="object-cover"
+                  />
+                </div>
+              )}
             </div>
             <div className="lg:col-span-8">
               {about?.body?.length ? (
@@ -129,10 +152,23 @@ export default async function WorldOfKaaraPage() {
         </section>
 
         {/* Mission */}
-        <section className="border-y border-white/10 bg-[#0b0819]">
-          <div className="mx-auto max-w-[1500px] px-5 py-24 lg:px-10 lg:py-32">
+        <section className="relative border-y border-white/10 bg-[#0b0819]">
+          {about?.missionImageUrl && (
+            <>
+              <Image
+                src={about.missionImageUrl}
+                alt=""
+                aria-hidden="true"
+                fill
+                sizes="100vw"
+                className="object-cover opacity-25"
+              />
+              <div className="absolute inset-0 bg-[#0b0819]/70" />
+            </>
+          )}
+          <div className="relative mx-auto max-w-[1500px] px-5 py-24 lg:px-10 lg:py-32">
             <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#4f9d8f]">
-              Our mission
+              {missionEyebrow}
             </p>
             <p className="mt-8 max-w-[16ch] font-serif text-4xl leading-[1.15] sm:text-5xl lg:text-6xl">
               {mission}
@@ -143,7 +179,7 @@ export default async function WorldOfKaaraPage() {
         {/* Commitments */}
         <section className="mx-auto max-w-[1500px] px-5 py-20 lg:px-10 lg:py-28">
           <h2 className="max-w-[20ch] font-serif text-3xl leading-tight sm:text-4xl">
-            What we are working toward
+            {commitmentsHeading}
           </h2>
 
           <div className="mt-14 grid grid-cols-1 gap-px bg-white/10 md:grid-cols-3">
@@ -163,13 +199,51 @@ export default async function WorldOfKaaraPage() {
           </div>
         </section>
 
+        {/* Gallery. Appears only once photographs are added in the Studio. */}
+        {gallery.length > 0 && (
+          <section className="border-t border-white/10 bg-[#0b0819]">
+            <div className="mx-auto max-w-[1500px] px-5 py-20 lg:px-10 lg:py-28">
+              <h2 className="max-w-[20ch] font-serif text-3xl leading-tight sm:text-4xl">
+                {about?.galleryHeading || "Inside the work"}
+              </h2>
+              {about?.galleryIntro && (
+                <p className="mt-4 max-w-[58ch] text-sm leading-relaxed text-white/60">
+                  {about.galleryIntro}
+                </p>
+              )}
+              <ul className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {gallery.map((item: GalleryItem, i: number) => (
+                  <Reveal as="li" key={item.url || i} index={i}>
+                    <figure>
+                      <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#171232]">
+                        <Image
+                          src={item.url as string}
+                          alt={item.alt || item.caption || "Kaara & Co"}
+                          fill
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                          className="object-cover transition-transform duration-[600ms] ease-[cubic-bezier(0.23,1,0.32,1)] hover:scale-[1.03]"
+                        />
+                      </div>
+                      {item.caption && (
+                        <figcaption className="mt-3 text-xs leading-relaxed text-white/45">
+                          {item.caption}
+                        </figcaption>
+                      )}
+                    </figure>
+                  </Reveal>
+                ))}
+              </ul>
+            </div>
+          </section>
+        )}
+
         {/* Testimonials */}
         {testimonials && testimonials.length > 0 && (
           <section className="border-t border-white/10 bg-[#0b0819]">
             <div className="mx-auto grid max-w-[1500px] grid-cols-1 gap-12 px-5 py-20 lg:grid-cols-12 lg:gap-16 lg:px-10 lg:py-28">
               <div className="lg:col-span-4">
                 <h2 className="font-serif text-3xl leading-tight sm:text-4xl">
-                  From the people we have worked with
+                  {about?.testimonialsHeading || "From the people we have worked with"}
                 </h2>
               </div>
               <div className="lg:col-span-8">
@@ -183,7 +257,7 @@ export default async function WorldOfKaaraPage() {
         {developers && developers.length > 0 && (
           <section className="mx-auto max-w-[1500px] border-t border-white/10 px-5 py-20 lg:px-10 lg:py-28">
             <h2 className="max-w-[20ch] font-serif text-3xl leading-tight sm:text-4xl">
-              Developers we represent
+              {about?.partnersHeading || "Developers we represent"}
             </h2>
             <DeveloperWall developers={developers as unknown as Developer[]} className="mt-12" />
           </section>
@@ -194,17 +268,17 @@ export default async function WorldOfKaaraPage() {
           <div className="mx-auto grid max-w-[1500px] grid-cols-1 gap-14 px-5 py-20 lg:grid-cols-12 lg:gap-16 lg:px-10 lg:py-28">
             <div className="lg:col-span-5">
               <h2 className="max-w-[18ch] font-serif text-3xl leading-tight sm:text-4xl">
-                Start with a conversation, not a listing
+                {about?.ctaHeading || "Start with a conversation, not a listing"}
               </h2>
               <p className="mt-5 max-w-[48ch] text-sm leading-relaxed text-white/60">
-                Book a virtual tour of a specific building, or an investment consultation if you are
-                still working out where your money should go.
+                {about?.ctaBody ||
+                  "Book a virtual tour of a specific building, or an investment consultation if you are still working out where your money should go."}
               </p>
               <Link
-                href="/market-insights"
+                href={about?.ctaLinkHref || "/market-insights"}
                 className="press mt-8 inline-block text-[10px] font-bold uppercase tracking-[0.25em] text-[#4f9d8f] underline underline-offset-4"
               >
-                Read our market insights
+                {about?.ctaLinkLabel || "Read our market insights"}
               </Link>
             </div>
             <div className="lg:col-span-7">

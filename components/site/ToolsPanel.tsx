@@ -1,17 +1,24 @@
 import AreaConverter from "./AreaConverter";
 import CurrencyConverter from "./CurrencyConverter";
+import MortgageCalculator from "./MortgageCalculator";
 
 interface ToolsPanelProps {
   /** Copy explaining why the tools sit on this particular page. */
   blurb: string;
   baseCurrency?: string;
   className?: string;
+  /** Seeds the repayment estimator. Omit on section pages. */
+  propertyPrice?: number;
+  /** Short stays are not bought, so the repayment estimator is left off. */
+  showMortgage?: boolean;
 }
 
 export default function ToolsPanel({
   blurb,
   baseCurrency = "KES",
   className = "",
+  propertyPrice,
+  showMortgage = true,
 }: ToolsPanelProps) {
   return (
     <div className={className}>
@@ -33,6 +40,16 @@ export default function ToolsPanel({
           </h3>
           <AreaConverter />
         </div>
+        {showMortgage && (
+          <div className="bg-[#100b28] p-8 lg:col-span-2 lg:p-10">
+            <h3 className="mb-8 text-[10px] font-bold uppercase tracking-[0.25em] text-white/45">
+              Repayments
+            </h3>
+            <div className="max-w-[640px]">
+              <MortgageCalculator propertyPrice={propertyPrice} baseCurrency={baseCurrency} />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

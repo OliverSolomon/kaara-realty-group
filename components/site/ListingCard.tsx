@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { PiEye, PiSealCheck, PiArrowUpRight } from "react-icons/pi";
 import { useCurrency } from "@/context/CurrencyContext";
+import { useLanguage } from "@/context/LanguageContext";
 import {
   FACING_LABELS,
   PROPERTY_TYPE_LABELS,
@@ -24,6 +25,9 @@ export interface Listing {
   imageUrl?: string;
   county?: string;
   district?: string;
+  /** Free text location typed in the Studio. Takes precedence over the
+      county/district references, which are optional. */
+  location?: string;
   developer?: { name?: string; slug?: string };
   details?: string;
   propertyType?: string[];
@@ -49,28 +53,30 @@ interface ListingCardProps {
 
 export default function ListingCard({ listing, priority = false }: ListingCardProps) {
   const { formatPrice } = useCurrency();
+  const { t } = useLanguage();
   const isStay = listing.listingType === "stay";
 
   const image = listing.imageUrl || placeholderImage(listing.slug || listing._id, 1200, 900);
-  const place = [listing.district, listing.county].filter(Boolean).join(", ");
+  const place =
+    listing.location || [listing.district, listing.county].filter(Boolean).join(", ");
 
   const priceLabel = isStay
     ? listing.dailyRate?.amount
-      ? `${formatPrice(listing.dailyRate.amount, listing.dailyRate.currency || "KES")} a night`
-      : "Rate on request"
+      ? `${formatPrice(listing.dailyRate.amount, listing.dailyRate.currency || "KES")} ${t("per_night")}`
+      : t("rate_on_request")
     : listing.price?.amount
       ? formatPrice(listing.price.amount, listing.price.currency || "KES")
-      : "Price on request";
+      : t("price_on_request");
 
   const specs = isStay
     ? [
         listing.floorNumber,
         listing.facingDirection ? FACING_LABELS[listing.facingDirection] : undefined,
-        listing.bedrooms ? `${listing.bedrooms} bed` : undefined,
+        listing.bedrooms ? `${listing.bedrooms} ${t("bed")}` : undefined,
       ].filter(Boolean)
     : [
-        listing.bedrooms ? `${listing.bedrooms} bed` : undefined,
-        listing.bathrooms ? `${listing.bathrooms} bath` : undefined,
+        listing.bedrooms ? `${listing.bedrooms} ${t("bed")}` : undefined,
+        listing.bathrooms ? `${listing.bathrooms} ${t("bath")}` : undefined,
         listing.sizeSqm
           ? `${formatArea(listing.sizeSqm)} sqm / ${formatArea(sqmToSqft(listing.sizeSqm))} sqft`
           : listing.size,
@@ -100,7 +106,7 @@ export default function ListingCard({ listing, priority = false }: ListingCardPr
           {typeof listing.viewCount === "number" && listing.viewCount > 0 && (
             <p className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.15em] text-white/40 tabular-nums">
               <PiEye size={13} aria-hidden="true" />
-              {listing.viewCount} views
+              {listing.viewCount} {t("views")}
             </p>
           )}
         </div>
@@ -124,7 +130,7 @@ export default function ListingCard({ listing, priority = false }: ListingCardPr
         {listing.ownerVetted && (
           <p className="mt-4 inline-flex w-fit items-center gap-2 border border-[#2e7d6f]/50 bg-[#2e7d6f]/10 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.2em] text-[#4f9d8f]">
             <PiSealCheck size={14} aria-hidden="true" />
-            Owner vetted
+            {t("owner_vetted")}
           </p>
         )}
 
@@ -140,7 +146,7 @@ export default function ListingCard({ listing, priority = false }: ListingCardPr
           href={`/properties/${listing.slug}`}
           className="press mt-auto inline-flex items-center gap-2 pt-6 text-[10px] font-bold uppercase tracking-[0.25em] text-[#4f9d8f]"
         >
-          View listing
+          {t("view_listing")}
           <PiArrowUpRight
             size={14}
             aria-hidden="true"
