@@ -21,11 +21,13 @@ import Footer from "@/components/Footer";
 import AmenityGrid from "@/components/site/AmenityGrid";
 import AreaConverter from "@/components/site/AreaConverter";
 import CurrencyConverter from "@/components/site/CurrencyConverter";
+import MortgageCalculator from "@/components/site/MortgageCalculator";
 import EnquiryForm from "@/components/site/EnquiryForm";
 import ContactActions from "@/components/site/ContactActions";
 import ListingCard, { type Listing } from "@/components/site/ListingCard";
 import Reveal from "@/components/site/Reveal";
 import { useCurrency } from "@/context/CurrencyContext";
+import { useLanguage } from "@/context/LanguageContext";
 import {
   FACING_LABELS,
   PROPERTY_TYPE_LABELS,
@@ -56,6 +58,7 @@ type Property = any;
 
 export default function PropertyDetailClient({ property }: { property: Property }) {
   const { formatPrice } = useCurrency();
+  const { t } = useLanguage();
   const [activeIndex, setActiveIndex] = useState(0);
 
   const settings = property?.siteSettings;
@@ -85,11 +88,11 @@ export default function PropertyDetailClient({ property }: { property: Property 
 
   const priceLabel = isStay
     ? property?.dailyRate?.amount
-      ? `${formatPrice(property.dailyRate.amount, property.dailyRate.currency || "KES")} a night`
-      : "Rate on request"
+      ? `${formatPrice(property.dailyRate.amount, property.dailyRate.currency || "KES")} ${t("per_night")}`
+      : t("rate_on_request")
     : property?.price?.amount
       ? formatPrice(property.price.amount, property.price.currency || "KES")
-      : "Price on request";
+      : t("price_on_request");
 
   const facts = [
     property?.bedrooms ? { label: "Bedrooms", value: String(property.bedrooms) } : null,
@@ -118,9 +121,9 @@ export default function PropertyDetailClient({ property }: { property: Property 
     property?.developer?.name ? { label: "Developer", value: property.developer.name } : null,
   ].filter(Boolean) as { label: string; value: string }[];
 
-  const place = [property?.district?.name || property?.district, property?.county]
-    .filter(Boolean)
-    .join(", ");
+  const place =
+    property?.location ||
+    [property?.district?.name || property?.district, property?.county].filter(Boolean).join(", ");
 
   const enquiryKind = isStay ? "booking" : property?.listingType === "sell" ? "viewing" : "buy";
 
@@ -386,6 +389,24 @@ export default function PropertyDetailClient({ property }: { property: Property 
                 </h3>
                 <AreaConverter initialSqm={property?.sizeSqm} />
               </div>
+              {/* A short stay is booked, not financed, so this only shows on
+                  listings that are actually for sale. */}
+              {!isStay && (
+                <div className="bg-[#100b28] p-8 lg:col-span-2 lg:p-10">
+                  <h3 className="mb-8 text-[10px] font-bold uppercase tracking-[0.25em] text-white/45">
+                    Repayments
+                  </h3>
+                  <div className="max-w-[640px]">
+                    <MortgageCalculator
+                      propertyPrice={
+                        Number(String(property?.price?.amount || "").replace(/[^0-9.]/g, "")) ||
+                        undefined
+                      }
+                      baseCurrency={property?.price?.currency || "KES"}
+                    />
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </section>

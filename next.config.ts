@@ -3,8 +3,14 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
-    domains: ["cdn.sanity.io", "images.unsplash.com", "res.cloudinary.com"],
+    // `domains` is deprecated and matches a whole host without a path, which is
+    // the looser of the two checks. Every host below is expressed as an
+    // explicit remote pattern instead.
     remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "cdn.sanity.io",
+      },
       {
         protocol: "https",
         hostname: "**.sanity.io",
@@ -30,10 +36,14 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
-        // One listings index per intent. Buy, Sell and Stay replaced the
-        // combined properties page; individual listings still live under
-        // /properties/[slug].
-        source: '/properties',
+        // The neighbourhood pages were retired. Anything that still points at
+        // them lands on the Buy collection rather than a 404.
+        source: '/neighborhoods',
+        destination: '/buy',
+        permanent: true,
+      },
+      {
+        source: '/neighborhoods/:slug',
         destination: '/buy',
         permanent: true,
       },

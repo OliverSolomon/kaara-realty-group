@@ -7,6 +7,7 @@ import { PiArrowRight, PiCheck, PiSealCheck } from "react-icons/pi";
 import { FaFacebookF, FaInstagram, FaLinkedinIn } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { PRIMARY_NAV, SECONDARY_NAV, DEFAULT_CONTACT, telLink } from "@/lib/site";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface FooterProps {
   settings?: {
@@ -30,6 +31,7 @@ interface FooterProps {
 }
 
 export default function Footer({ settings }: FooterProps) {
+  const { t } = useLanguage();
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "done" | "error">("idle");
 
@@ -58,6 +60,10 @@ export default function Footer({ settings }: FooterProps) {
       setStatus("error");
     }
   }
+
+  // The code points at the registration verification page once one is set,
+  // and at the site itself until then.
+  const qrTarget = contact?.registrationUrl || "https://kaararealtygroup.com";
 
   const socialLinks = [
     { href: socials?.instagram, Icon: FaInstagram, label: "Instagram" },
@@ -99,7 +105,7 @@ export default function Footer({ settings }: FooterProps) {
           <div className="grid grid-cols-2 gap-10 lg:col-span-4">
             <div>
               <p className="mb-5 text-[10px] font-bold uppercase tracking-[0.25em] text-white/35">
-                Listings
+                {t("listings")}
               </p>
               <ul className="space-y-3 text-sm">
                 {PRIMARY_NAV.map((item) => (
@@ -108,7 +114,7 @@ export default function Footer({ settings }: FooterProps) {
                       href={item.href}
                       className="text-white/65 transition-colors duration-200 hover:text-[#efebe3]"
                     >
-                      {item.label}
+                      {t(item.label.toLowerCase().replace(/ /g, "_"))}
                     </Link>
                   </li>
                 ))}
@@ -125,18 +131,10 @@ export default function Footer({ settings }: FooterProps) {
                       href={item.href}
                       className="text-white/65 transition-colors duration-200 hover:text-[#efebe3]"
                     >
-                      {item.label}
+                      {t(item.label.toLowerCase().replace(/ /g, "_"))}
                     </Link>
                   </li>
                 ))}
-                <li>
-                  <Link
-                    href="/neighborhoods"
-                    className="text-white/65 transition-colors duration-200 hover:text-[#efebe3]"
-                  >
-                    Neighbourhoods
-                  </Link>
-                </li>
               </ul>
             </div>
           </div>
@@ -159,7 +157,7 @@ export default function Footer({ settings }: FooterProps) {
             ) : (
               <form onSubmit={subscribe}>
                 <label htmlFor="footer-email" className="sr-only">
-                  Email address
+                  {t("email_address")}
                 </label>
                 <div className="flex items-center gap-3 border-b border-white/20 pb-3 transition-colors duration-200 focus-within:border-[#4f9d8f]">
                   <input
@@ -177,7 +175,7 @@ export default function Footer({ settings }: FooterProps) {
                   <button
                     type="submit"
                     disabled={status === "sending"}
-                    aria-label="Subscribe"
+                    aria-label={t("subscribe")}
                     className="press text-white/40 transition-colors duration-200 hover:text-[#4f9d8f]"
                   >
                     <PiArrowRight size={20} />
@@ -196,30 +194,30 @@ export default function Footer({ settings }: FooterProps) {
         {/* Registration trust block */}
         <div className="flex flex-col gap-8 border-b border-white/10 py-10 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-6">
-            {contact?.registrationQrUrl ? (
-              <span className="relative h-24 w-24 shrink-0 bg-white p-2">
-                <Image
-                  src={contact.registrationQrUrl}
-                  alt={`Company registration verification code for ${
-                    contact.registrationName || siteName
-                  }`}
-                  fill
-                  sizes="96px"
-                  className="object-contain p-2"
-                />
-              </span>
-            ) : (
-              <span
-                aria-hidden="true"
-                className="flex h-24 w-24 shrink-0 items-center justify-center border border-dashed border-white/20 text-center text-[9px] uppercase leading-tight tracking-[0.15em] text-white/30"
-              >
-                QR to add
-              </span>
-            )}
+            {/* The generated code in /public is the default. Upload a QR under
+                Settings, Contact Details and that one takes over. */}
+            <a
+              href={qrTarget}
+              target={contact?.registrationUrl ? "_blank" : undefined}
+              rel={contact?.registrationUrl ? "noopener noreferrer" : undefined}
+              aria-label={`Scan or open the verification page for ${
+                contact?.registrationName || siteName
+              }`}
+              className="press relative block h-24 w-24 shrink-0 bg-white p-2 transition-opacity duration-200 hover:opacity-85"
+            >
+              <Image
+                src={contact?.registrationQrUrl || "/registration-qr.svg"}
+                alt={`QR code for ${contact?.registrationName || siteName}`}
+                fill
+                sizes="96px"
+                className="object-contain p-1.5"
+              />
+            </a>
+
             <div>
               <p className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.25em] text-[#4f9d8f]">
                 <PiSealCheck size={14} aria-hidden="true" />
-                Registered company
+                {t("registered_company")}
               </p>
               <p className="mt-2 text-sm text-white/70">
                 {contact?.registrationName || siteName}
@@ -262,14 +260,11 @@ export default function Footer({ settings }: FooterProps) {
 
         <div className="flex flex-col gap-6 pt-8 text-xs text-white/35 sm:flex-row sm:items-center sm:justify-between">
           <p>
-            © {new Date().getFullYear()} {siteName}. All rights reserved.
+            © {new Date().getFullYear()} {siteName}. {t("all_rights_reserved")}.
           </p>
           <div className="flex flex-wrap gap-6">
             <Link href="/contact" className="transition-colors duration-200 hover:text-white/70">
-              Contact
-            </Link>
-            <Link href="/sitemap.xml" className="transition-colors duration-200 hover:text-white/70">
-              Sitemap
+              {t("contact")}
             </Link>
           </div>
         </div>

@@ -80,11 +80,11 @@ export default async function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
         <ServiceWorkerRegistration />
-        <CurrencyProvider>
-          <LanguageProvider>
+        <LanguageProvider>
+          <CurrencyProvider>
             {children}
-          </LanguageProvider>
-        </CurrencyProvider>
+          </CurrencyProvider>
+        </LanguageProvider>
         <SanityLive />
         {(await draftMode()).isEnabled && <VisualEditing />}
       </body>

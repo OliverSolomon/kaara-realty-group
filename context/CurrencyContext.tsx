@@ -1,6 +1,14 @@
 "use client";
 
-import React, { createContext, useContext, useCallback, useSyncExternalStore } from "react";
+import { useLanguage } from "./LanguageContext";
+import React, {
+  createContext,
+  useContext,
+  useCallback,
+  useEffect,
+  useState,
+  useSyncExternalStore,
+} from "react";
 
 export type Currency = "KES" | "USD" | "GBP" | "EUR" | "AED";
 
@@ -13,12 +21,11 @@ export const CURRENCIES: { code: Currency; label: string; symbol: string }[] = [
 ];
 
 /**
- * Indicative rates against one US dollar. These are reference figures for
- * orientation, not a live feed, and the interface says so wherever a converted
- * price appears. Swap this map for an API response once a rates provider is
- * contracted.
+ * Fallback rates against one US dollar, used for the server render and for the
+ * moment before the live feed answers. `/api/rates` refreshes these from
+ * open.er-api.com every twelve hours, the same source Pavani uses.
  */
-const RATES_PER_USD: Record<Currency, number> = {
+const FALLBACK_RATES_PER_USD: Record<Currency, number> = {
   USD: 1,
   KES: 129.4,
   GBP: 0.79,
@@ -35,9 +42,17 @@ const STORAGE_KEY = "kaara_currency";
 
 interface CurrencyContextType {
   currency: Currency;
+  /** Live rates against one US dollar, or the shipped fallback figures. */
+  rates: Record<Currency, number>;
+  /** True while the figures are still the shipped fallback, not the live feed. */
+  ratesAreIndicative: boolean;
+  /** When the live feed was last published, if it answered. */
+  ratesUpdated: string | null;
   setCurrency: (currency: Currency) => void;
   /** Converts a value from its stored currency into the active currency. */
   convert: (amount: number, baseCurrency?: string) => number;
+  /** Converts a value from one named currency into another. */
+  convertTo: (amount: number, baseCurrency: string, target: Currency) => number;
   /** Formats a value in the active currency, e.g. KSh 32,000,000. */
   formatPrice: (amount: number | string, baseCurrency?: string) => string;
   /** Formats a value in a currency you name, ignoring the active selection. */
@@ -89,6 +104,32 @@ function getServerSnapshot(): Currency {
 
 export function CurrencyProvider({ children }: { children: React.ReactNode }) {
   const currency = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  // Grouping separators and digit shapes follow the language selection, so a
+  // price reads naturally in whichever language the visitor picked.
+  const { locale } = useLanguage();
+  const [rates, setRates] = useState<Record<Currency, number>>(FALLBACK_RATES_PER_USD);
+  const [ratesAreIndicative, setRatesAreIndicative] = useState(true);
+  const [ratesUpdated, setRatesUpdated] = useState<string | null>(null);
+
+  // One fetch per page load. If it fails we keep the shipped figures and the
+  // interface goes on saying they are indicative.
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/rates")
+      .then((res) => (res.ok ? res.json() : Promise.reject(new Error("rates unavailable"))))
+      .then((data) => {
+        if (cancelled || !data?.rates) return;
+        setRates({ ...FALLBACK_RATES_PER_USD, ...data.rates });
+        setRatesAreIndicative(Boolean(data.fallback));
+        setRatesUpdated(data.updated ?? null);
+      })
+      .catch(() => {
+        /* keep the fallback */
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const setCurrency = useCallback((next: Currency) => {
     window.localStorage.setItem(STORAGE_KEY, next);
@@ -98,19 +139,30 @@ export function CurrencyProvider({ children }: { children: React.ReactNode }) {
   const convert = useCallback(
     (amount: number, baseCurrency: string = "USD") => {
       const base = normaliseCurrency(baseCurrency);
-      const inUsd = amount / RATES_PER_USD[base];
-      return inUsd * RATES_PER_USD[currency];
+      const inUsd = amount / rates[base];
+      return inUsd * rates[currency];
     },
-    [currency]
+    [currency, rates]
   );
 
-  const format = useCallback((value: number, target: Currency) => {
-    const rounded = new Intl.NumberFormat("en-KE", {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(Math.round(value));
-    return `${SYMBOLS[target]} ${rounded}`;
-  }, []);
+  const convertTo = useCallback(
+    (amount: number, baseCurrency: string, target: Currency) => {
+      const base = normaliseCurrency(baseCurrency);
+      return (amount / rates[base]) * rates[target];
+    },
+    [rates]
+  );
+
+  const format = useCallback(
+    (value: number, target: Currency) => {
+      const rounded = new Intl.NumberFormat(locale, {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+      }).format(Math.round(value));
+      return `${SYMBOLS[target]} ${rounded}`;
+    },
+    [locale]
+  );
 
   const formatPrice = useCallback(
     (amount: number | string, baseCurrency: string = "USD") => {
@@ -130,8 +182,12 @@ export function CurrencyProvider({ children }: { children: React.ReactNode }) {
     <CurrencyContext.Provider
       value={{
         currency,
+        rates,
+        ratesAreIndicative,
+        ratesUpdated,
         setCurrency,
         convert,
+        convertTo,
         formatPrice,
         formatIn,
         symbol: SYMBOLS[currency],

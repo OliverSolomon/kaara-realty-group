@@ -47,6 +47,7 @@ export const PROPERTY_TYPE_LABELS: Record<string, string> = {
   apartment: "Apartment",
   villa: "Villa",
   townhouse: "Townhouse",
+  warehouse: "Warehouse",
   commercial: "Commercial",
   land: "Land",
   ranch: "Ranch",

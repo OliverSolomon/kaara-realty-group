@@ -56,15 +56,16 @@ export const property = defineType({
     defineField({
       name: 'county',
       title: 'County',
-      description: 'Select the county (e.g., Nairobi). You can add a new one if it does not exist.',
+      description:
+        'Optional. Select the county (e.g., Nairobi). If you only want to type a location by hand, use the Location field below instead.',
       type: 'reference',
       to: [{ type: 'county' }],
-      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'district',
       title: 'District',
-      description: 'Select the district. Only districts within the selected county will be shown.',
+      description:
+        'Optional. Select the district. Only districts within the selected county will be shown.',
       type: 'reference',
       to: [{ type: 'district' }],
       options: {
@@ -82,7 +83,13 @@ export const property = defineType({
           }
         },
       },
-      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: 'location',
+      title: 'Location',
+      description:
+        'Type the location as you want it to read on the card, e.g. "Westlands, Nairobi" or "Nyali, Mombasa". This is all you need for a quick listing — County and District above are optional extras used by search.',
+      type: 'string',
     }),
     defineField({
       name: 'shortDescription',
@@ -144,6 +151,7 @@ export const property = defineType({
           { title: 'Apartment', value: 'apartment' },
           { title: 'Villa', value: 'villa' },
           { title: 'Townhouse', value: 'townhouse' },
+          { title: 'Warehouse', value: 'warehouse' },
           { title: 'Commercial', value: 'commercial' },
           { title: 'Land', value: 'land' },
           { title: 'Ranch', value: 'ranch' },
@@ -378,16 +386,17 @@ export const property = defineType({
     select: {
       title: 'title',
       district: 'district.name',
+      location: 'location',
       listingType: 'listingType',
       media: 'image',
     },
-    prepare({ title, district, listingType, media }) {
+    prepare({ title, district, location, listingType, media }) {
       const label: Record<string, string> = {
         buy: 'Buy',
         sell: 'Sell',
         stay: 'Stay',
       }
-      const parts = [label[listingType as string], district].filter(Boolean)
+      const parts = [label[listingType as string], location || district].filter(Boolean)
       return {
         title,
         subtitle: parts.join(' / '),

@@ -2,7 +2,12 @@ import Image from "next/image";
 import type { Metadata } from "next";
 import { PiFileText, PiUserCheck, PiHandshake, PiChartLineUp } from "react-icons/pi";
 import { sanityFetch } from "@/sanity/lib/live";
-import { LISTINGS_BY_TYPE_QUERY, SITE_SETTINGS_QUERY } from "@/sanity/lib/queries";
+import {
+  LISTINGS_BY_TYPE_QUERY,
+  SITE_SETTINGS_QUERY,
+  SECTION_PAGE_QUERY,
+} from "@/sanity/lib/queries";
+import ViewAllPropertiesButton from "@/components/site/ViewAllPropertiesButton";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ListingGrid from "@/components/site/ListingGrid";
@@ -43,9 +48,10 @@ const VETTING = [
 ];
 
 export default async function SellPage() {
-  const [{ data: listings }, { data: settings }] = await Promise.all([
+  const [{ data: listings }, { data: settings }, { data: page }] = await Promise.all([
     sanityFetch({ query: LISTINGS_BY_TYPE_QUERY, params: { listingType: "sell" } }),
     sanityFetch({ query: SITE_SETTINGS_QUERY }),
+    sanityFetch({ query: SECTION_PAGE_QUERY, params: { type: "sellPage" } }),
   ]);
 
   const items = (listings || []) as unknown as Listing[];
@@ -58,7 +64,11 @@ export default async function SellPage() {
         {/* Hero: full width band */}
         <section className="relative flex min-h-[62vh] items-end overflow-hidden">
           <Image
-            src={placeholderImage("kaara-sell-nairobi-resale-apartment", 2000, 1100)}
+            src={
+              page?.heroImageUrl ||
+              items.find((l) => l.imageUrl)?.imageUrl ||
+              placeholderImage("kaara-sell-nairobi-resale-apartment", 2000, 1100)
+            }
             alt="Interior of a resale apartment in Nairobi"
             fill
             priority
@@ -67,12 +77,15 @@ export default async function SellPage() {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#100b28] via-[#100b28]/75 to-[#100b28]/35" />
           <div className="relative mx-auto w-full max-w-[1500px] px-5 pb-16 lg:px-10 lg:pb-20">
-            <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#4f9d8f]">Sell</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#4f9d8f]">
+              {page?.eyebrow || "Sell"}
+            </p>
             <h1 className="mt-6 max-w-[16ch] font-serif text-4xl leading-[1.08] md:text-5xl lg:text-6xl">
-              Resale units, vetted before they are listed.
+              {page?.headline || "Resale units, vetted before they are listed."}
             </h1>
             <p className="mt-6 max-w-[52ch] text-base leading-relaxed text-white/70">
-              Ownership and title are confirmed first. Only then does a unit reach this page.
+              {page?.intro ||
+                "Ownership and title are confirmed first. Only then does a unit reach this page."}
             </p>
           </div>
         </section>
@@ -104,7 +117,9 @@ export default async function SellPage() {
         <section className="border-t border-white/10 bg-[#0b0819]">
           <div className="mx-auto max-w-[1500px] px-5 py-20 lg:px-10 lg:py-28">
             <div className="mb-14 flex flex-wrap items-baseline justify-between gap-4">
-              <h2 className="font-serif text-3xl leading-tight sm:text-4xl">Available resales</h2>
+              <h2 className="font-serif text-3xl leading-tight sm:text-4xl">
+                {page?.listingsHeading || "Available resales"}
+              </h2>
               <p className="text-sm text-white/45 tabular-nums">
                 {items.length} {items.length === 1 ? "unit" : "units"} on the market
               </p>
@@ -112,9 +127,14 @@ export default async function SellPage() {
 
             <ListingGrid
               listings={items}
-              emptyTitle="No resale units are listed at the moment"
-              emptyBody="Resales move quickly and we only publish units that have cleared vetting. Tell us the building or district you want and we will contact you when one becomes available."
+              emptyTitle={page?.listingsEmptyTitle || "No resale units are listed at the moment"}
+              emptyBody={
+                page?.listingsEmptyBody ||
+                "Resales move quickly and we only publish units that have cleared vetting. Tell us the building or district you want and we will contact you when one becomes available."
+              }
             />
+
+            <ViewAllPropertiesButton className="mt-16" />
           </div>
         </section>
 

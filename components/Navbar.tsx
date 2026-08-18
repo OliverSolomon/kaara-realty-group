@@ -11,7 +11,7 @@ import {
   PiCaretDown,
 } from "react-icons/pi";
 import { useCurrency, CURRENCIES, type Currency } from "@/context/CurrencyContext";
-import { useLanguage } from "@/context/LanguageContext";
+import { useLanguage, LANGUAGES } from "@/context/LanguageContext";
 import { PRIMARY_NAV, SECONDARY_NAV } from "@/lib/site";
 import SearchOverlay from "./SearchOverlay";
 
@@ -34,7 +34,7 @@ export default function Navbar({ settings, transparent = false }: NavbarProps) {
   const pathname = usePathname();
 
   const { currency, setCurrency } = useCurrency();
-  const { language, setLanguage } = useLanguage();
+  const { language, setLanguage, t } = useLanguage();
   const siteName = settings?.general?.siteName || "Kaara & Co Realty Group";
 
   useEffect(() => {
@@ -70,23 +70,16 @@ export default function Navbar({ settings, transparent = false }: NavbarProps) {
       <header
         className={`fixed top-0 z-[1000] flex h-[72px] w-full items-center justify-between border-b px-5 transition-colors duration-300 lg:px-10 ${barBackground}`}
       >
-        <div className="flex items-center gap-8 xl:gap-12">
+        {/* Left: menu trigger and primary navigation */}
+        <div className="flex flex-1 items-center gap-8 xl:gap-12">
           <button
             type="button"
             onClick={() => setIsMenuOpen(true)}
-            aria-label="Open menu"
+            aria-label={t("menu")}
             className="press -ml-2 p-2 text-[#efebe3] lg:hidden"
           >
             <PiList size={22} />
           </button>
-
-          <Link
-            href="/"
-            onClick={closePanels}
-            className="whitespace-nowrap font-serif text-[13px] uppercase tracking-[0.28em] text-[#efebe3] lg:text-[15px]"
-          >
-            Kaara <span className="text-white/50">&amp; Co</span>
-          </Link>
 
           <nav aria-label="Primary" className="hidden items-center gap-7 lg:flex">
             {PRIMARY_NAV.map((item) => (
@@ -99,7 +92,7 @@ export default function Navbar({ settings, transparent = false }: NavbarProps) {
                   isActive(item.href) ? "text-[#efebe3]" : "text-white/60 hover:text-[#efebe3]"
                 }`}
               >
-                {item.label}
+                {t(item.label.toLowerCase().replace(/ /g, "_"))}
                 <span
                   className={`absolute -bottom-0.5 left-0 h-px bg-[#4f9d8f] transition-[width] duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] ${
                     isActive(item.href) ? "w-full" : "w-0"
@@ -110,7 +103,17 @@ export default function Navbar({ settings, transparent = false }: NavbarProps) {
           </nav>
         </div>
 
-        <div className="flex items-center gap-5 lg:gap-7">
+        {/* Centre: the wordmark sits dead centre of the bar on every breakpoint */}
+        <Link
+          href="/"
+          onClick={closePanels}
+          aria-label={siteName}
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap font-serif text-[13px] uppercase tracking-[0.28em] text-[#efebe3] lg:text-[15px]"
+        >
+          Kaara <span className="text-white/50">&amp; Co</span>
+        </Link>
+
+        <div className="flex flex-1 items-center justify-end gap-5 lg:gap-7">
           <nav aria-label="Secondary" className="hidden items-center gap-6 xl:flex">
             {SECONDARY_NAV.map((item) => (
               <Link
@@ -122,7 +125,7 @@ export default function Navbar({ settings, transparent = false }: NavbarProps) {
                   isActive(item.href) ? "text-[#efebe3]" : "text-white/50 hover:text-[#efebe3]"
                 }`}
               >
-                {item.label}
+                {t(item.label.toLowerCase().replace(/ /g, "_"))}
               </Link>
             ))}
           </nav>
@@ -130,7 +133,7 @@ export default function Navbar({ settings, transparent = false }: NavbarProps) {
           <button
             type="button"
             onClick={() => setIsSearchOpen(true)}
-            aria-label="Search listings"
+            aria-label={t("search")}
             className="press p-1 text-[#efebe3]"
           >
             <PiMagnifyingGlass size={19} />
@@ -154,7 +157,7 @@ export default function Navbar({ settings, transparent = false }: NavbarProps) {
               <div className="reveal absolute right-0 top-11 w-72 origin-top-right border border-white/10 bg-[#171232] p-6 shadow-2xl" data-visible="true">
                 <div>
                   <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.25em] text-white/45">
-                    Currency
+                    {t("currency")}
                   </p>
                   <div className="grid grid-cols-1 divide-y divide-white/10">
                     {CURRENCIES.map((c) => (
@@ -180,7 +183,7 @@ export default function Navbar({ settings, transparent = false }: NavbarProps) {
                     htmlFor="nav-language"
                     className="mb-3 block text-[10px] font-bold uppercase tracking-[0.25em] text-white/45"
                   >
-                    Language
+                    {t("language")}
                   </label>
                   <select
                     id="nav-language"
@@ -188,15 +191,11 @@ export default function Navbar({ settings, transparent = false }: NavbarProps) {
                     onChange={(e) => setLanguage(e.target.value as "en" | "ar" | "zh")}
                     className="w-full border border-white/15 bg-transparent px-3 py-2.5 text-xs text-[#efebe3] outline-none focus:border-[#4f9d8f]"
                   >
-                    <option value="en" className="bg-[#171232]">
-                      English
-                    </option>
-                    <option value="ar" className="bg-[#171232]">
-                      العربية
-                    </option>
-                    <option value="zh" className="bg-[#171232]">
-                      中文
-                    </option>
+                    {LANGUAGES.map((option) => (
+                      <option key={option.code} value={option.code} className="bg-[#171232]">
+                        {option.native}
+                      </option>
+                    ))}
                   </select>
                 </div>
 
@@ -220,7 +219,7 @@ export default function Navbar({ settings, transparent = false }: NavbarProps) {
             <button
               type="button"
               onClick={() => setIsMenuOpen(false)}
-              aria-label="Close menu"
+              aria-label={t("close")}
               className="press p-2 text-[#efebe3]"
             >
               <PiX size={22} />
@@ -237,7 +236,7 @@ export default function Navbar({ settings, transparent = false }: NavbarProps) {
                 style={{ animationDelay: `${i * 50}ms` }}
                 className="reveal border-b border-white/10 py-5 font-serif text-3xl text-[#efebe3]"
               >
-                {item.label}
+                {t(item.label.toLowerCase().replace(/ /g, "_"))}
               </Link>
             ))}
           </nav>
@@ -250,7 +249,7 @@ export default function Navbar({ settings, transparent = false }: NavbarProps) {
                 onClick={closePanels}
                 className="text-[11px] font-bold uppercase tracking-[0.22em] text-white/60"
               >
-                {item.label}
+                {t(item.label.toLowerCase().replace(/ /g, "_"))}
               </Link>
             ))}
           </nav>

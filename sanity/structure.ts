@@ -1,3 +1,4 @@
+import type { ComponentType } from 'react'
 import type { StructureResolver } from 'sanity/structure'
 import {
   CogIcon,
@@ -7,27 +8,130 @@ import {
   EarthAmericasIcon,
   HomeIcon,
   TagIcon,
-  CalendarIcon,
   CommentIcon,
   CaseIcon,
   DocumentTextIcon,
+  DocumentsIcon,
+  PlayIcon,
+  RocketIcon,
+  MoonIcon,
 } from '@sanity/icons'
 
-const listingList = (S: Parameters<StructureResolver>[0], type: string, title: string) =>
+/**
+ * Kaara & Co - Studio navigation.
+ *
+ * Organised the way the website reads, matching the Pavani studio so an editor
+ * who knows one knows the other: PAGES (the words visitors see) -> LISTINGS
+ * (Buy, Sell, Stay inventory) -> SETTINGS (brand-wide details).
+ *
+ * Each listing list opens pre-filtered AND pre-set: pressing Create inside
+ * "Sell - Resale Units" starts a document already marked as a resale, so an
+ * editor never has to remember which radio button to tick.
+ */
+const listingList = (
+  S: Parameters<StructureResolver>[0],
+  type: 'buy' | 'sell' | 'stay',
+  title: string,
+  icon: ComponentType,
+) =>
   S.listItem()
     .title(title)
+    .icon(icon)
     .child(
       S.documentTypeList('property')
         .title(title)
         .filter('_type == "property" && listingType == $type')
         .params({ type })
+        .initialValueTemplates([
+          S.initialValueTemplateItem('property-by-type', { listingType: type }),
+        ])
+        .defaultOrdering([{ field: '_createdAt', direction: 'desc' }]),
     )
 
-// https://www.sanity.io/docs/structure-builder-cheat-sheet
 export const structure: StructureResolver = (S) =>
   S.list()
-    .title('Content')
+    .title('Kaara Content')
     .items([
+      // ───────────────────────── PAGES ─────────────────────────
+      S.listItem()
+        .title('Pages')
+        .icon(DocumentsIcon)
+        .child(
+          S.list()
+            .title('Pages')
+            .items([
+              S.listItem()
+                .title('Home Page')
+                .icon(HomeIcon)
+                .child(
+                  S.list()
+                    .title('Home Page - Sections')
+                    .items([
+                      S.listItem()
+                        .title('1 · Hero Video (background)')
+                        .icon(PlayIcon)
+                        .child(S.document().schemaType('heroSection').documentId('heroSection')),
+                      S.listItem()
+                        .title('2 · Secondary Video')
+                        .icon(PlayIcon)
+                        .child(
+                          S.document().schemaType('secondarySection').documentId('secondarySection'),
+                        ),
+                      S.listItem()
+                        .title('3 · The Next Move Is Yours (featured + filters)')
+                        .icon(HomeIcon)
+                        .child(
+                          S.document()
+                            .schemaType('propertiesSection')
+                            .documentId('propertiesSection'),
+                        ),
+                      S.listItem()
+                        .title('4 · Experience Video')
+                        .icon(PlayIcon)
+                        .child(
+                          S.document()
+                            .schemaType('experienceSection')
+                            .documentId('experienceSection'),
+                        ),
+                      S.listItem()
+                        .title('5 · Closing Video')
+                        .icon(PlayIcon)
+                        .child(
+                          S.document().schemaType('closingSection').documentId('closingSection'),
+                        ),
+                    ]),
+                ),
+              S.listItem()
+                .title('Buy Page')
+                .icon(HomeIcon)
+                .child(S.document().schemaType('buyPage').documentId('buyPage')),
+              S.listItem()
+                .title('Sell Page')
+                .icon(TagIcon)
+                .child(S.document().schemaType('sellPage').documentId('sellPage')),
+              S.listItem()
+                .title('Stay Page')
+                .icon(MoonIcon)
+                .child(S.document().schemaType('stayPage').documentId('stayPage')),
+              S.listItem()
+                .title('World of Kaara')
+                .icon(EarthAmericasIcon)
+                .child(S.document().schemaType('aboutPage').documentId('aboutPage')),
+            ]),
+        ),
+
+      S.listItem()
+        .title('Market Insights')
+        .icon(DocumentTextIcon)
+        .child(
+          S.documentTypeList('post')
+            .title('Market Insights')
+            .defaultOrdering([{ field: 'publishedAt', direction: 'desc' }]),
+        ),
+
+      S.divider(),
+
+      // ─────────────────────── LISTINGS ───────────────────────
       S.listItem()
         .title('Listings')
         .icon(HomeIcon)
@@ -35,130 +139,65 @@ export const structure: StructureResolver = (S) =>
           S.list()
             .title('Listings')
             .items([
-              listingList(S, 'buy', 'Buy'),
-              listingList(S, 'sell', 'Sell'),
-              listingList(S, 'stay', 'Stay'),
+              listingList(S, 'buy', 'Buy - Active Listings', HomeIcon),
+              listingList(S, 'sell', 'Sell - Resale Units', TagIcon),
+              listingList(S, 'stay', 'Stay - Short Stay Units', MoonIcon),
               S.divider(),
-              S.documentTypeListItem('property').title('All Listings'),
-            ])
+              S.documentTypeListItem('property').title('All Listings').icon(DocumentsIcon),
+            ]),
         ),
-      S.documentTypeListItem('post').title('Market Insights').icon(DocumentTextIcon),
-      S.documentTypeListItem('testimonial').title('Testimonials').icon(CommentIcon),
+
       S.documentTypeListItem('developer').title('Developer Partners').icon(CaseIcon),
-      S.documentTypeListItem('event').title('Events').icon(CalendarIcon),
-      S.documentTypeListItem('district').title('Districts').icon(TagIcon),
-      S.divider(),
+      S.documentTypeListItem('testimonial').title('Testimonials').icon(CommentIcon),
 
       S.listItem()
-        .title('World of Kaara')
-        .icon(EarthAmericasIcon)
-        .child(S.document().schemaType('aboutPage').documentId('aboutPage')),
-
-      // Grouped Home Page Sections
-      S.listItem()
-        .title('Home Page')
+        .title('Locations')
         .icon(EarthAmericasIcon)
         .child(
           S.list()
-            .title('Sections')
+            .title('Locations')
             .items([
-              S.listItem()
-                .title('Hero Section (1)')
-                .icon(ImageIcon)
-                .child(
-                  S.document()
-                    .schemaType('heroSection')
-                    .documentId('heroSection')
-                ),
-              S.listItem()
-                .title('Secondary Video (2)')
-                .icon(ImageIcon)
-                .child(
-                  S.document()
-                    .schemaType('secondarySection')
-                    .documentId('secondarySection')
-                ),
-              S.listItem()
-                .title('Featured Properties')
-                .icon(ImageIcon)
-                .child(
-                  S.document()
-                    .schemaType('propertiesSection')
-                    .documentId('propertiesSection')
-                ),
-              S.listItem()
-                .title('Experience Section (3)')
-                .icon(ImageIcon)
-                .child(
-                  S.document()
-                    .schemaType('experienceSection')
-                    .documentId('experienceSection')
-                ),
-              S.listItem()
-                .title('Spotlight Section')
-                .icon(ImageIcon)
-                .child(
-                  S.document()
-                    .schemaType('spotlightSection')
-                    .documentId('spotlightSection')
-                ),
-              S.listItem()
-                .title('Closing Video (4)')
-                .icon(ImageIcon)
-                .child(
-                  S.document()
-                    .schemaType('closingSection')
-                    .documentId('closingSection')
-                ),
-            ])
+              S.documentTypeListItem('district').title('Districts').icon(TagIcon),
+              S.documentTypeListItem('county').title('Counties').icon(EarthAmericasIcon),
+            ]),
         ),
 
-      // Grouped Settings
+      S.divider(),
+
+      // ─────────────────────── SETTINGS ───────────────────────
       S.listItem()
-        .title('Site Settings')
+        .title('Settings')
         .icon(CogIcon)
         .child(
           S.list()
-            .title('Settings')
+            .title('Site Settings')
             .items([
               S.listItem()
-                .title('General Settings')
-                .icon(EarthAmericasIcon)
+                .title('General (site name, SEO, currency)')
+                .icon(RocketIcon)
                 .child(
-                  S.document()
-                    .schemaType('generalSettings')
-                    .documentId('generalSettings')
+                  S.document().schemaType('generalSettings').documentId('generalSettings'),
                 ),
               S.listItem()
-                .title('Brand Assets')
+                .title('Brand Assets (logos, favicon)')
                 .icon(ImageIcon)
-                .child(
-                  S.document()
-                    .schemaType('brandSettings')
-                    .documentId('brandSettings')
-                ),
+                .child(S.document().schemaType('brandSettings').documentId('brandSettings')),
               S.listItem()
-                .title('Contact Details')
+                .title('Contact Details (phone, WhatsApp, address)')
                 .icon(EnvelopeIcon)
                 .child(
-                  S.document()
-                    .schemaType('contactSettings')
-                    .documentId('contactSettings')
+                  S.document().schemaType('contactSettings').documentId('contactSettings'),
                 ),
               S.listItem()
-                .title('Social Media')
+                .title('Social Links')
                 .icon(UsersIcon)
-                .child(
-                  S.document()
-                    .schemaType('socialSettings')
-                    .documentId('socialSettings')
-                ),
-            ])
+                .child(S.document().schemaType('socialSettings').documentId('socialSettings')),
+            ]),
         ),
 
-      // Filter out types that are explicitly added above or should be hidden
+      // Anything already placed above (or retired) stays out of the list.
       ...S.documentTypeListItems().filter(
-        (listItem) => 
+        (listItem) =>
           ![
             'post',
             'property',
@@ -168,6 +207,9 @@ export const structure: StructureResolver = (S) =>
             'developer',
             'testimonial',
             'aboutPage',
+            'buyPage',
+            'sellPage',
+            'stayPage',
             'generalSettings',
             'brandSettings',
             'contactSettings',
@@ -179,7 +221,7 @@ export const structure: StructureResolver = (S) =>
             'propertiesSection',
             'experienceSection',
             'spotlightSection',
-            'closingSection'
-          ].includes(listItem.getId() || '')
+            'closingSection',
+          ].includes(listItem.getId() || ''),
       ),
     ])

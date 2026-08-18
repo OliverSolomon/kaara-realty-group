@@ -1,7 +1,12 @@
 import Image from "next/image";
 import type { Metadata } from "next";
 import { sanityFetch } from "@/sanity/lib/live";
-import { LISTINGS_BY_TYPE_QUERY, SITE_SETTINGS_QUERY } from "@/sanity/lib/queries";
+import {
+  LISTINGS_BY_TYPE_QUERY,
+  SITE_SETTINGS_QUERY,
+  SECTION_PAGE_QUERY,
+} from "@/sanity/lib/queries";
+import ViewAllPropertiesButton from "@/components/site/ViewAllPropertiesButton";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ListingGrid from "@/components/site/ListingGrid";
@@ -20,9 +25,10 @@ export const metadata: Metadata = {
 };
 
 export default async function StayPage() {
-  const [{ data: listings }, { data: settings }] = await Promise.all([
+  const [{ data: listings }, { data: settings }, { data: page }] = await Promise.all([
     sanityFetch({ query: LISTINGS_BY_TYPE_QUERY, params: { listingType: "stay" } }),
     sanityFetch({ query: SITE_SETTINGS_QUERY }),
+    sanityFetch({ query: SECTION_PAGE_QUERY, params: { type: "stayPage" } }),
   ]);
 
   const items = (listings || []) as unknown as Listing[];
@@ -41,6 +47,7 @@ export default async function StayPage() {
             <div className="relative aspect-[16/10] w-full overflow-hidden bg-[#171232]">
               <Image
                 src={
+                  page?.heroImageUrl ||
                   items.find((l) => l.imageUrl)?.imageUrl ||
                   placeholderImage("kaara-stay-nairobi-serviced-apartment", 1600, 1000)
                 }
@@ -54,13 +61,15 @@ export default async function StayPage() {
           </div>
 
           <div className="order-1 lg:order-2 lg:col-span-5">
-            <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#4f9d8f]">Stay</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#4f9d8f]">
+              {page?.eyebrow || "Stay"}
+            </p>
             <h1 className="mt-6 font-serif text-4xl leading-[1.08] md:text-5xl">
-              Short stays in buildings we know well.
+              {page?.headline || "Short stays in buildings we know well."}
             </h1>
             <p className="mt-6 max-w-[42ch] text-base leading-relaxed text-white/65">
-              Floor, aspect and nightly rate are stated for every unit. What you see is what you
-              check into.
+              {page?.intro ||
+                "Floor, aspect and nightly rate are stated for every unit. What you see is what you check into."}
             </p>
             <ContactActions
               contact={settings?.contact}
@@ -74,7 +83,9 @@ export default async function StayPage() {
         <section className="border-t border-white/10 bg-[#0b0819]">
           <div className="mx-auto max-w-[1500px] px-5 py-20 lg:px-10 lg:py-28">
             <div className="mb-14 flex flex-wrap items-baseline justify-between gap-4">
-              <h2 className="font-serif text-3xl leading-tight sm:text-4xl">Available units</h2>
+              <h2 className="font-serif text-3xl leading-tight sm:text-4xl">
+                {page?.listingsHeading || "Available units"}
+              </h2>
               <p className="text-sm text-white/45 tabular-nums">
                 {items.length} {items.length === 1 ? "unit" : "units"} listed
               </p>
@@ -82,9 +93,14 @@ export default async function StayPage() {
 
             <ListingGrid
               listings={items}
-              emptyTitle="No short stay units are listed yet"
-              emptyBody="Our short stay portfolio is being onboarded building by building. Send us your dates and we will tell you what we can hold for you."
+              emptyTitle={page?.listingsEmptyTitle || "No short stay units are listed yet"}
+              emptyBody={
+                page?.listingsEmptyBody ||
+                "Our short stay portfolio is being onboarded building by building. Send us your dates and we will tell you what we can hold for you."
+              }
             />
+
+            <ViewAllPropertiesButton className="mt-16" />
           </div>
         </section>
 
