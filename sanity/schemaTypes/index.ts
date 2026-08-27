@@ -1,6 +1,7 @@
 import type { SchemaTypeDefinition } from 'sanity'
 
 import { post } from './post'
+import { blockContent } from './objects/blockContent'
 import { property } from './property'
 import { event } from './event'
 import { county } from './county'
@@ -22,6 +23,7 @@ import { closingSection } from './home/closingSection'
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
     post,
+    blockContent,
     property,
     event,
     county,

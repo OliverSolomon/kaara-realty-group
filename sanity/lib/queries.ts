@@ -64,6 +64,7 @@ export const PROPERTIES_QUERY = defineQuery(`*[_type == "property"] | order(_cre
   shortDescription,
   googleMapsUrl,
   amenities,
+  otherAmenities,
   size,
   sizeSqm,
   bedrooms,
@@ -113,6 +114,7 @@ export const PROPERTY_DETAIL_QUERY = defineQuery(`*[_type == "property" && slug.
   longDescription,
   googleMapsUrl,
   amenities,
+  otherAmenities,
   size,
   sizeSqm,
   bedrooms,
@@ -201,6 +203,7 @@ const LISTING_CARD_FIELDS = `
   propertyType,
   shortDescription,
   amenities,
+  otherAmenities,
   size,
   sizeSqm,
   bedrooms,
@@ -290,10 +293,45 @@ export const INSIGHT_QUERY = defineQuery(`*[_type == "post" && slug.current == $
   "slug": slug.current,
   category,
   excerpt,
+  tldr,
+  keyTakeaways,
   publishedAt,
+  _updatedAt,
   readingMinutes,
   "coverUrl": coalesce(coverImage.asset->url, coverImage.externalUrl),
-  content
+  furtherReading[]{ title, publisher, url, year },
+  // Embedded blocks are resolved here so the renderer never has to fetch:
+  // images get their CDN url, property cards get live listing details, and
+  // internal link annotations get the slug and type needed to build the href.
+  content[]{
+    ...,
+    _type == "articleImage" => {
+      ...,
+      "url": asset->url
+    },
+    _type == "propertyEmbed" => {
+      ...,
+      property->{
+        title,
+        "slug": slug.current,
+        "imageUrl": coalesce(
+          image.asset->url,
+          image.externalUrl,
+          media[_type == "image"][0].asset->url,
+          media[_type == "externalImage"][0].url
+        ),
+        "district": district->name,
+        details
+      }
+    },
+    markDefs[]{
+      ...,
+      _type == "link" => {
+        ...,
+        reference->{ _type, "slug": slug.current }
+      }
+    }
+  }
 }`)
 
 export const SEARCH_QUERY = defineQuery(`*[_type == "district"] {

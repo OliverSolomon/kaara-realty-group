@@ -1,4 +1,5 @@
 import { defineArrayMember, defineField, defineType } from 'sanity'
+import { AMENITY_OPTIONS } from './objects/amenityOptions'
 
 export const property = defineType({
   name: 'property',
@@ -251,24 +252,22 @@ export const property = defineType({
     defineField({
       name: 'amenities',
       title: 'Amenities',
-      description: 'Select all available amenities (e.g., Pool, Gym, Rooftop Terrace)',
+      description:
+        'Tick everything the property offers. Grouped by category \u2014 Security, Power & Water, Parking, Leisure, Community, Interior, Grounds and Services. Anything not on this list goes in the field below.',
       type: 'array',
       of: [{ type: 'string' }],
       options: {
-        list: [
-          { title: 'Swimming Pool', value: 'pool' },
-          { title: 'Gym / Fitness Center', value: 'gym' },
-          { title: 'Rooftop Terrace', value: 'rooftop' },
-          { title: 'Private Garden', value: 'garden' },
-          { title: 'Elevator', value: 'elevator' },
-          { title: 'Backup Generator', value: 'generator' },
-          { title: 'Borehole', value: 'borehole' },
-          { title: 'CCTV & Security', value: 'security' },
-          { title: 'Concierge', value: 'concierge' },
-          { title: 'Parking', value: 'parking' },
-          { title: 'Staff Quarters', value: 'sq' },
-        ],
+        list: AMENITY_OPTIONS,
       },
+    }),
+    defineField({
+      name: 'otherAmenities',
+      title: 'Other Amenities',
+      description:
+        'Anything not covered by the checklist above \u2014 write it exactly as it should appear on the website (e.g. "Helipad", "Private Jetty", "Conservancy Frontage"). Press Enter after each one.',
+      type: 'array',
+      of: [{ type: 'string' }],
+      options: { layout: 'tags' },
     }),
     defineField({
       name: 'size',

@@ -1,7 +1,10 @@
 import type { MetadataRoute } from 'next';
 import { client } from '@/sanity/lib/client';
+import { SITE_URL } from '@/lib/seo';
 
-const baseUrl = 'https://kaararealtygroup.com';
+// Single source of truth, so the sitemap can never disagree with the
+// canonical tags or the structured data.
+const baseUrl = SITE_URL;
 
 export const revalidate = 3600;
 
@@ -10,6 +13,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: baseUrl, changeFrequency: 'daily' as const, priority: 1 },
+    { url: `${baseUrl}/properties`, changeFrequency: 'daily' as const, priority: 0.95 },
     { url: `${baseUrl}/buy`, changeFrequency: 'daily' as const, priority: 0.9 },
     { url: `${baseUrl}/sell`, changeFrequency: 'weekly' as const, priority: 0.9 },
     { url: `${baseUrl}/stay`, changeFrequency: 'weekly' as const, priority: 0.9 },

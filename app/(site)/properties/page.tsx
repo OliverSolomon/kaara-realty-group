@@ -6,12 +6,37 @@ import Footer from "@/components/Footer";
 import ContactActions from "@/components/site/ContactActions";
 import PropertiesClient from "./PropertiesClient";
 import type { Listing } from "@/components/site/ListingCard";
+import FaqSection from "@/components/site/FaqSection";
+import JsonLd from "@/components/JsonLd";
+import {
+  graph,
+  breadcrumbSchema,
+  itemListSchema,
+  faqPageSchema,
+  realEstateAgentSchema,
+  resolveMeta,
+  PROPERTY_FAQS,
+  SITE_NAME,
+} from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "All Properties | Kaara & Co Realty Group",
+export const metadata: Metadata = resolveMeta({
+  title: `Luxury Properties for Sale in Nairobi, Kenya | ${SITE_NAME}`,
   description:
-    "Every Kaara listing in one place: new releases to buy, owner vetted resale units and luxury short stays across Nairobi.",
-};
+    "Browse verified luxury properties for sale in Kenya — apartments, villas and gated-community homes across Westlands, Kilimani, Karen, Runda, Muthaiga and Lavington. Every listing title-checked before publication.",
+  path: "/properties",
+  keywords: [
+    "luxury properties in Kenya",
+    "premium properties Kenya",
+    "property for sale in Nairobi",
+    "luxury apartments Nairobi",
+    "luxury villas Kenya",
+    "gated community homes Nairobi",
+    "Westlands apartments for sale",
+    "Kilimani apartments for sale",
+    "Karen homes for sale",
+    "Runda villas for sale",
+  ],
+});
 
 export default async function PropertiesPage() {
   const [{ data: listings }, { data: settings }] = await Promise.all([
@@ -21,8 +46,21 @@ export default async function PropertiesPage() {
 
   const items = (listings || []) as unknown as Listing[];
 
+  // ItemList tells search engines this is a listing index and what is on it;
+  // the FAQ block answers the long-tail questions behind "luxury property Kenya".
+  const jsonLd = graph(
+    breadcrumbSchema([
+      { name: "Home", path: "/" },
+      { name: "Properties", path: "/properties" },
+    ]),
+    itemListSchema(items as unknown as { slug: string; title: string }[]),
+    faqPageSchema(PROPERTY_FAQS),
+    realEstateAgentSchema(settings)
+  );
+
   return (
     <>
+      <JsonLd data={jsonLd} />
       <Navbar settings={settings} />
 
       <main className="bg-[#100b28] pt-[72px] text-[#efebe3]">
@@ -48,6 +86,8 @@ export default async function PropertiesPage() {
           <PropertiesClient listings={items} />
         </section>
       </main>
+
+      <FaqSection items={PROPERTY_FAQS} />
 
       <Footer settings={settings} />
     </>

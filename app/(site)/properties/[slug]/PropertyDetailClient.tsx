@@ -326,11 +326,15 @@ export default function PropertyDetailClient({ property }: { property: Property 
         ) : null}
 
         {/* Amenities */}
-        {property?.amenities?.length ? (
+        {property?.amenities?.length || property?.otherAmenities?.length ? (
           <section className="border-t border-white/10 bg-[#0b0819]">
             <div className="mx-auto max-w-[1500px] px-5 py-20 lg:px-10 lg:py-24">
               <h2 className="font-serif text-3xl leading-tight sm:text-4xl">Amenities</h2>
-              <AmenityGrid amenities={property.amenities} className="mt-12" />
+              <AmenityGrid
+                amenities={property.amenities}
+                otherAmenities={property.otherAmenities}
+                className="mt-12"
+              />
             </div>
           </section>
         ) : null}
