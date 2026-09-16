@@ -11,6 +11,8 @@
  * Titles are prefixed with their group so the flat Studio checklist still reads
  * as grouped. Values stay short and stable — never rename a value once content
  * references it, or existing properties will silently lose that amenity.
+ * Titles, on the other hand, are safe to reword: "Mini Mart" still stores the
+ * original 'community-store' value, so older listings pick up the new label.
  */
 
 export interface AmenityOption {
@@ -66,7 +68,7 @@ export const AMENITY_GROUPS: { group: string; items: AmenityOption[] }[] = [
       { title: 'Swimming Pool', value: 'leisure-pool' },
       { title: "Children's Pool", value: 'leisure-kids-pool' },
       { title: 'Gym / Fitness Centre', value: 'leisure-gym' },
-      { title: 'Sauna', value: 'leisure-sauna' },
+      { title: 'Sauna Room', value: 'leisure-sauna' },
       { title: 'Steam Room', value: 'leisure-steam' },
       { title: 'Jacuzzi', value: 'leisure-jacuzzi' },
       { title: 'Spa', value: 'leisure-spa' },
@@ -82,14 +84,15 @@ export const AMENITY_GROUPS: { group: string; items: AmenityOption[] }[] = [
     group: 'Community & Family',
     items: [
       { title: 'Clubhouse', value: 'community-clubhouse' },
-      { title: "Children's Play Area", value: 'community-play-area' },
+      { title: 'Kids Play Area', value: 'community-play-area' },
       { title: 'Daycare / Creche', value: 'community-daycare' },
       { title: 'Business Centre / Co-working', value: 'community-business-centre' },
       { title: 'Event & Function Room', value: 'community-event-room' },
       { title: 'Communal Gardens', value: 'community-gardens' },
       { title: 'Barbecue Area', value: 'community-bbq' },
       { title: 'Rooftop Terrace', value: 'community-rooftop' },
-      { title: 'Convenience Store On Site', value: 'community-store' },
+      { title: 'Restaurant', value: 'community-restaurant' },
+      { title: 'Mini Mart', value: 'community-store' },
       { title: 'Prayer Room', value: 'community-prayer-room' },
       { title: 'Pet Friendly', value: 'community-pet-friendly' },
     ],

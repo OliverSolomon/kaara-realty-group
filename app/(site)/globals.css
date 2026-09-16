@@ -915,15 +915,17 @@ body {
   color: var(--article-accent);
 }
 
-/* ── Amenities ── */
+/* ── Amenities ──
+   Columns are capped (auto-fill, max 13rem) so a short category stays grouped
+   on the left rather than being spread across the whole content column. */
 .amenity-groups {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.5rem;
 }
 
 .amenity-group-label {
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
   font-family: var(--article-sans);
   font-size: 0.5625rem;
   font-weight: 700;
@@ -935,33 +937,34 @@ body {
 .amenity-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  column-gap: 1.5rem;
+  column-gap: 1rem;
 }
 
 @media (min-width: 640px) {
   .amenity-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(10rem, 13rem));
   }
 }
 
 .amenity-item {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.625rem;
   border-bottom: 1px solid color-mix(in srgb, var(--article-accent) 10%, transparent);
-  padding: 0.75rem 0;
+  padding: 0.5rem 0;
 }
 
-.amenity-bullet {
-  height: 6px;
-  width: 6px;
+.amenity-icon {
+  height: 18px;
+  width: 18px;
   flex-shrink: 0;
-  background: var(--article-accent);
+  color: var(--article-accent);
 }
 
 .amenity-label {
   font-size: 13px;
   font-weight: 500;
+  line-height: 1.35;
   letter-spacing: 0.01em;
   color: color-mix(in srgb, var(--article-text) 85%, transparent);
 }

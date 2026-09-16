@@ -10,14 +10,8 @@ import { FaXTwitter } from "react-icons/fa6";
 import SearchOverlay from "@/components/SearchOverlay";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { resolveVideo, type VideoSource } from "@/lib/video";
 
-interface VideoSource {
-  title?: string;
-  subtitle?: string;
-  type?: 'file' | 'url';
-  videoUrl?: string;
-  fileUrl?: string;
-}
 
 interface PropertyFilter {
   _key?: string;
@@ -187,16 +181,11 @@ export default function HomeClient({ data, settings }: HomeClientProps) {
     }
   };
 
-  const getVideoSrc = (source?: VideoSource, fallback?: string) => {
-    if (!source) return fallback;
-    if (source.type === 'url') return source.videoUrl || fallback;
-    return source.fileUrl || fallback;
-  };
-
-  const vHero = getVideoSrc(data?.heroVideo, "/videos/amethyst.mp4");
-  const vSecondary = getVideoSrc(data?.secondaryVideo, "https://res.cloudinary.com/dk92v0fkk/video/upload/w_1870,h_947,c_fill/v1724088268/staging/yv4bjz9n4wggkcgxvgqt.mp4#t=0.1");
-  const vTertiary = getVideoSrc(data?.experienceVideo, "https://res.cloudinary.com/dk92v0fkk/video/upload/w_1870,h_947,c_fill/v1773870636/production/inrthpxt4vwiblfpko8j.mp4#t=0.1");
-  const vQuaternary = getVideoSrc(data?.closingVideo, "https://res.cloudinary.com/dk92v0fkk/video/upload/w_1870,h_947,c_fill/v1724088268/staging/yv4bjz9n4wggkcgxvgqt.mp4#t=0.1");
+  // resolveVideo serves Cloudinary at best quality and sets the right MIME type.
+  const vHero = resolveVideo(data?.heroVideo, "/videos/amethyst.mp4");
+  const vSecondary = resolveVideo(data?.secondaryVideo, "https://res.cloudinary.com/dk92v0fkk/video/upload/w_1870,h_947,c_fill/v1724088268/staging/yv4bjz9n4wggkcgxvgqt.mp4#t=0.1");
+  const vTertiary = resolveVideo(data?.experienceVideo, "https://res.cloudinary.com/dk92v0fkk/video/upload/w_1870,h_947,c_fill/v1773870636/production/inrthpxt4vwiblfpko8j.mp4#t=0.1");
+  const vQuaternary = resolveVideo(data?.closingVideo, "https://res.cloudinary.com/dk92v0fkk/video/upload/w_1870,h_947,c_fill/v1724088268/staging/yv4bjz9n4wggkcgxvgqt.mp4#t=0.1");
 
   const SectionBottomNav = () => (
     <div className="absolute bottom-0 w-full z-50 px-6 py-8 lg:px-12 lg:py-12 flex justify-between items-center text-[9px] lg:text-[10px] font-sans tracking-[0.3em] text-white font-bold uppercase">
@@ -247,14 +236,16 @@ export default function HomeClient({ data, settings }: HomeClientProps) {
       {/* Hero Section (Section 1) */}
       <section className="relative h-screen w-full flex flex-col justify-center items-center text-center overflow-hidden">
         <video 
+          key={vHero.src}
           ref={(el) => { videoRefs.current[0] = el; }}
+          preload="auto"
           autoPlay 
           loop 
           muted 
           playsInline 
           className="absolute inset-0 w-full h-full object-cover z-0"
         >
-          <source src={vHero} type="video/mp4" />
+          <source src={vHero.src} type={vHero.type} />
         </video>
         <div className="absolute inset-0 bg-[#100B28]/30 z-10" />
 
@@ -284,9 +275,11 @@ export default function HomeClient({ data, settings }: HomeClientProps) {
       {/* Video Section 2 */}
       <section className="relative h-screen w-full flex flex-col justify-center items-center text-center px-6 overflow-hidden">
         <video 
+          key={vSecondary.src}
           ref={(el) => { videoRefs.current[1] = el; }}
+          preload="auto"
           autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover z-0">
-          <source src={vSecondary} type="video/mp4" />
+          <source src={vSecondary.src} type={vSecondary.type} />
         </video>
         <div className="absolute inset-0 bg-[#100B28]/40 z-10" />
         
@@ -422,9 +415,11 @@ export default function HomeClient({ data, settings }: HomeClientProps) {
       {/* Video Section 3 */}
       <section className="relative h-screen w-full flex flex-col justify-center items-center text-center px-6 overflow-hidden">
         <video 
+          key={vTertiary.src}
           ref={(el) => { videoRefs.current[2] = el; }}
+          preload="auto"
           autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover z-0">
-          <source src={vTertiary} type="video/mp4" />
+          <source src={vTertiary.src} type={vTertiary.type} />
         </video>
         <div className="absolute inset-0 bg-[#100B28]/40 z-10" />
         
@@ -443,9 +438,11 @@ export default function HomeClient({ data, settings }: HomeClientProps) {
       {/* Video Section 4 */}
       <section className="relative h-screen w-full flex flex-col justify-center items-center text-center px-6 overflow-hidden">
         <video 
+          key={vQuaternary.src}
           ref={(el) => { videoRefs.current[3] = el; }}
+          preload="auto"
           autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover z-0">
-          <source src={vQuaternary} type="video/mp4" />
+          <source src={vQuaternary.src} type={vQuaternary.type} />
         </video>
         <div className="absolute inset-0 bg-[#100B28]/40 z-10" />
         

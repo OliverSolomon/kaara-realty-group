@@ -115,23 +115,29 @@ export default async function WorldOfKaaraPage() {
           </div>
         </section>
 
-        {/* The story. The photograph beside it is optional; without one the
-            narrative runs across the wider column on its own. */}
+        {/* The story. The photograph, when one is set, runs as a wide banner
+            above the narrative on every screen size. It used to sit as a tall
+            portrait under the heading, which left a large empty gap beside
+            the text and disappeared entirely on mobile. */}
         <section className="mx-auto max-w-[1500px] px-5 py-20 lg:px-10 lg:py-28">
-          <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
+          {about?.storyImageUrl && (
+            <Reveal className="mb-12 lg:mb-16">
+              <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#171232] sm:aspect-[16/9] lg:aspect-[5/2]">
+                <Image
+                  src={about.storyImageUrl}
+                  alt={about.storyImageAlt || storyHeading}
+                  fill
+                  sizes="(max-width: 1500px) 100vw, 1500px"
+                  className="object-cover"
+                />
+              </div>
+            </Reveal>
+          )}
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-16">
             <div className="lg:col-span-4">
-              <h2 className="font-serif text-3xl leading-tight sm:text-4xl">{storyHeading}</h2>
-              {about?.storyImageUrl && (
-                <div className="relative mt-10 hidden aspect-[3/4] w-full overflow-hidden bg-[#171232] lg:block">
-                  <Image
-                    src={about.storyImageUrl}
-                    alt={about.storyImageAlt || storyHeading}
-                    fill
-                    sizes="(max-width: 1024px) 100vw, 30vw"
-                    className="object-cover"
-                  />
-                </div>
-              )}
+              <h2 className="font-serif text-3xl leading-tight sm:text-4xl lg:sticky lg:top-28">
+                {storyHeading}
+              </h2>
             </div>
             <div className="lg:col-span-8">
               {about?.body?.length ? (

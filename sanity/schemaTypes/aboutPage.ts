@@ -91,8 +91,9 @@ export const aboutPage = defineType({
     }),
     defineField({
       name: 'storyImage',
-      title: 'Photograph Beside The Story',
-      description: 'Optional. Leave empty and the story runs full width.',
+      title: 'Story Banner Photograph',
+      description:
+        'Optional. Shown as a wide banner above "Why we exist". Use a landscape photo at least 2400px wide; the centre of the image is kept when it is cropped.',
       type: 'image',
       group: 'story',
       ...imageWithUrl,

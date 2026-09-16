@@ -3,9 +3,15 @@ import {
   AMENITY_GROUP_OF,
   amenityLabel,
 } from "@/sanity/schemaTypes/objects/amenityOptions";
+import type { IconType } from "react-icons";
+import {
+  EXTRA_AMENITY_ICON,
+  OTHER_AMENITY_GROUP,
+  amenityIcon,
+} from "@/lib/amenityIcons";
 
 /**
- * Renders a property's amenities grouped by category.
+ * Renders a property's amenities grouped by category, each with its icon.
  *
  * Handles three kinds of value at once, which matters because the vocabulary
  * was expanded after content already existed:
@@ -23,31 +29,35 @@ interface AmenityListProps {
   className?: string;
 }
 
-const OTHER_GROUP = "Also included";
+interface Entry {
+  label: string;
+  Icon: IconType;
+}
 
 export default function AmenityList({ amenities, otherAmenities, className }: AmenityListProps) {
   const selected = (amenities ?? []).filter(Boolean);
   const extras = (otherAmenities ?? []).filter(Boolean);
   if (selected.length === 0 && extras.length === 0) return null;
 
-  const buckets = new Map<string, string[]>();
-  const push = (group: string, label: string) => {
+  const buckets = new Map<string, Entry[]>();
+  const push = (group: string, entry: Entry) => {
     const list = buckets.get(group);
-    if (list) list.push(label);
-    else buckets.set(group, [label]);
+    if (list) list.push(entry);
+    else buckets.set(group, [entry]);
   };
 
   for (const value of selected) {
-    push(AMENITY_GROUP_OF[value] ?? OTHER_GROUP, amenityLabel(value));
+    const group = AMENITY_GROUP_OF[value] ?? OTHER_AMENITY_GROUP;
+    push(group, { label: amenityLabel(value), Icon: amenityIcon(value, group) });
   }
   for (const extra of extras) {
-    push(OTHER_GROUP, extra);
+    push(OTHER_AMENITY_GROUP, { label: extra, Icon: EXTRA_AMENITY_ICON });
   }
 
   // Canonical schema order, with free-text extras always last.
   const orderedGroups = [
     ...AMENITY_GROUPS.map((g) => g.group).filter((g) => buckets.has(g)),
-    ...(buckets.has(OTHER_GROUP) ? [OTHER_GROUP] : []),
+    ...(buckets.has(OTHER_AMENITY_GROUP) ? [OTHER_AMENITY_GROUP] : []),
   ];
 
   return (
@@ -57,9 +67,9 @@ export default function AmenityList({ amenities, otherAmenities, className }: Am
           <div key={group} className="amenity-group">
             <p className="amenity-group-label">{group}</p>
             <div className="amenity-grid">
-              {(buckets.get(group) ?? []).map((label, i) => (
+              {(buckets.get(group) ?? []).map(({ label, Icon }, i) => (
                 <div key={`${group}-${i}`} className="amenity-item">
-                  <span className="amenity-bullet" aria-hidden="true" />
+                  <Icon className="amenity-icon" aria-hidden="true" />
                   <span className="amenity-label">{label}</span>
                 </div>
               ))}

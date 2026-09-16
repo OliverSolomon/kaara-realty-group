@@ -1,5 +1,7 @@
 import { defineField, defineType } from 'sanity'
 
+import { videoSourceFields } from '../objects/videoFields'
+
 export const heroSection = defineType({
   name: 'heroSection',
   title: 'Hero Section (Section 1)',
@@ -17,30 +19,6 @@ export const heroSection = defineType({
       type: 'string',
       initialValue: 'Leaders in Luxury Vertical Living • Nairobi',
     }),
-    defineField({
-      name: 'type',
-      title: 'Video Type',
-      type: 'string',
-      options: {
-        list: [
-          { title: 'File Upload', value: 'file' },
-          { title: 'External URL', value: 'url' },
-        ],
-        layout: 'radio',
-      },
-      initialValue: 'file',
-    }),
-    defineField({
-      name: 'videoUrl',
-      title: 'External Video URL',
-      type: 'url',
-      hidden: ({ parent }) => parent?.type !== 'url',
-    }),
-    defineField({
-      name: 'videoFile',
-      title: 'Video File',
-      type: 'file',
-      hidden: ({ parent }) => parent?.type !== 'file',
-    }),
+    ...videoSourceFields('file'),
   ],
 })
