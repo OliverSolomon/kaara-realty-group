@@ -76,9 +76,24 @@ function mimeFor(src: string, declared?: string): string | undefined {
   return undefined;
 }
 
+/**
+ * Page links (Google Drive, YouTube, Vimeo) cannot stream into a <video>
+ * element. Safari on iPhone in particular needs byte-range requests, which
+ * Drive does not serve, so the section rendered as an empty block.
+ */
+const NOT_STREAMABLE = /(drive\.google\.com|docs\.google\.com|youtube\.com|youtu\.be|vimeo\.com)/i;
+
 export function resolveVideo(source: VideoSource | undefined, fallback: string): ResolvedVideo {
-  const fromCms =
-    source?.type === "url" ? source.videoUrl?.trim() : source?.fileUrl?.trim();
+  const url = source?.videoUrl?.trim();
+  const file = source?.fileUrl?.trim();
+
+  // An uploaded file always beats a link that cannot play. This covers the
+  // common case of uploading a file but leaving "Video Type" on External URL.
+  if (source?.type === "url" && url && NOT_STREAMABLE.test(url) && file) {
+    return { src: file, type: mimeFor(file, source?.fileMime) };
+  }
+
+  const fromCms = source?.type === "url" ? url : file;
 
   if (!fromCms) {
     const src = upgradeCloudinaryVideo(fallback);
@@ -86,6 +101,12 @@ export function resolveVideo(source: VideoSource | undefined, fallback: string):
   }
 
   if (source?.type === "url") {
+    // YouTube and Vimeo can never play here, so show the default video instead
+    // of an empty section.
+    if (/(youtube\.com|youtu\.be|vimeo\.com)/i.test(fromCms)) {
+      const src = upgradeCloudinaryVideo(fallback);
+      return { src, type: mimeFor(src) };
+    }
     const src = upgradeCloudinaryVideo(directDriveUrl(fromCms));
     return { src, type: mimeFor(src) };
   }
