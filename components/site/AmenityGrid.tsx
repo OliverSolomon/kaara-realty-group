@@ -23,15 +23,20 @@ import {
  * Icons live in lib/amenityIcons.ts. Nothing is ever dropped for being
  * unrecognised.
  *
- * Layout: compact rows (icon beside label) in columns capped at 13rem, so a
- * category stays grouped together on the left instead of being spread
- * across the full 1500px container.
+ * Two layouts:
+ *  · "grouped" (default, listing pages): category headings with compact rows
+ *    in columns capped at 13rem.
+ *  · "flow" (Buy and Stay overview sections): one ungrouped run of icon
+ *    tiles that fills the width and wraps, so a handful of amenities reads
+ *    across the page instead of down it. Tiles size to their label, so the
+ *    run works on folded cover screens, phones, tablets and desktop alike.
  */
 
 interface AmenityGridProps {
   amenities?: string[];
   otherAmenities?: string[];
   className?: string;
+  variant?: "grouped" | "flow";
 }
 
 interface Entry {
@@ -44,6 +49,7 @@ export default function AmenityGrid({
   amenities,
   otherAmenities,
   className = "",
+  variant = "grouped",
 }: AmenityGridProps) {
   const selected = (amenities ?? []).filter(Boolean);
   const extras = (otherAmenities ?? []).filter(Boolean);
@@ -78,6 +84,23 @@ export default function AmenityGrid({
     ...AMENITY_GROUPS.map((g) => g.group).filter((g) => buckets.has(g)),
     ...(buckets.has(OTHER_AMENITY_GROUP) ? [OTHER_AMENITY_GROUP] : []),
   ];
+
+  if (variant === "flow") {
+    const entries = orderedGroups.flatMap((group) => buckets.get(group) ?? []);
+    return (
+      <ul className={`flex flex-wrap gap-2 sm:gap-3 ${className}`}>
+        {entries.map(({ key, label, Icon }) => (
+          <li
+            key={key}
+            className="flex min-w-0 max-w-full items-center gap-2.5 border border-white/10 bg-white/[0.03] px-3.5 py-2.5 sm:gap-3 sm:px-5 sm:py-3.5"
+          >
+            <Icon className="h-[18px] w-[18px] shrink-0 text-[#4f9d8f] sm:h-5 sm:w-5" aria-hidden="true" />
+            <span className="text-[13px] leading-snug text-white/80 sm:text-sm">{label}</span>
+          </li>
+        ))}
+      </ul>
+    );
+  }
 
   return (
     <div className={className}>

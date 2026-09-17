@@ -14,6 +14,7 @@ import EnquiryForm from "@/components/site/EnquiryForm";
 import ContactActions from "@/components/site/ContactActions";
 import AreaConverter from "@/components/site/AreaConverter";
 import AmenityGrid from "@/components/site/AmenityGrid";
+import { canonicalAmenity } from "@/sanity/schemaTypes/objects/amenityOptions";
 import Reveal from "@/components/site/Reveal";
 import { placeholderImage } from "@/lib/site";
 import type { Listing } from "@/components/site/ListingCard";
@@ -32,9 +33,10 @@ export default async function StayPage() {
   ]);
 
   const items = (listings || []) as unknown as Listing[];
+  // Old and new values for the same amenity collapse into one.
   const amenities = Array.from(
-    new Set(items.flatMap((listing) => listing.amenities || []))
-  ).slice(0, 12);
+    new Set(items.flatMap((listing) => (listing.amenities || []).map(canonicalAmenity)))
+  ).slice(0, 16);
 
   return (
     <>
@@ -106,7 +108,7 @@ export default async function StayPage() {
 
         {/* Amenities */}
         {amenities.length > 0 && (
-          <section className="mx-auto max-w-[1500px] border-t border-white/10 px-5 py-20 lg:px-10 lg:py-28">
+          <section className="mx-auto max-w-[1500px] border-t border-white/10 px-5 py-16 sm:py-20 lg:px-10 lg:py-24">
             <Reveal>
               <h2 className="max-w-[20ch] font-serif text-3xl leading-tight sm:text-4xl">
                 In the building
@@ -114,7 +116,7 @@ export default async function StayPage() {
               <p className="mt-4 max-w-[58ch] text-sm leading-relaxed text-white/60">
                 Facilities guests can use during a stay. Access to each one is confirmed at booking.
               </p>
-              <AmenityGrid amenities={amenities} className="mt-14" />
+              <AmenityGrid amenities={amenities} variant="flow" className="mt-8 sm:mt-10" />
             </Reveal>
           </section>
         )}
