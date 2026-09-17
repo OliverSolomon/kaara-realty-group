@@ -1,4 +1,4 @@
-import { defineField, defineType } from 'sanity'
+import { defineArrayMember, defineField, defineType } from 'sanity'
 
 /** Every image field can take an upload or a pasted URL, the Pavani pattern. */
 const imageWithUrl = {
@@ -37,7 +37,8 @@ export const aboutPage = defineType({
     { name: 'mission', title: 'Mission' },
     { name: 'commitments', title: 'Commitments' },
     { name: 'gallery', title: 'Gallery' },
-    { name: 'sections', title: 'Testimonials & Partners' },
+    { name: 'sections', title: 'Testimonials' },
+    { name: 'partners', title: 'Developer Partners' },
     { name: 'cta', title: 'Closing' },
   ],
   fields: [
@@ -195,7 +196,7 @@ export const aboutPage = defineType({
       options: { layout: 'grid' },
     }),
 
-    // ── Testimonials & partners ──
+    // ── Testimonials ──
     defineField({
       name: 'testimonialsHeading',
       title: 'Testimonials Heading',
@@ -204,13 +205,38 @@ export const aboutPage = defineType({
       group: 'sections',
       initialValue: 'From the people we have worked with',
     }),
+
+    // ── Developer partners ──
     defineField({
       name: 'partnersHeading',
-      title: 'Developer Partners Heading',
-      description: 'The logos come from the Developer Partners list.',
+      title: 'Heading',
       type: 'string',
-      group: 'sections',
+      group: 'partners',
       initialValue: 'Developers we represent',
+    }),
+    defineField({
+      name: 'partnersIntro',
+      title: 'Short Introduction',
+      description: 'Optional. One sentence under the heading.',
+      type: 'text',
+      rows: 2,
+      group: 'partners',
+    }),
+    defineField({
+      name: 'partners',
+      title: 'Developers Shown',
+      description:
+        'Add, remove and drag to reorder. To add a developer that is not listed yet, press "Add item", then "Create new", and fill in the name and logo. Leave this empty to show every developer partner.',
+      type: 'array',
+      group: 'partners',
+      of: [
+        defineArrayMember({
+          type: 'reference',
+          to: [{ type: 'developer' }],
+          options: { disableNew: false },
+        }),
+      ],
+      validation: (rule) => rule.unique(),
     }),
 
     // ── Closing ──

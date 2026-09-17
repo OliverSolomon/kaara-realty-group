@@ -83,6 +83,14 @@ export default async function WorldOfKaaraPage() {
   const mission = about?.mission || FALLBACK.mission;
   const commitmentsHeading = about?.commitmentsHeading || "What we are working toward";
   const commitments = about?.commitments?.length ? about.commitments : FALLBACK.commitments;
+  // Developers picked on the World of Kaara page, in the editor's order. If none
+  // are picked, every developer partner is shown. Deleted references are skipped.
+  const picked = ((about?.partners ?? []) as (Developer | null)[]).filter(
+    (d): d is Developer => Boolean(d?._id && d?.name)
+  );
+  const partners: Developer[] = picked.length
+    ? picked
+    : ((developers ?? []) as unknown as Developer[]);
   const gallery = ((about?.gallery || []) as GalleryItem[]).filter((item) => Boolean(item?.url));
   // Honour the crop and focal point set in the Studio.
   const hero = sanityImage({
@@ -278,12 +286,17 @@ export default async function WorldOfKaaraPage() {
         )}
 
         {/* Partners */}
-        {developers && developers.length > 0 && (
-          <section className="mx-auto max-w-[1500px] border-t border-white/10 px-5 py-20 lg:px-10 lg:py-28">
+        {partners.length > 0 && (
+          <section className="mx-auto max-w-[1500px] border-t border-white/10 px-5 py-16 sm:py-20 lg:px-10 lg:py-28">
             <h2 className="max-w-[20ch] font-serif text-3xl leading-tight sm:text-4xl">
               {about?.partnersHeading || "Developers we represent"}
             </h2>
-            <DeveloperWall developers={developers as unknown as Developer[]} className="mt-12" />
+            {about?.partnersIntro && (
+              <p className="mt-4 max-w-[58ch] text-sm leading-relaxed text-white/60">
+                {about.partnersIntro}
+              </p>
+            )}
+            <DeveloperWall developers={partners} className="mt-10 sm:mt-12" />
           </section>
         )}
 

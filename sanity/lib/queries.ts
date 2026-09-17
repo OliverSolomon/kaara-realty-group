@@ -240,11 +240,12 @@ export const TESTIMONIALS_QUERY = defineQuery(`*[_type == "testimonial"] | order
   "portraitUrl": portrait.asset->url
 }`)
 
-export const DEVELOPERS_QUERY = defineQuery(`*[_type == "developer"] | order(order asc) {
+export const DEVELOPERS_QUERY = defineQuery(`*[_type == "developer"] | order(order asc, name asc) {
   _id,
   name,
   "slug": slug.current,
   "logoUrl": coalesce(logo.asset->url, logo.externalUrl),
+  logoStyle,
   website,
   summary,
   projectsDelivered
@@ -280,6 +281,17 @@ export const ABOUT_QUERY = defineQuery(`*[_type == "aboutPage"][0] {
   },
   testimonialsHeading,
   partnersHeading,
+  partnersIntro,
+  "partners": partners[]->{
+    _id,
+    name,
+    "slug": slug.current,
+    "logoUrl": coalesce(logo.asset->url, logo.externalUrl),
+    logoStyle,
+    website,
+    summary,
+    projectsDelivered
+  },
   ctaHeading,
   ctaBody,
   ctaLinkLabel,

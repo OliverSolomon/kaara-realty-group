@@ -116,7 +116,19 @@ export const structure: StructureResolver = (S) =>
               S.listItem()
                 .title('World of Kaara')
                 .icon(EarthAmericasIcon)
-                .child(S.document().schemaType('aboutPage').documentId('aboutPage')),
+                .child(
+                  S.list()
+                    .title('World of Kaara')
+                    .items([
+                      S.listItem()
+                        .title('Page Content')
+                        .icon(EarthAmericasIcon)
+                        .child(S.document().schemaType('aboutPage').documentId('aboutPage')),
+                      S.documentTypeListItem('developer')
+                        .title('Developer Partners (names & logos)')
+                        .icon(CaseIcon),
+                    ]),
+                ),
             ]),
         ),
 
@@ -147,6 +159,7 @@ export const structure: StructureResolver = (S) =>
             ]),
         ),
 
+      // Also reachable from Pages → World of Kaara.
       S.documentTypeListItem('developer').title('Developer Partners').icon(CaseIcon),
       S.documentTypeListItem('testimonial').title('Testimonials').icon(CommentIcon),
 
