@@ -333,6 +333,7 @@ export default function PropertyDetailClient({ property }: { property: Property 
               <AmenityGrid
                 amenities={property.amenities}
                 otherAmenities={property.otherAmenities}
+                variant="flow"
                 className="mt-6"
               />
             </div>
