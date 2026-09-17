@@ -88,9 +88,15 @@ const styles = {
   extra: { fontSize: 12, opacity: 0.7 } as const,
 }
 
-export function AmenitiesInput(props: ArrayOfPrimitivesInputProps<string>) {
+// Typed with Sanity's default primitive value type so it can be passed to
+// `components.input` on an array-of-strings field. Values are narrowed to
+// strings below; this field only ever stores strings.
+export function AmenitiesInput(props: ArrayOfPrimitivesInputProps) {
   const { value, onChange, readOnly } = props
-  const stored = useMemo(() => (value ?? []).filter(Boolean) as string[], [value])
+  const stored = useMemo(
+    () => (value ?? []).filter((v): v is string => typeof v === 'string' && v.length > 0),
+    [value]
+  )
 
   // Everything ticked, expressed in current values.
   const ticked = useMemo(() => new Set(stored.map(canonicalAmenity)), [stored])
