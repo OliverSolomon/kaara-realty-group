@@ -16,6 +16,7 @@ import { VisualEditing } from "next-sanity/visual-editing";
 import { draftMode } from "next/headers";
 import "./globals.css";
 import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
+import StylesheetGuard from "@/components/StylesheetGuard";
 import { CurrencyProvider } from "@/context/CurrencyContext";
 import { LanguageProvider } from "@/context/LanguageContext";
 
@@ -96,6 +97,7 @@ export default async function RootLayout({
             realEstateAgentSchema(siteSettings)
           )}
         />
+        <StylesheetGuard />
         <ServiceWorkerRegistration />
         <LanguageProvider>
           <CurrencyProvider>

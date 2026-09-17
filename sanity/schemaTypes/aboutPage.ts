@@ -67,7 +67,8 @@ export const aboutPage = defineType({
     defineField({
       name: 'heroImage',
       title: 'Hero Photograph',
-      description: 'The wide image under the headline.',
+      description:
+        'Full-width image at the top of the page, with the headline over it. Use a landscape photo at least 2400px wide. Use "Edit" on the image to set the crop and focal point; the website follows both.',
       type: 'image',
       group: 'hero',
       ...imageWithUrl,

@@ -16,6 +16,7 @@ import DeveloperWall, { type Developer } from "@/components/site/DeveloperWall";
 import EnquiryForm from "@/components/site/EnquiryForm";
 import Reveal from "@/components/site/Reveal";
 import { placeholderImage } from "@/lib/site";
+import { sanityImage } from "@/lib/sanityImage";
 
 export const metadata: Metadata = {
   title: "World of Kaara | Kaara & Co Realty Group",
@@ -83,35 +84,51 @@ export default async function WorldOfKaaraPage() {
   const commitmentsHeading = about?.commitmentsHeading || "What we are working toward";
   const commitments = about?.commitments?.length ? about.commitments : FALLBACK.commitments;
   const gallery = ((about?.gallery || []) as GalleryItem[]).filter((item) => Boolean(item?.url));
-  const heroImage =
-    about?.heroImageUrl || placeholderImage("kaara-world-nairobi-city-morning", 2000, 1100);
+  // Honour the crop and focal point set in the Studio.
+  const hero = sanityImage({
+    url: about?.heroImageUrl || placeholderImage("kaara-world-nairobi-city-morning", 2400, 1350),
+    crop: about?.heroImageCrop,
+    hotspot: about?.heroImageHotspot,
+    dimensions: about?.heroImageDimensions,
+  })!;
+  const story = sanityImage({
+    url: about?.storyImageUrl,
+    crop: about?.storyImageCrop,
+    hotspot: about?.storyImageHotspot,
+    dimensions: about?.storyImageDimensions,
+  });
 
   return (
     <>
       <Navbar settings={settings} />
 
       <main className="bg-[#100b28] pt-[72px] text-[#efebe3]">
-        {/* Hero */}
-        <section className="mx-auto max-w-[1500px] px-5 pb-16 pt-16 lg:px-10 lg:pb-20 lg:pt-24">
-          <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#4f9d8f]">
-            {eyebrow}
-          </p>
-          <h1 className="mt-6 max-w-[18ch] font-serif text-4xl leading-[1.08] md:text-5xl lg:text-6xl">
-            {headline}
-          </h1>
-          <p className="mt-6 max-w-[58ch] text-base leading-relaxed text-white/65">{standfirst}</p>
-        </section>
-
-        <section className="mx-auto max-w-[1500px] px-5 lg:px-10">
-          <div className="relative aspect-[16/9] w-full overflow-hidden bg-[#171232] lg:aspect-[21/9]">
-            <Image
-              src={heroImage}
-              alt={about?.heroImageAlt || "Nairobi city skyline"}
-              fill
-              priority
-              sizes="100vw"
-              className="object-cover"
-            />
+        {/* Hero. The photograph now sits at the very top, full width, with the
+            headline set over it. It used to be a separate banner below the
+            text, cropped to a thin strip that cut through the subject. */}
+        <section className="relative isolate flex min-h-[72svh] items-end overflow-hidden bg-[#171232] lg:min-h-[82vh]">
+          <Image
+            src={hero.src}
+            alt={about?.heroImageAlt || "Nairobi skyline seen across Nairobi National Park"}
+            fill
+            priority
+            sizes="100vw"
+            className="-z-10 object-cover"
+            style={{ objectPosition: hero.objectPosition }}
+          />
+          {/* Scrim: darkens the lower half for the text and fades into the page. */}
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 -z-10 bg-[linear-gradient(to_top,#100b28_0%,rgba(16,11,40,0.82)_28%,rgba(16,11,40,0.35)_60%,rgba(16,11,40,0.15)_100%)]"
+          />
+          <div className="mx-auto w-full max-w-[1500px] px-5 pb-12 pt-28 sm:pb-14 sm:pt-32 lg:px-10 lg:pb-20">
+            <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#6fc2b3]">
+              {eyebrow}
+            </p>
+            <h1 className="mt-5 max-w-[18ch] font-serif text-[2rem] leading-[1.1] text-white min-[380px]:text-4xl md:text-5xl lg:text-6xl">
+              {headline}
+            </h1>
+            <p className="mt-5 max-w-[58ch] text-[15px] leading-relaxed text-white/80 sm:text-base">{standfirst}</p>
           </div>
         </section>
 
@@ -120,15 +137,16 @@ export default async function WorldOfKaaraPage() {
             portrait under the heading, which left a large empty gap beside
             the text and disappeared entirely on mobile. */}
         <section className="mx-auto max-w-[1500px] px-5 py-20 lg:px-10 lg:py-28">
-          {about?.storyImageUrl && (
+          {story && (
             <Reveal className="mb-12 lg:mb-16">
               <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#171232] sm:aspect-[16/9] lg:aspect-[5/2]">
                 <Image
-                  src={about.storyImageUrl}
-                  alt={about.storyImageAlt || storyHeading}
+                  src={story.src}
+                  alt={about?.storyImageAlt || storyHeading}
                   fill
                   sizes="(max-width: 1500px) 100vw, 1500px"
                   className="object-cover"
+                  style={{ objectPosition: story.objectPosition }}
                 />
               </div>
             </Reveal>

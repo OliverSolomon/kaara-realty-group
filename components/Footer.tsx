@@ -203,14 +203,18 @@ export default function Footer({ settings }: FooterProps) {
               aria-label={`Scan or open the verification page for ${
                 contact?.registrationName || siteName
               }`}
-              className="press relative block h-24 w-24 shrink-0 bg-white p-2 transition-opacity duration-200 hover:opacity-85"
+              className="press relative block h-24 w-24 shrink-0 overflow-hidden bg-white p-2 transition-opacity duration-200 hover:opacity-85"
             >
+              {/* Fixed width and height rather than `fill`, so the code stays
+                  96px even if the stylesheet has not loaded yet. With `fill`
+                  it stretched to the full screen on phones. */}
               <Image
                 src={contact?.registrationQrUrl || "/registration-qr.svg"}
                 alt={`QR code for ${contact?.registrationName || siteName}`}
-                fill
-                sizes="96px"
-                className="object-contain p-1.5"
+                width={80}
+                height={80}
+                style={{ width: 80, height: 80 }}
+                className="object-contain"
               />
             </a>
 

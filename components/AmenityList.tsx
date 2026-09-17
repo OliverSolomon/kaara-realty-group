@@ -2,6 +2,7 @@ import {
   AMENITY_GROUPS,
   AMENITY_GROUP_OF,
   amenityLabel,
+  canonicalAmenity,
 } from "@/sanity/schemaTypes/objects/amenityOptions";
 import type { IconType } from "react-icons";
 import {
@@ -46,7 +47,12 @@ export default function AmenityList({ amenities, otherAmenities, className }: Am
     else buckets.set(group, [entry]);
   };
 
+  // Legacy and current values can both be stored for the same amenity.
+  const seen = new Set<string>();
   for (const value of selected) {
+    const canonical = canonicalAmenity(value);
+    if (seen.has(canonical)) continue;
+    seen.add(canonical);
     const group = AMENITY_GROUP_OF[value] ?? OTHER_AMENITY_GROUP;
     push(group, { label: amenityLabel(value), Icon: amenityIcon(value, group) });
   }
