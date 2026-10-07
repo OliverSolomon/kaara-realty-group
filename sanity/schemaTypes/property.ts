@@ -302,15 +302,6 @@ export const property = defineType({
       description: 'Matterport, YouTube 360 or any hosted walkthrough',
       type: 'url',
     }),
-    defineField({
-      name: 'viewCount',
-      title: 'Recorded Views',
-      description:
-        'Number of recorded viewings of this listing. Shown on the listing page as social proof.',
-      type: 'number',
-      validation: (Rule) => Rule.min(0).max(249),
-    }),
-
     // Sell section
     defineField({
       name: 'ownerVetted',

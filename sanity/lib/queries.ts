@@ -79,7 +79,7 @@ export const PROPERTIES_QUERY = defineQuery(`*[_type == "property"] | order(_cre
   floorNumber,
   facingDirection,
   dailyRate,
-  viewCount,
+  "viewCount": coalesce(*[_id == "views." + ^._id][0].count, 0),
   media[] {
     ...,
     _type == "image" => {
@@ -129,7 +129,7 @@ export const PROPERTY_DETAIL_QUERY = defineQuery(`*[_type == "property" && slug.
   floorNumber,
   facingDirection,
   dailyRate,
-  viewCount,
+  "viewCount": coalesce(*[_id == "views." + ^._id][0].count, 0),
   virtualTourUrl,
   "developer": developer->{name, "slug": slug.current, "logoUrl": coalesce(logo.asset->url, logo.externalUrl), website},
   media[] {
@@ -216,7 +216,7 @@ const LISTING_CARD_FIELDS = `
   ownerVetted,
   floorNumber,
   facingDirection,
-  viewCount,
+  "viewCount": coalesce(*[_id == "views." + ^._id][0].count, 0),
   virtualTourUrl
 `
 

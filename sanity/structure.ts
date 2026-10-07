@@ -214,6 +214,7 @@ export const structure: StructureResolver = (S) =>
           ![
             'post',
             'property',
+            'propertyViews',
             'event',
             'district',
             'county',

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import dynamic from "next/dynamic";
@@ -26,6 +26,7 @@ import EnquiryForm from "@/components/site/EnquiryForm";
 import ContactActions from "@/components/site/ContactActions";
 import ListingCard, { type Listing } from "@/components/site/ListingCard";
 import Reveal from "@/components/site/Reveal";
+import ViewTracker from "@/components/site/ViewTracker";
 import { useCurrency } from "@/context/CurrencyContext";
 import { useLanguage } from "@/context/LanguageContext";
 import {
@@ -60,6 +61,9 @@ export default function PropertyDetailClient({ property }: { property: Property 
   const { formatPrice } = useCurrency();
   const { t } = useLanguage();
   const [activeIndex, setActiveIndex] = useState(0);
+  const [liveViews, setLiveViews] = useState<number | null>(null);
+  const handleViewCount = useCallback((count: number) => setLiveViews(count), []);
+  const viewCount: number | undefined = liveViews ?? property?.viewCount;
 
   const settings = property?.siteSettings;
   const isStay = property?.listingType === "stay";
@@ -129,6 +133,7 @@ export default function PropertyDetailClient({ property }: { property: Property 
 
   return (
     <>
+      <ViewTracker slug={property?.slug} onCount={handleViewCount} />
       <Navbar settings={settings} />
 
       <main className="bg-[#100b28] pt-[72px] text-[#efebe3]">
@@ -229,10 +234,10 @@ export default function PropertyDetailClient({ property }: { property: Property 
                     {place}
                   </span>
                 )}
-                {typeof property?.viewCount === "number" && property.viewCount > 0 && (
+                {typeof viewCount === "number" && viewCount > 0 && (
                   <span className="inline-flex items-center gap-1.5 tabular-nums">
                     <PiEye size={13} aria-hidden="true" />
-                    {property.viewCount} recorded views
+                    {viewCount} {viewCount === 1 ? "view" : "views"}
                   </span>
                 )}
               </p>

@@ -29,6 +29,11 @@ export async function POST(req: NextRequest) {
       return new Response('Invalid signature', { status: 401 })
     }
 
+    // View-counter writes are not content edits; clearing the cache for each would defeat it.
+    if (body?._type === 'propertyViews') {
+      return NextResponse.json({ revalidated: false, reason: 'view counter' })
+    }
+
     revalidatePath('/', 'layout')
 
     return NextResponse.json({
