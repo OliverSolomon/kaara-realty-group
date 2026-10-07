@@ -31,7 +31,7 @@ export async function POST(request: Request) {
 
     // Send the email to kiragu@kaararealtygroup.com
     const response = await client.send({
-      from: { email: 'hello@demomailtrap.com', name: 'Kaara Realty Collective' }, // Replace with your verified domain in production
+      from: { email: 'noreply@www.kaararealtygroup.com', name: 'Kaara Realty Collective' },
       to: [{ email: 'kiragu@kaararealtygroup.com' }],
       subject: 'New Newsletter Subscription: Kaara Realty Group',
       html: `

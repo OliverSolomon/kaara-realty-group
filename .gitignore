@@ -40,3 +40,10 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 _sync/
+
+# Chat/screenshot images
+public/WhatsApp Image*
+public/Screenshot*
+public/Screen Shot*
+**/Screenshot*.png
+**/Screenshot*.jpg

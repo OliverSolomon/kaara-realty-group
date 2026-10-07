@@ -75,7 +75,7 @@ export async function POST(request: Request) {
       .join('');
 
     const response = await client.send({
-      from: { email: 'hello@demomailtrap.com', name: 'Kaara Realty Group Website' },
+      from: { email: 'noreply@www.kaararealtygroup.com', name: 'Kaara Realty Group Website' },
       to: [{ email: 'kiragu@kaararealtygroup.com' }],
       subject: `${SUBJECTS[kind]}: ${name}`,
       html: `
