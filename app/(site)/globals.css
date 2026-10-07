@@ -27,6 +27,25 @@ body {
   background-color: #100b28;
 }
 
+/* Browser autofill paints inputs pale blue or white. Keep them on the dark theme. */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+  -webkit-text-fill-color: #efebe3;
+  caret-color: #efebe3;
+  -webkit-box-shadow: 0 0 0 1000px #171232 inset;
+  box-shadow: 0 0 0 1000px #171232 inset;
+  transition: background-color 600000s 0s;
+}
+
+input,
+textarea,
+select {
+  color-scheme: dark;
+}
+
 ::selection {
   background: rgba(46, 125, 111, 0.45);
   color: #efebe3;
