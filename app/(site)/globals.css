@@ -46,6 +46,35 @@ select {
   color-scheme: dark;
 }
 
+/* A transparent select makes the browser fall back to a white option list.
+   Give the box and every option a solid dark background. */
+select {
+  background-color: #171232;
+  color: #efebe3;
+}
+
+select option,
+select optgroup {
+  background-color: #171232;
+  color: #efebe3;
+}
+
+select option:checked,
+select option:hover {
+  background-color: #2e7d6f;
+  color: #f4faf8;
+}
+
+select option:disabled {
+  color: rgba(239, 235, 227, 0.4);
+}
+
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  background-color: #171232 !important;
+}
+
 ::selection {
   background: rgba(46, 125, 111, 0.45);
   color: #efebe3;
