@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { MailtrapClient } from 'mailtrap';
 
+import { getEnquiryInbox } from '@/lib/enquiryInbox';
+
 let client: MailtrapClient | null = null;
 
 const SUBJECTS: Record<string, string> = {
@@ -76,7 +78,10 @@ export async function POST(request: Request) {
 
     const response = await client.send({
       from: { email: 'noreply@www.kaararealtygroup.com', name: 'Kaara Realty Group Website' },
-      to: [{ email: 'kiragu@kaararealtygroup.com' }],
+      // Set in Studio → Settings → Contact Details → "Enquiry Emails Go To".
+      to: await getEnquiryInbox(),
+      // Hitting Reply in the inbox answers the client directly.
+      reply_to: { email: email.trim(), name: name.trim() },
       subject: `${SUBJECTS[kind]}: ${name}`,
       html: `
         <div style="font-family:Helvetica,Arial,sans-serif;background:#f6f6f8;padding:32px;">

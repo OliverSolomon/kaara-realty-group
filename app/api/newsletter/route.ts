@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { MailtrapClient } from 'mailtrap';
 
+import { getEnquiryInbox } from '@/lib/enquiryInbox';
+
 // Initialize Mailtrap lazily to avoid build-time errors if API key is missing
 let client: MailtrapClient | null = null;
 
@@ -22,24 +24,27 @@ export async function POST(request: Request) {
 
     const { email } = await request.json();
 
-    if (!email || !email.includes('@')) {
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return NextResponse.json(
         { error: 'Valid email is required' },
         { status: 400 }
       );
     }
 
-    // Send the email to kiragu@kaararealtygroup.com
+    const subscriber = String(email).trim().replace(/[<>"'&]/g, '');
+
+    // Sent to the inbox set in Studio → Settings → Contact Details.
     const response = await client.send({
       from: { email: 'noreply@www.kaararealtygroup.com', name: 'Kaara Realty Collective' },
-      to: [{ email: 'kiragu@kaararealtygroup.com' }],
+      to: await getEnquiryInbox(),
+      reply_to: { email: subscriber },
       subject: 'New Newsletter Subscription: Kaara Realty Group',
       html: `
         <div style="font-family: serif; padding: 20px; color: #100B28; background-color: #f9f9f9;">
           <h2 style="text-transform: uppercase; border-bottom: 1px solid #100B28; padding-bottom: 10px;">New Subscription</h2>
           <p style="font-size: 16px;">You have a new subscriber to the Kaara Realty Collective.</p>
           <div style="background-color: #100B28; color: white; padding: 15px; margin-top: 20px;">
-            <strong>Subscriber Email:</strong> ${email}
+            <strong>Subscriber Email:</strong> ${subscriber}
           </div>
           <p style="font-size: 12px; margin-top: 30px; color: #666;">This is an automated notification from the Kaara Realty Platform.</p>
         </div>

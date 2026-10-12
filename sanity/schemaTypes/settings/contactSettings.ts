@@ -6,8 +6,26 @@ export const contactSettings = defineType({
   type: 'document',
   fields: [
     defineField({
+      name: 'enquiryRecipients',
+      title: 'Enquiry Emails Go To',
+      description:
+        'Every website enquiry (buy, viewing, short stay, virtual tour) and newsletter sign-up is emailed here through Mailtrap. Add more than one address to copy colleagues in. If this is left empty, emails go to info@kaararealtygroup.com.',
+      type: 'array',
+      of: [
+        {
+          type: 'string',
+          validation: (rule) =>
+            rule.regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, { name: 'email' }).error('Enter a valid email address'),
+        },
+      ],
+      initialValue: ['info@kaararealtygroup.com'],
+      validation: (rule) =>
+        rule.min(1).warning('With no address here, enquiries go to info@kaararealtygroup.com.'),
+    }),
+    defineField({
       name: 'email',
       title: 'Contact Email',
+      description: 'The public address shown on the website. Enquiry forms use the list above.',
       type: 'string',
     }),
     defineField({
