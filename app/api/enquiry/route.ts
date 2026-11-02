@@ -6,7 +6,8 @@ import { getEnquiryInbox } from '@/lib/enquiryInbox';
 let client: MailtrapClient | null = null;
 
 const SUBJECTS: Record<string, string> = {
-  buy: 'Buy enquiry',
+  // 'Buy' in a subject line costs spam points on the receiving server.
+  buy: 'Purchase enquiry',
   viewing: 'Viewing request',
   booking: 'Short stay availability request',
   tour: 'Virtual tour or consultation request',
@@ -83,7 +84,18 @@ export async function POST(request: Request) {
       // Hitting Reply in the inbox answers the client directly.
       reply_to: { email: email.trim(), name: name.trim() },
       subject: `${SUBJECTS[kind]}: ${name}`,
-      html: `
+      // A plain-text copy alongside the HTML keeps spam filters from
+      // treating the message as HTML-only marketing mail.
+      text: [
+        `${SUBJECTS[kind]}: ${name}`,
+        '',
+        ...Object.entries(payload)
+          .filter(([key, value]) => key !== 'kind' && String(value || '').trim())
+          .map(([key, value]) => `${LABELS[key] || key}: ${String(value)}`),
+        '',
+        'Sent from the Kaara Realty Group website.',
+      ].join('\n'),
+      html: `<!doctype html><html><body>
         <div style="font-family:Helvetica,Arial,sans-serif;background:#f6f6f8;padding:32px;">
           <div style="max-width:560px;margin:0 auto;background:#ffffff;padding:32px;">
             <p style="margin:0 0 4px;color:#2e7d6f;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;font-weight:700;">${escapeHtml(
@@ -95,7 +107,7 @@ export async function POST(request: Request) {
             <table style="width:100%;border-collapse:collapse;border-top:1px solid #e7e7ec;">${rows}</table>
             <p style="margin:28px 0 0;font-size:12px;color:#8a8a99;">Sent from the Kaara Realty Group website.</p>
           </div>
-        </div>
+        </div></body></html>
       `,
     });
 

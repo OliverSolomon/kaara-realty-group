@@ -39,7 +39,8 @@ export async function POST(request: Request) {
       to: await getEnquiryInbox(),
       reply_to: { email: subscriber },
       subject: 'New Newsletter Subscription: Kaara Realty Group',
-      html: `
+      text: `New newsletter subscriber: ${subscriber}\n\nThis is an automated notification from the Kaara Realty website.`,
+      html: `<!doctype html><html><body>
         <div style="font-family: serif; padding: 20px; color: #100B28; background-color: #f9f9f9;">
           <h2 style="text-transform: uppercase; border-bottom: 1px solid #100B28; padding-bottom: 10px;">New Subscription</h2>
           <p style="font-size: 16px;">You have a new subscriber to the Kaara Realty Collective.</p>
@@ -47,7 +48,7 @@ export async function POST(request: Request) {
             <strong>Subscriber Email:</strong> ${subscriber}
           </div>
           <p style="font-size: 12px; margin-top: 30px; color: #666;">This is an automated notification from the Kaara Realty Platform.</p>
-        </div>
+        </div></body></html>
       `,
     });
 
