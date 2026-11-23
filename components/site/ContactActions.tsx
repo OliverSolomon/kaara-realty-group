@@ -7,6 +7,8 @@ interface ContactActionsProps {
   contact?: { phone?: string; whatsapp?: string };
   /** What the prefilled WhatsApp message should refer to. */
   subject?: string;
+  /** Page link added to the WhatsApp message, so the advisor sees the exact listing. */
+  link?: string;
   className?: string;
   variant?: "solid" | "quiet";
 }
@@ -14,11 +16,12 @@ interface ContactActionsProps {
 export default function ContactActions({
   contact,
   subject,
+  link,
   className = "",
   variant = "solid",
 }: ContactActionsProps) {
   const message = subject
-    ? `Hello Kaara, I would like to talk about ${subject}.`
+    ? `Hello Kaara, I would like to talk about ${subject}${link ? `: ${link}` : "."}`
     : "Hello Kaara, I would like to speak to an advisor.";
 
   const base =
