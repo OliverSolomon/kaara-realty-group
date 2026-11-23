@@ -80,9 +80,9 @@ const GRAPHIC_GROUPS: { name: string; ids: string[] }[] = [
 
 const TABLE_STYLES: { id: TableStyle; label: string; swatch: React.CSSProperties }[] = [
   { id: 'classic', label: 'Classic', swatch: { background: '#FFFFFF', border: '1px solid #E0E1E6' } },
-  { id: 'minimal', label: 'Minimal', swatch: { background: '#FFFFFF', borderTop: '2px solid #7D2AE8' } },
-  { id: 'bold', label: 'Bold', swatch: { background: '#F6F2FC', border: '2px solid #7D2AE8' } },
-  { id: 'soft', label: 'Soft', swatch: { background: '#F2FBFC', border: '1px solid #00C4CC' } },
+  { id: 'minimal', label: 'Minimal', swatch: { background: '#FFFFFF', borderTop: '2px solid #2E7D6F' } },
+  { id: 'bold', label: 'Bold', swatch: { background: '#F6F2FC', border: '2px solid #2E7D6F' } },
+  { id: 'soft', label: 'Soft', swatch: { background: '#F2FBFC', border: '1px solid #4F9D8F' } },
 ]
 
 /** v0.11.3: category strip config — one source of truth so every tab shares metrics. */
@@ -104,9 +104,9 @@ const CHART_TILES: { kind: ChartKind; label: string; mini: React.ReactNode }[] =
     label: 'Bar',
     mini: (
       <svg viewBox="0 0 56 40" className="h-10 w-14" aria-hidden="true">
-        <rect x="4" y="14" width="8" height="22" rx="2" fill="#7D2AE8" />
-        <rect x="16" y="8" width="8" height="28" rx="2" fill="#00C4CC" />
-        <rect x="28" y="18" width="8" height="18" rx="2" fill="#FF5C8A" />
+        <rect x="4" y="14" width="8" height="22" rx="2" fill="#2E7D6F" />
+        <rect x="16" y="8" width="8" height="28" rx="2" fill="#4F9D8F" />
+        <rect x="28" y="18" width="8" height="18" rx="2" fill="#D8C07A" />
         <rect x="40" y="4" width="8" height="32" rx="2" fill="#FFD166" />
       </svg>
     ),
@@ -116,12 +116,12 @@ const CHART_TILES: { kind: ChartKind; label: string; mini: React.ReactNode }[] =
     label: 'Line',
     mini: (
       <svg viewBox="0 0 56 40" className="h-10 w-14" aria-hidden="true">
-        <polyline points="4,30 18,22 30,26 44,10 52,14" fill="none" stroke="#7D2AE8" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-        <circle cx="4" cy="30" r="3" fill="#7D2AE8" />
-        <circle cx="18" cy="22" r="3" fill="#7D2AE8" />
-        <circle cx="30" cy="26" r="3" fill="#7D2AE8" />
-        <circle cx="44" cy="10" r="3" fill="#7D2AE8" />
-        <circle cx="52" cy="14" r="3" fill="#7D2AE8" />
+        <polyline points="4,30 18,22 30,26 44,10 52,14" fill="none" stroke="#2E7D6F" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+        <circle cx="4" cy="30" r="3" fill="#2E7D6F" />
+        <circle cx="18" cy="22" r="3" fill="#2E7D6F" />
+        <circle cx="30" cy="26" r="3" fill="#2E7D6F" />
+        <circle cx="44" cy="10" r="3" fill="#2E7D6F" />
+        <circle cx="52" cy="14" r="3" fill="#2E7D6F" />
       </svg>
     ),
   },
@@ -130,8 +130,8 @@ const CHART_TILES: { kind: ChartKind; label: string; mini: React.ReactNode }[] =
     label: 'Donut',
     mini: (
       <svg viewBox="0 0 56 40" className="h-10 w-14" aria-hidden="true">
-        <circle cx="28" cy="20" r="14" fill="none" stroke="#7D2AE8" strokeWidth="8" strokeDasharray="44 88" transform="rotate(-90 28 20)" />
-        <circle cx="28" cy="20" r="14" fill="none" stroke="#00C4CC" strokeWidth="8" strokeDasharray="30 88" strokeDashoffset="-44" transform="rotate(-90 28 20)" />
+        <circle cx="28" cy="20" r="14" fill="none" stroke="#2E7D6F" strokeWidth="8" strokeDasharray="44 88" transform="rotate(-90 28 20)" />
+        <circle cx="28" cy="20" r="14" fill="none" stroke="#4F9D8F" strokeWidth="8" strokeDasharray="30 88" strokeDashoffset="-44" transform="rotate(-90 28 20)" />
         <circle cx="28" cy="20" r="14" fill="none" stroke="#FFD166" strokeWidth="8" strokeDasharray="14 88" strokeDashoffset="-74" transform="rotate(-90 28 20)" />
       </svg>
     ),
@@ -141,13 +141,13 @@ const CHART_TILES: { kind: ChartKind; label: string; mini: React.ReactNode }[] =
     label: 'Scatter',
     mini: (
       <svg viewBox="0 0 56 40" className="h-10 w-14" aria-hidden="true">
-        <circle cx="8" cy="32" r="3" fill="#00C4CC" />
-        <circle cx="16" cy="24" r="3" fill="#00C4CC" />
-        <circle cx="22" cy="30" r="3" fill="#00C4CC" />
-        <circle cx="30" cy="16" r="3" fill="#00C4CC" />
-        <circle cx="38" cy="22" r="3" fill="#00C4CC" />
-        <circle cx="46" cy="8" r="3" fill="#00C4CC" />
-        <circle cx="50" cy="18" r="3" fill="#00C4CC" />
+        <circle cx="8" cy="32" r="3" fill="#4F9D8F" />
+        <circle cx="16" cy="24" r="3" fill="#4F9D8F" />
+        <circle cx="22" cy="30" r="3" fill="#4F9D8F" />
+        <circle cx="30" cy="16" r="3" fill="#4F9D8F" />
+        <circle cx="38" cy="22" r="3" fill="#4F9D8F" />
+        <circle cx="46" cy="8" r="3" fill="#4F9D8F" />
+        <circle cx="50" cy="18" r="3" fill="#4F9D8F" />
       </svg>
     ),
   },
@@ -156,7 +156,7 @@ const CHART_TILES: { kind: ChartKind; label: string; mini: React.ReactNode }[] =
 /** One shared class ⇒ identical height, padding, type size and states on every tab.
  *  text-white/65 on the white@5% bar = 7.38:1 (WCAG AA, was ~1.3:1 via text-foreground). */
 const CATEGORY_TAB_CLS =
-  'h-7 flex-none whitespace-nowrap rounded-md px-3 text-xs text-white/65 hover:text-white/90 transition-colors data-[state=active]:bg-[#7D2AE8] data-[state=active]:text-white'
+  'h-7 flex-none whitespace-nowrap rounded-md px-3 text-xs text-white/65 hover:text-white/90 transition-colors data-[state=active]:bg-[#2E7D6F] data-[state=active]:text-white'
 
 export function ElementsPanel() {
   const [tab, setTab] = useState('shapes')
@@ -171,18 +171,18 @@ export function ElementsPanel() {
   const searchPlaceholder = 'Search shapes & graphics'
 
   return (
-    <Tabs value={tab} onValueChange={setTab} className="flex flex-col h-full bg-[#FFFFFF] text-[#0E1318]">
-      <div className="px-4 pt-4 pb-3 border-b border-black/[0.07] shrink-0">
+    <Tabs value={tab} onValueChange={setTab} className="flex flex-col h-full bg-[#171232] text-[#EDEEF2]">
+      <div className="px-4 pt-4 pb-3 border-b border-white/[0.07] shrink-0">
         <h3 className="font-bold text-sm">Elements</h3>
-        <div className="flex items-center gap-2 h-9 rounded-lg bg-black/[0.06] border border-black/10 px-2.5 mt-2.5">
-          <Search size={13} className="text-[#0E1318]/40 shrink-0" />
+        <div className="flex items-center gap-2 h-9 rounded-lg bg-white/[0.06] border border-white/10 px-2.5 mt-2.5">
+          <Search size={13} className="text-white/40 shrink-0" />
           <input
             value={query}
             onChange={(e) => {
               setQuery(e.target.value)
               if (e.target.value) setTab('graphics')
             }}
-            className="bg-transparent outline-none text-[12px] text-[#0E1318] w-full placeholder:text-[#0E1318]/35"
+            className="bg-transparent outline-none text-[12px] text-white w-full placeholder:text-white/35"
             placeholder={searchPlaceholder}
             aria-label={searchPlaceholder}
           />
@@ -192,7 +192,7 @@ export function ElementsPanel() {
             panel divider and content ("Tables" floating mid-panel on mobile). */}
         <TabsList
           aria-label="Element categories"
-          className="cv-tabscroll mt-3 flex h-9 w-full items-center justify-start gap-1 overflow-x-auto rounded-lg bg-black/[0.05] p-1"
+          className="cv-tabscroll mt-3 flex h-9 w-full items-center justify-start gap-1 overflow-x-auto rounded-lg bg-white/[0.05] p-1"
         >
           {CATEGORY_TABS.map((t) => (
             <TabsTrigger key={t.value} value={t.value} className={CATEGORY_TAB_CLS}>
@@ -207,7 +207,7 @@ export function ElementsPanel() {
         <div className="grid grid-cols-3 gap-2 mb-4">
           {BASIC_SHAPES.map((s) => (
             <ShapeTile key={s.id} label={s.label} onClick={() => addShape(s.id as 'rect')}>
-              {s.icon ? <s.icon size={26} strokeWidth={1.6} className="text-[#0E1318]/80" /> : <span className="h-[22px] w-[22px] rounded-md border-2 border-black/80" aria-hidden="true" />}
+              {s.icon ? <s.icon size={26} strokeWidth={1.6} className="text-white/80" /> : <span className="h-[22px] w-[22px] rounded-md border-2 border-white/80" aria-hidden="true" />}
             </ShapeTile>
           ))}
         </div>
@@ -240,11 +240,11 @@ export function ElementsPanel() {
             <button
               key={l.id}
               onClick={() => addLine(l.id as 'solid')}
-              className="flex flex-col items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.03] p-4 hover:border-[#7D2AE8] hover:bg-[#7D2AE8]/10 transition-all"
+              className="flex flex-col items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.03] p-4 hover:border-[#2E7D6F] hover:bg-[#2E7D6F]/10 transition-all"
               aria-label={`Add ${l.label}`}
             >
-              <l.icon size={24} strokeWidth={1.6} className="text-[#0E1318]/80" />
-              <span className="text-[11px] text-[#0E1318]/55">{l.label}</span>
+              <l.icon size={24} strokeWidth={1.6} className="text-white/80" />
+              <span className="text-[11px] text-white/55">{l.label}</span>
             </button>
           ))}
         </div>
@@ -279,13 +279,13 @@ export function ElementsPanel() {
 
       <TabsContent value="stickers" className="flex-1 overflow-y-auto cv-scroll-dark p-4 mt-0">
         {/* v0.22: the vector pack library — featured row + full-library launcher */}
-        <h4 className="text-xs font-semibold text-[#0E1318]/50 mb-2">Sticker packs</h4>
+        <h4 className="text-xs font-semibold text-white/50 mb-2">Sticker packs</h4>
         <div className="grid grid-cols-4 gap-1.5 mb-3">
           {FEATURED_STICKERS.map((s) => (
             <button
               key={s.id}
               onClick={() => addPackSticker(s)}
-              className="aspect-square rounded-xl bg-white/[0.04] hover:bg-[#7D2AE8]/25 border border-white/10 hover:border-[#7D2AE8] hover:scale-105 transition-all flex items-center justify-center p-1"
+              className="aspect-square rounded-xl bg-white/[0.04] hover:bg-[#2E7D6F]/25 border border-white/10 hover:border-[#2E7D6F] hover:scale-105 transition-all flex items-center justify-center p-1"
               aria-label={`Add sticker ${s.name}`}
               title={`${s.name} — from the ${s.packName} pack`}
             >
@@ -299,20 +299,20 @@ export function ElementsPanel() {
         </div>
         <button
           onClick={() => useEditorStore.getState().setPanel('apps')}
-          className="w-full mb-5 h-9 rounded-lg border border-[#7D2AE8]/50 text-[12px] font-semibold text-white/85 hover:bg-[#7D2AE8]/25 transition-colors"
+          className="w-full mb-5 h-9 rounded-lg border border-[#2E7D6F]/50 text-[12px] font-semibold text-white/85 hover:bg-[#2E7D6F]/25 transition-colors"
         >
           Browse all {VECTOR_STICKER_COUNT + EMOJI_STICKERS.length} stickers in apps →
         </button>
 
         {STICKER_GROUPS.map((group) => (
           <div key={group.name} className="mb-5">
-            <h4 className="text-xs font-semibold text-[#0E1318]/50 mb-2">{group.name}</h4>
+            <h4 className="text-xs font-semibold text-white/50 mb-2">{group.name}</h4>
             <div className="grid grid-cols-6 gap-1">
               {group.emojis.map((e) => (
                 <button
                   key={e}
                   onClick={() => addSticker(e)}
-                  className="h-9 w-9 rounded-lg text-xl leading-none flex items-center justify-center hover:bg-[#7D2AE8]/25 hover:scale-110 transition-all"
+                  className="h-9 w-9 rounded-lg text-xl leading-none flex items-center justify-center hover:bg-[#2E7D6F]/25 hover:scale-110 transition-all"
                   aria-label={`Add sticker ${e}`}
                 >
                   {e}
@@ -325,8 +325,8 @@ export function ElementsPanel() {
 
       {/* v0.14 (D7): data-bound charts */}
       <TabsContent value="charts" className="flex-1 overflow-y-auto cv-scroll-dark p-4 mt-0">
-        <p className="text-[11px] text-[#0E1318]/45 leading-relaxed mb-3">
-          Charts are data-bound elements — select one on the canvas and use <span className="text-[#0E1318]/70">Edit data</span> in the toolbar to change labels, values, colours and kind.
+        <p className="text-[11px] text-white/45 leading-relaxed mb-3">
+          Charts are data-bound elements — select one on the canvas and use <span className="text-white/70">Edit data</span> in the toolbar to change labels, values, colours and kind.
         </p>
         <SectionTitle>Types</SectionTitle>
         <div className="grid grid-cols-2 gap-2">
@@ -334,11 +334,11 @@ export function ElementsPanel() {
             <button
               key={t.kind}
               onClick={() => addChart(t.kind)}
-              className="flex flex-col items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.03] p-3 h-[92px] hover:border-[#7D2AE8] hover:bg-[#7D2AE8]/10 transition-all"
+              className="flex flex-col items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.03] p-3 h-[92px] hover:border-[#2E7D6F] hover:bg-[#2E7D6F]/10 transition-all"
               aria-label={`Add ${t.label} chart`}
             >
               {t.mini}
-              <span className="text-[11px] text-[#0E1318]/55">{t.label}</span>
+              <span className="text-[11px] text-white/55">{t.label}</span>
             </button>
           ))}
         </div>
@@ -346,7 +346,7 @@ export function ElementsPanel() {
 
       {/* v0.6: native tables */}
       <TabsContent value="tables" className="flex-1 overflow-y-auto cv-scroll-dark p-4 mt-0">
-        <p className="text-[11px] text-[#0E1318]/45 leading-relaxed mb-3">
+        <p className="text-[11px] text-white/45 leading-relaxed mb-3">
           Tables are native elements — click a cell on the canvas to edit it. Add or remove rows &amp; columns from the toolbar.
         </p>
         <SectionTitle>Styles</SectionTitle>
@@ -355,7 +355,7 @@ export function ElementsPanel() {
             <button
               key={t.id}
               onClick={() => addTable(t.id)}
-              className="flex flex-col items-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] p-3 h-[92px] hover:border-[#7D2AE8] hover:bg-[#7D2AE8]/10 transition-all"
+              className="flex flex-col items-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] p-3 h-[92px] hover:border-[#2E7D6F] hover:bg-[#2E7D6F]/10 transition-all"
               aria-label={`Add ${t.label} table`}
             >
               <span className="w-14 h-10 rounded-md grid grid-cols-3 grid-rows-2 gap-px overflow-hidden" style={t.swatch} aria-hidden="true">
@@ -363,7 +363,7 @@ export function ElementsPanel() {
                   <span key={i} className={cn('bg-current opacity-10', i < 3 && 'opacity-40')} />
                 ))}
               </span>
-              <span className="text-[11px] text-[#0E1318]/55">{t.label}</span>
+              <span className="text-[11px] text-white/55">{t.label}</span>
             </button>
           ))}
         </div>
@@ -371,7 +371,7 @@ export function ElementsPanel() {
 
       {/* v0.6: frames (image-in-shape) */}
       <TabsContent value="frames" className="flex-1 overflow-y-auto cv-scroll-dark p-4 mt-0">
-        <p className="text-[11px] text-[#0E1318]/45 leading-relaxed mb-3">
+        <p className="text-[11px] text-white/45 leading-relaxed mb-3">
           Drop an upload or photo onto a frame to fill it — the image is clipped to the shape.
         </p>
         <SectionTitle>Shapes</SectionTitle>
@@ -386,7 +386,7 @@ export function ElementsPanel() {
 
       {/* v0.6: embed link cards */}
       <TabsContent value="embeds" className="flex-1 overflow-y-auto cv-scroll-dark p-4 mt-0">
-        <p className="text-[11px] text-[#0E1318]/45 leading-relaxed mb-3">
+        <p className="text-[11px] text-white/45 leading-relaxed mb-3">
           Embed cards open their link when clicked in Preview or shared views. Paste any URL — YouTube and Maps get a styled card.
         </p>
         <EmbedComposer />
@@ -396,15 +396,15 @@ export function ElementsPanel() {
 }
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
-  return <h4 className="text-[11px] font-bold text-[#0E1318]/45 uppercase tracking-wide mb-2.5">{children}</h4>
+  return <h4 className="text-[11px] font-bold text-white/45 uppercase tracking-wide mb-2.5">{children}</h4>
 }
 
 function FrameIconFor({ shape }: { shape: string }) {
-  if (shape === 'ellipse') return <span className="h-6 w-6 rounded-full border-2 border-dashed border-black/80" aria-hidden="true" />
-  if (shape === 'circle') return <span className="h-6 w-6 rounded-full border-2 border-dashed border-[#7D2AE8]" aria-hidden="true" />
+  if (shape === 'ellipse') return <span className="h-6 w-6 rounded-full border-2 border-dashed border-white/80" aria-hidden="true" />
+  if (shape === 'circle') return <span className="h-6 w-6 rounded-full border-2 border-dashed border-[#2E7D6F]" aria-hidden="true" />
   if (shape === 'triangle') return <span className="w-0 h-0 border-l-[14px] border-r-[14px] border-b-[24px] border-l-transparent border-r-transparent border-b-white/60" aria-hidden="true" />
-  if (shape === 'hexagon') return <Hexagon size={26} strokeWidth={1.8} className="text-[#0E1318]/80" />
-  return <Frame size={26} strokeWidth={1.8} className="text-[#0E1318]/80" />
+  if (shape === 'hexagon') return <Hexagon size={26} strokeWidth={1.8} className="text-white/80" />
+  return <Frame size={26} strokeWidth={1.8} className="text-white/80" />
 }
 
 function EmbedComposer() {
@@ -412,8 +412,8 @@ function EmbedComposer() {
   return (
     <div>
       <SectionTitle>Add a link card</SectionTitle>
-      <div className="flex items-center gap-2 h-10 rounded-lg bg-black/[0.06] border border-black/10 px-3">
-        <Link2 size={14} className="text-[#0E1318]/40 shrink-0" />
+      <div className="flex items-center gap-2 h-10 rounded-lg bg-white/[0.06] border border-white/10 px-3">
+        <Link2 size={14} className="text-white/40 shrink-0" />
         <input
           value={url}
           onChange={(e) => setUrl(e.target.value)}
@@ -423,7 +423,7 @@ function EmbedComposer() {
               setUrl('')
             }
           }}
-          className="bg-transparent outline-none text-[12px] text-[#0E1318] w-full placeholder:text-[#0E1318]/35"
+          className="bg-transparent outline-none text-[12px] text-white w-full placeholder:text-white/35"
           placeholder="https://youtube.com/watch?v=…"
           aria-label="Embed URL"
         />
@@ -459,11 +459,11 @@ function QuickEmbed({ icon: Icon, label, placeholder }: { icon: typeof Youtube; 
   return (
     <button
       onClick={() => addEmbed(placeholder)}
-      className="flex flex-col items-center justify-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.03] p-3 h-[92px] hover:border-[#7D2AE8] hover:bg-[#7D2AE8]/10 transition-all"
+      className="flex flex-col items-center justify-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.03] p-3 h-[92px] hover:border-[#2E7D6F] hover:bg-[#2E7D6F]/10 transition-all"
       aria-label={`Add ${label} embed`}
     >
-      <Icon size={24} strokeWidth={1.6} className="text-[#0E1318]/80" />
-      <span className="text-[11px] text-[#0E1318]/55">{label}</span>
+      <Icon size={24} strokeWidth={1.6} className="text-white/80" />
+      <span className="text-[11px] text-white/55">{label}</span>
     </button>
   )
 }
@@ -472,11 +472,11 @@ function ShapeTile({ label, children, onClick }: { label: string; children: Reac
   return (
     <button
       onClick={onClick}
-      className="flex flex-col items-center justify-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.03] p-3 h-[84px] hover:border-[#7D2AE8] hover:bg-[#7D2AE8]/10 transition-all"
+      className="flex flex-col items-center justify-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.03] p-3 h-[84px] hover:border-[#2E7D6F] hover:bg-[#2E7D6F]/10 transition-all"
       aria-label={`Add ${label}`}
     >
       <span className="h-7 flex items-center">{children}</span>
-      <span className="text-[11px] text-[#0E1318]/55">{label}</span>
+      <span className="text-[11px] text-white/55">{label}</span>
     </button>
   )
 }
@@ -486,13 +486,13 @@ function GraphicTile({ g }: { g: { id: string; name: string; path: string } }) {
     <button
       onClick={() => addGraphic(g.id)}
       className={cn(
-        'flex flex-col items-center justify-center gap-1.5 rounded-xl border border-black/10 bg-black/[0.03] p-3 h-[84px] text-[#0E1318]/80',
-        'hover:border-[#7D2AE8] hover:bg-[#7D2AE8]/10 hover:text-white transition-all'
+        'flex flex-col items-center justify-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.03] p-3 h-[84px] text-white/80',
+        'hover:border-[#2E7D6F] hover:bg-[#2E7D6F]/10 hover:text-white transition-all'
       )}
       aria-label={`Add ${g.name}`}
     >
       <GraphicIcon path={g.path} />
-      <span className="text-[11px] text-[#0E1318]/55">{g.name}</span>
+      <span className="text-[11px] text-white/55">{g.name}</span>
     </button>
   )
 }

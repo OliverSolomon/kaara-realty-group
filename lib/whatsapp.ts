@@ -162,7 +162,7 @@ async function saveInbound(message: InboundMessage, profileName: string | null) 
 
     await client.query("UPDATE whatsapp_messages SET lead_id = $1 WHERE wa_message_id = $2", [leadId, message.id]);
     if (click && !click.lead_id) {
-      await client.query("UPDATE lead_events SET lead_id = $1 WHERE id = $2", [leadId, click.id]);
+      await client.query("UPDATE lead_events SET lead_id = $1, archived_at = NULL WHERE id = $2", [leadId, click.id]);
     }
     await client.query(
       `INSERT INTO lead_events (lead_id, type, ref, listing_title, listing_slug, listing_type, meta)

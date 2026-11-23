@@ -39,7 +39,7 @@ export function ToolbarPopover({
         <>
           <div className="fixed inset-0 z-[60]" onClick={() => setOpen(false)} onContextMenu={(e) => { e.preventDefault(); setOpen(false) }} />
           <div className="cv-pop" style={{ left: pos.x, top: pos.y, minWidth: width }}>
-            {title && <div className="text-[12px] font-bold text-[#0E1318]/90 mb-2.5">{title}</div>}
+            {title && <div className="text-[12px] font-bold text-white/90 mb-2.5">{title}</div>}
             {children}
           </div>
         </>
@@ -73,7 +73,7 @@ export function SliderRow({
   return (
     <div className="mb-3.5 last:mb-0">
       <div className="flex items-center justify-between mb-1.5">
-        <span className="text-[12px] text-[#0E1318]/80 font-medium">{label}</span>
+        <span className="text-[12px] text-white/80 font-medium">{label}</span>
         <input
           type="number"
           value={Number(value.toFixed(2))}
@@ -85,14 +85,14 @@ export function SliderRow({
             if (!Number.isNaN(v)) onChange(v)
           }}
           onBlur={() => onCommit?.(value)}
-          className="h-7 w-16 rounded-lg bg-black/[0.07] border border-black/10 px-2 text-[12px] text-[#0E1318] outline-none focus:border-[#7D2AE8] [color-scheme:dark]"
+          className="h-7 w-16 rounded-lg bg-white/[0.07] border border-white/10 px-2 text-[12px] text-white outline-none focus:border-[#2E7D6F] [color-scheme:dark]"
           aria-label={label}
         />
       </div>
       <input
         type="range"
         className="cv-slider w-full"
-        style={{ background: `linear-gradient(to right, #7D2AE8 ${((value - min) / (max - min)) * 100}%, rgba(255,255,255,0.14) ${((value - min) / (max - min)) * 100}%)` }}
+        style={{ background: `linear-gradient(to right, #2E7D6F ${((value - min) / (max - min)) * 100}%, rgba(255,255,255,0.14) ${((value - min) / (max - min)) * 100}%)` }}
         min={min}
         max={max}
         step={step}
@@ -101,7 +101,7 @@ export function SliderRow({
         onPointerUp={() => onCommit?.(value)}
         aria-label={`${label} slider`}
       />
-      {format && <div className="text-[10px] text-[#0E1318]/40 mt-1">{format(value)}</div>}
+      {format && <div className="text-[10px] text-white/40 mt-1">{format(value)}</div>}
     </div>
   )
 }
@@ -125,9 +125,9 @@ export function IconTile({
       onClick={onClick}
       disabled={disabled}
       className={cn(
-        'flex flex-col items-center justify-center gap-1 rounded-lg py-2 text-[10px] font-medium text-[#0E1318]/80 transition-colors',
-        'hover:bg-black/[0.09] disabled:opacity-35 disabled:pointer-events-none',
-        active && 'bg-black/[0.13] text-[#0E1318]'
+        'flex flex-col items-center justify-center gap-1 rounded-lg py-2 text-[10px] font-medium text-white/80 transition-colors',
+        'hover:bg-white/[0.09] disabled:opacity-35 disabled:pointer-events-none',
+        active && 'bg-white/[0.13] text-white'
       )}
       aria-label={label}
     >

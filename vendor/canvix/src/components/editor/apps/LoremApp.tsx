@@ -37,19 +37,19 @@ export function LoremApp({ onClose }: AppPanelProps) {
       <div className="flex gap-1.5 mb-3">
         <button
           onClick={() => setReal(false)}
-          className={cn('flex-1 h-8 rounded-lg text-[11px] font-semibold transition-colors', !real ? 'bg-[#7D2AE8] text-white' : 'bg-black/[0.05] text-[#0E1318]/60 hover:text-[#0E1318]')}
+          className={cn('flex-1 h-8 rounded-lg text-[11px] font-semibold transition-colors', !real ? 'bg-[#2E7D6F] text-white' : 'bg-white/[0.05] text-white/60 hover:text-white')}
         >
           Lorem ipsum
         </button>
         <button
           onClick={() => setReal(true)}
-          className={cn('flex-1 h-8 rounded-lg text-[11px] font-semibold transition-colors', real ? 'bg-[#7D2AE8] text-white' : 'bg-black/[0.05] text-[#0E1318]/60 hover:text-[#0E1318]')}
+          className={cn('flex-1 h-8 rounded-lg text-[11px] font-semibold transition-colors', real ? 'bg-[#2E7D6F] text-white' : 'bg-white/[0.05] text-white/60 hover:text-white')}
         >
           Real-feel copy
         </button>
         <button
           onClick={() => setSeed((s) => s + 1)}
-          className="h-8 w-8 rounded-lg border border-black/12 text-[#0E1318]/70 hover:text-[#0E1318] flex items-center justify-center"
+          className="h-8 w-8 rounded-lg border border-white/12 text-white/70 hover:text-white flex items-center justify-center"
           title="Shuffle"
           aria-label="Shuffle text"
         >
@@ -64,7 +64,7 @@ export function LoremApp({ onClose }: AppPanelProps) {
             onClick={() => { setStyle(p.id); setLines(p.lines) }}
             className={cn(
               'rounded-lg border py-2 text-[11px] font-medium transition-colors',
-              style === p.id ? 'border-[#7D2AE8] bg-[#7D2AE8]/15 text-white' : 'border-black/10 text-[#0E1318]/60 hover:text-[#0E1318]'
+              style === p.id ? 'border-[#2E7D6F] bg-[#2E7D6F]/15 text-white' : 'border-white/10 text-white/60 hover:text-white'
             )}
           >
             {p.label}
@@ -72,7 +72,7 @@ export function LoremApp({ onClose }: AppPanelProps) {
         ))}
       </div>
 
-      <label className="block text-[11px] font-semibold text-[#0E1318]/55 mb-1.5">Lines</label>
+      <label className="block text-[11px] font-semibold text-white/55 mb-1.5">Lines</label>
       <input
         type="range" min={1} max={6} value={lines}
         onChange={(e) => setLines(Number(e.target.value))}
@@ -80,7 +80,7 @@ export function LoremApp({ onClose }: AppPanelProps) {
         aria-label="Number of lines"
       />
 
-      <div className="rounded-xl border border-black/10 bg-black/[0.03] p-3 text-[11px] text-[#0E1318]/60 leading-relaxed max-h-24 overflow-hidden mb-3">
+      <div className="rounded-xl border border-white/10 bg-white/[0.03] p-3 text-[11px] text-white/60 leading-relaxed max-h-24 overflow-hidden mb-3">
         {text}
       </div>
 

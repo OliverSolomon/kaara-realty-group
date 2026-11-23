@@ -64,7 +64,7 @@ export const CollabOverlay = memo(function CollabOverlay({
                 <path d="M2 1 L2 19 L6.5 15 L9.5 22 L12.5 20.5 L9.5 14 L15.5 14 Z" fill={c.color} stroke="#FFFFFF" strokeWidth="1.3" />
               </svg>
               <span
-                className="absolute left-4 top-5 whitespace-nowrap rounded-md px-1.5 py-0.5 text-[11px] font-semibold text-[#0E1318] shadow"
+                className="absolute left-4 top-5 whitespace-nowrap rounded-md px-1.5 py-0.5 text-[11px] font-semibold text-white shadow"
                 style={{ background: c.color }}
               >
                 {c.name}

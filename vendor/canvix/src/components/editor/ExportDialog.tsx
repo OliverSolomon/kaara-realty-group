@@ -377,7 +377,7 @@ export function ExportDialog({ open, onOpenChange }: { open: boolean; onOpenChan
                     onClick={() => setFormat(f.id)}
                     className={cn(
                       'rounded-xl border-2 p-3 text-left transition-all',
-                      format === f.id ? 'border-[#00C4CC] bg-[#F0FBFC]' : 'border-black/10 hover:border-black/25'
+                      format === f.id ? 'border-[#4F9D8F] bg-[#F0FBFC]' : 'border-black/10 hover:border-black/25'
                     )}
                   >
                     <div className="font-bold text-sm flex items-center gap-1.5">
@@ -424,7 +424,7 @@ export function ExportDialog({ open, onOpenChange }: { open: boolean; onOpenChan
                         onClick={() => setGifSize(sz.id)}
                         className={cn(
                           'rounded-xl border-2 p-2.5 text-center transition-all',
-                          gifSize === sz.id ? 'border-[#00C4CC] bg-[#F0FBFC]' : 'border-black/10 hover:border-black/25',
+                          gifSize === sz.id ? 'border-[#4F9D8F] bg-[#F0FBFC]' : 'border-black/10 hover:border-black/25',
                         )}
                       >
                         <div className="font-bold text-sm">{sz.label}</div>
@@ -442,7 +442,7 @@ export function ExportDialog({ open, onOpenChange }: { open: boolean; onOpenChan
                         onClick={() => setGifFps(f.id)}
                         className={cn(
                           'rounded-xl border-2 p-2.5 text-center transition-all',
-                          gifFps === f.id ? 'border-[#00C4CC] bg-[#F0FBFC]' : 'border-black/10 hover:border-black/25',
+                          gifFps === f.id ? 'border-[#4F9D8F] bg-[#F0FBFC]' : 'border-black/10 hover:border-black/25',
                         )}
                       >
                         <div className="font-bold text-sm">{f.label}</div>
@@ -456,7 +456,7 @@ export function ExportDialog({ open, onOpenChange }: { open: boolean; onOpenChan
                     Dithering
                     <span className="block font-normal">Smoother gradients, slightly larger file</span>
                   </span>
-                  <input type="checkbox" checked={gifDither} onChange={(e) => setGifDither(e.target.checked)} className="accent-[#00C4CC] h-4 w-4" />
+                  <input type="checkbox" checked={gifDither} onChange={(e) => setGifDither(e.target.checked)} className="accent-[#4F9D8F] h-4 w-4" />
                 </label>
                 <div className="space-y-1.5">
                   <div className="flex items-center gap-4">
@@ -467,7 +467,7 @@ export function ExportDialog({ open, onOpenChange }: { open: boolean; onOpenChan
                           name="gif-page-range"
                           checked={gifRangeMode === m}
                           onChange={() => setGifRangeMode(m)}
-                          className="accent-[#00C4CC]"
+                          className="accent-[#4F9D8F]"
                         />
                         {m === 'all' ? 'All pages' : m === 'current' ? 'Current page' : 'Range'}
                       </label>
@@ -538,7 +538,7 @@ export function ExportDialog({ open, onOpenChange }: { open: boolean; onOpenChan
                   onClick={() => setScale(s.id)}
                   className={cn(
                     'rounded-xl border-2 p-3 text-center transition-all',
-                    scale === s.id ? 'border-[#00C4CC] bg-[#F0FBFC]' : 'border-black/10 hover:border-black/25'
+                    scale === s.id ? 'border-[#4F9D8F] bg-[#F0FBFC]' : 'border-black/10 hover:border-black/25'
                   )}
                 >
                   <div className="font-bold text-sm">{s.label}</div>
@@ -559,7 +559,7 @@ export function ExportDialog({ open, onOpenChange }: { open: boolean; onOpenChan
                 {format === 'pdf' || format === 'pptx' ? 'Include all pages' : 'Download all pages'}
                 <span className="block text-[11px] text-muted-foreground font-normal">{format === 'pdf' || format === 'pptx' ? `${pages.length} pages in one ${format.toUpperCase()} file` : `${pages.length} files, one per page`}</span>
               </span>
-              <input type="checkbox" checked={allPages} onChange={(e) => setAllPages(e.target.checked)} className="accent-[#00C4CC] h-4 w-4" />
+              <input type="checkbox" checked={allPages} onChange={(e) => setAllPages(e.target.checked)} className="accent-[#4F9D8F] h-4 w-4" />
             </label>
           )}
         </div>

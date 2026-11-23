@@ -41,7 +41,7 @@ export function ColorPicker({ value, onChange, children, label }: ColorPickerPro
       <PopoverTrigger asChild>
         {children ?? (
           <button
-            className="h-8 w-8 rounded-lg border-2 border-[#7D2AE8] shadow-[0_0_0_1px_rgba(0,0,0,0.12)] overflow-hidden"
+            className="h-8 w-8 rounded-lg border-2 border-white shadow-[0_0_0_1px_rgba(0,0,0,0.12)] overflow-hidden"
             style={{ background: value === 'transparent' ? 'repeating-conic-gradient(#e3e3e8 0% 25%, #ffffff 0% 50%) 50% / 10px 10px' : value }}
             aria-label={label ?? 'Pick color'}
           />
@@ -92,7 +92,7 @@ export function SwatchGrid({ value, onPick, swatches }: { value?: string; onPick
         <button
           key={c}
           onClick={() => onPick(c)}
-          className={cn('h-6 w-6 rounded-md border border-black/10 hover:scale-110 transition-transform', value === c && 'ring-2 ring-[#00C4CC] ring-offset-1')}
+          className={cn('h-6 w-6 rounded-md border border-black/10 hover:scale-110 transition-transform', value === c && 'ring-2 ring-[#4F9D8F] ring-offset-1')}
           style={{ background: c }}
           aria-label={`Background ${c}`}
         />

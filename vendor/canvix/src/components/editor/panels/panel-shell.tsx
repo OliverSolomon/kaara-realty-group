@@ -32,32 +32,32 @@ export function PanelShell({ title, subtitle, searchPlaceholder, onSearch, searc
   const submit = () => onSearch?.(q.trim())
 
   return (
-    <div className="flex flex-col h-full bg-[#FFFFFF] text-[#0E1318]">
-      <div className="px-4 pt-4 pb-3 border-b border-black/[0.07] shrink-0">
+    <div className="flex flex-col h-full bg-[#171232] text-[#EDEEF2]">
+      <div className="px-4 pt-4 pb-3 border-b border-white/[0.07] shrink-0">
         <div className="flex items-center justify-between">
           <h3 className="font-bold text-sm">{title}</h3>
           {onClose && (
-            <button onClick={onClose} className="w-7 h-7 rounded-lg flex items-center justify-center text-[#0E1318]/60 hover:text-[#0E1318] hover:bg-black/10 md:hidden" aria-label="Close panel">
+            <button onClick={onClose} className="w-7 h-7 rounded-lg flex items-center justify-center text-white/60 hover:text-white hover:bg-white/10 md:hidden" aria-label="Close panel">
               <X size={15} />
             </button>
           )}
         </div>
-        {subtitle && <p className="text-xs text-[#0E1318]/50 mt-0.5">{subtitle}</p>}
+        {subtitle && <p className="text-xs text-white/50 mt-0.5">{subtitle}</p>}
       </div>
 
       {searchPlaceholder && (
         <div className="px-4 pt-3 pb-2 shrink-0">
-          <div className="flex rounded-xl border border-black/10 bg-black/[0.05] focus-within:border-[#7D2AE8] transition-colors h-10 items-center px-3 gap-2">
-            <Search size={15} className="text-[#0E1318]/40 shrink-0" />
+          <div className="flex rounded-xl border border-white/10 bg-white/[0.05] focus-within:border-[#2E7D6F] transition-colors h-10 items-center px-3 gap-2">
+            <Search size={15} className="text-white/40 shrink-0" />
             <input
               value={q}
               onChange={(e) => setQ(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && submit()}
               placeholder={searchPlaceholder}
-              className="flex-1 min-w-0 bg-transparent outline-none text-[13px] placeholder:text-[#0E1318]/35"
+              className="flex-1 min-w-0 bg-transparent outline-none text-[13px] placeholder:text-white/35"
               aria-label={`${title} search`}
             />
-            <button className="w-6 h-6 rounded-full flex items-center justify-center text-[#0E1318]/40 hover:text-[#0E1318] shrink-0" aria-label="Describe with AI" title="Describe with AI">
+            <button className="w-6 h-6 rounded-full flex items-center justify-center text-white/40 hover:text-white shrink-0" aria-label="Describe with AI" title="Describe with AI">
               <Mic size={13} />
             </button>
           </div>
@@ -65,14 +65,14 @@ export function PanelShell({ title, subtitle, searchPlaceholder, onSearch, searc
           {/* canva AI row: Generate (split-radius) + purple Search */}
           <div className="flex gap-2 mt-2">
             <button
-              className="flex-1 h-10 rounded-l-xl rounded-r-none border border-black/12 bg-black/[0.05] hover:bg-black/10 text-[13px] font-semibold flex items-center justify-center gap-1.5 transition-colors"
+              className="flex-1 h-10 rounded-l-xl rounded-r-none border border-white/12 bg-white/[0.05] hover:bg-white/10 text-[13px] font-semibold flex items-center justify-center gap-1.5 transition-colors"
               onClick={submit}
               aria-label="Generate with AI"
               title="Generate with AI (open-source roadmap)"
             >
-              <Sparkles size={14} className="text-[#00C4CC]" /> Generate
+              <Sparkles size={14} className="text-[#4F9D8F]" /> Generate
             </button>
-            <button className="w-[104px] h-10 rounded-r-xl rounded-l-none bg-[#7D2AE8] hover:bg-[#6A22C9] text-white text-[13px] font-semibold transition-colors" onClick={submit} aria-label="Search">
+            <button className="w-[104px] h-10 rounded-r-xl rounded-l-none bg-[#2E7D6F] hover:bg-[#4F9D8F] text-white text-[13px] font-semibold transition-colors" onClick={submit} aria-label="Search">
               Search
             </button>
           </div>

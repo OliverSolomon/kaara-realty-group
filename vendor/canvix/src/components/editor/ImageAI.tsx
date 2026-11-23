@@ -146,7 +146,7 @@ async function runImageAI(
 function EngineToggle({ engine, onChange }: { engine: ImageToolsEngine; onChange: (e: ImageToolsEngine) => void }) {
   return (
     <div>
-      <div className="flex gap-1 p-0.5 rounded-lg bg-black/[0.06] border border-black/10" role="group" aria-label="Engine — provider or this device">
+      <div className="flex gap-1 p-0.5 rounded-lg bg-white/[0.06] border border-white/10" role="group" aria-label="Engine — provider or this device">
         {IMAGE_TOOL_ENGINES.map((e) => (
           <button
             key={e.id}
@@ -155,7 +155,7 @@ function EngineToggle({ engine, onChange }: { engine: ImageToolsEngine; onChange
               onChange(e.id)
             }}
             className={`flex-1 h-7 rounded-md text-[11px] font-semibold inline-flex items-center justify-center gap-1 transition-colors ${
-              engine === e.id ? 'bg-[#00C4CC] text-black' : 'text-[#0E1318]/65 hover:text-[#0E1318]'
+              engine === e.id ? 'bg-[#4F9D8F] text-black' : 'text-white/65 hover:text-white'
             }`}
             aria-pressed={engine === e.id}
             data-testid={`engine-${e.id}`}
@@ -165,7 +165,7 @@ function EngineToggle({ engine, onChange }: { engine: ImageToolsEngine; onChange
           </button>
         ))}
       </div>
-      <p className="text-[10px] text-[#0E1318]/40 mt-1 leading-snug">
+      <p className="text-[10px] text-white/40 mt-1 leading-snug">
         {engine === 'provider'
           ? 'Provider (default) — the configured AI provider does the work server-side.'
           : 'This device — runs locally in your browser, works offline on any image.'}
@@ -316,11 +316,11 @@ export function BgRemoverPopover({ el }: { el: ImageElement }) {
           <span className="text-[12px] hidden lg:inline">{label}</span>
         </button>
       </PopoverTrigger>
-      <PopoverContent align="center" side="bottom" className="w-[300px] rounded-2xl bg-[#FFFFFF] border-black/10 text-[#0E1318] p-3.5">
+      <PopoverContent align="center" side="bottom" className="w-[300px] rounded-2xl bg-[#1D1740] border-white/10 text-white p-3.5">
         <div className="text-[13px] font-bold mb-1 flex items-center gap-1.5">
-          <Eraser size={13} className="text-[#00C4CC]" /> BG Remover
+          <Eraser size={13} className="text-[#4F9D8F]" /> BG Remover
         </div>
-        <p className="text-[11px] text-[#0E1318]/55 mb-2.5 leading-snug">
+        <p className="text-[11px] text-white/55 mb-2.5 leading-snug">
           One click — the background disappears, the subject stays. Choose who does the work:
         </p>
         <div className="mb-2.5">
@@ -367,11 +367,11 @@ export function MagicEraserPopover({ el }: { el: ImageElement }) {
           <span className="text-[12px] hidden lg:inline">Magic eraser</span>
         </button>
       </PopoverTrigger>
-      <PopoverContent align="center" side="bottom" className="w-[300px] rounded-2xl bg-[#FFFFFF] border-black/10 text-[#0E1318] p-3.5">
+      <PopoverContent align="center" side="bottom" className="w-[300px] rounded-2xl bg-[#1D1740] border-white/10 text-white p-3.5">
         <div className="text-[13px] font-bold mb-1 flex items-center gap-1.5">
-          <Wand2 size={13} className="text-[#00C4CC]" /> Magic eraser
+          <Wand2 size={13} className="text-[#4F9D8F]" /> Magic eraser
         </div>
-        <p className="text-[11px] text-[#0E1318]/55 mb-2.5 leading-snug">
+        <p className="text-[11px] text-white/55 mb-2.5 leading-snug">
           Remove an unwanted object from this photo. Describe it — e.g. &quot;the person in the
           background&quot; or &quot;the trash can on the left&quot;.
         </p>
@@ -381,7 +381,7 @@ export function MagicEraserPopover({ el }: { el: ImageElement }) {
             onChange={(e) => setTarget(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && !busy && void run()}
             placeholder="What should disappear?"
-            className="h-9 bg-black/5 border-black/10 text-[#0E1318] text-[12px]"
+            className="h-9 bg-white/5 border-white/10 text-white text-[12px]"
             aria-label="Object to remove"
             maxLength={200}
           />
@@ -593,11 +593,11 @@ export function UpscaleButton({ el }: { el: ImageElement }) {
           <span className="text-[12px] hidden lg:inline">Upscale</span>
         </button>
       </PopoverTrigger>
-      <PopoverContent align="center" side="bottom" className="w-[300px] rounded-2xl bg-[#FFFFFF] border-black/10 text-[#0E1318] p-3.5">
+      <PopoverContent align="center" side="bottom" className="w-[300px] rounded-2xl bg-[#1D1740] border-white/10 text-white p-3.5">
         <div className="text-[13px] font-bold mb-1 flex items-center gap-1.5">
-          <Maximize2 size={13} className="text-[#00C4CC]" /> Upscale
+          <Maximize2 size={13} className="text-[#4F9D8F]" /> Upscale
         </div>
-        <p className="text-[11px] text-[#0E1318]/55 mb-2.5 leading-snug">
+        <p className="text-[11px] text-white/55 mb-2.5 leading-snug">
           Enlarge to {target}px with alpha discipline. Now {el.naturalWidth}×{el.naturalHeight}px.
         </p>
         <div className="mb-2.5">
@@ -614,7 +614,7 @@ export function UpscaleButton({ el }: { el: ImageElement }) {
               key={f}
               onClick={() => setFactor(f)}
               className={`flex-1 h-9 rounded-lg text-[12px] font-semibold border transition-colors ${
-                factor === f ? 'bg-[#00C4CC] text-black border-[#00C4CC]' : 'bg-black/5 border-black/10 text-[#0E1318]/80 hover:bg-black/10'
+                factor === f ? 'bg-[#4F9D8F] text-black border-[#4F9D8F]' : 'bg-white/5 border-white/10 text-white/80 hover:bg-white/10'
               }`}
               aria-pressed={factor === f}
             >
@@ -793,19 +793,19 @@ export function BrushEraserDialog({ el }: { el: ImageElement }) {
         <Brush size={14} />
         <span className="text-[12px] hidden lg:inline">Brush eraser</span>
       </button>
-      <DialogContent className="max-w-[720px] rounded-2xl bg-[#14161B] border-black/10 text-[#0E1318]">
+      <DialogContent className="max-w-[720px] rounded-2xl bg-[#14161B] border-white/10 text-white">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-1.5 text-[15px]">
-            <Brush size={15} className="text-[#00C4CC]" /> Brush eraser
+            <Brush size={15} className="text-[#4F9D8F]" /> Brush eraser
           </DialogTitle>
         </DialogHeader>
-        <p className="text-[12px] text-[#0E1318]/55 -mt-1 mb-2 leading-snug">
+        <p className="text-[12px] text-white/55 -mt-1 mb-2 leading-snug">
           Paint over whatever should disappear — people, objects, watermarks. The region is rebuilt from
           its surroundings, entirely on your device (works offline, on any image).
         </p>
         <div
           ref={wrapRef}
-          className="relative mx-auto select-none touch-none rounded-xl overflow-hidden border border-black/10 bg-[repeating-conic-gradient(#20242c_0%_25%,#181b21_0%_50%)] bg-[length:16px_16px]"
+          className="relative mx-auto select-none touch-none rounded-xl overflow-hidden border border-white/10 bg-[repeating-conic-gradient(#20242c_0%_25%,#181b21_0%_50%)] bg-[length:16px_16px]"
           style={{ width: disp ? disp.w : undefined, height: disp ? disp.h : undefined, cursor: 'crosshair' }}
         >
           <canvas ref={baseRef} className="block max-w-full" />
@@ -836,30 +836,30 @@ export function BrushEraserDialog({ el }: { el: ImageElement }) {
             }}
           />
           {!disp && (
-            <div className="flex items-center justify-center h-56 text-[12px] text-[#0E1318]/45">Decoding image…</div>
+            <div className="flex items-center justify-center h-56 text-[12px] text-white/45">Decoding image…</div>
           )}
         </div>
         <div className="flex items-center gap-3 mt-1">
-          <span className="text-[11px] text-[#0E1318]/55 shrink-0">Brush</span>
+          <span className="text-[11px] text-white/55 shrink-0">Brush</span>
           <input
             type="range"
             min={8}
             max={120}
             value={brush}
             onChange={(e) => setBrush(Number(e.target.value))}
-            className="flex-1 accent-[#00C4CC]"
+            className="flex-1 accent-[#4F9D8F]"
             aria-label="Brush size"
           />
-          <span className="text-[11px] text-[#0E1318]/40 w-8 text-right">{brush}px</span>
+          <span className="text-[11px] text-white/40 w-8 text-right">{brush}px</span>
           <button
-            className="text-[11px] text-[#0E1318]/55 hover:text-[#0E1318] px-2 h-7 rounded-md hover:bg-black/10"
+            className="text-[11px] text-white/55 hover:text-white px-2 h-7 rounded-md hover:bg-white/10"
             onClick={clearMask}
           >
             Clear
           </button>
         </div>
         <div className="flex justify-end gap-2 mt-1">
-          <Button variant="ghost" className="h-9 text-[12px] text-[#0E1318]/70 hover:text-[#0E1318]" onClick={() => setOpen(false)}>
+          <Button variant="ghost" className="h-9 text-[12px] text-white/70 hover:text-white" onClick={() => setOpen(false)}>
             Cancel
           </Button>
           <Button className="btn-cv h-9 px-4 text-[12px]" onClick={() => void run()} disabled={busy || !painted}>
@@ -929,14 +929,14 @@ export function AltTextPopover({ el }: { el: ImageElement }) {
         <button className={btnBase} data-active={open} title="Alt text — describe this image for screen readers" aria-label="Alt text">
           <Accessibility size={14} />
           <span className="text-[12px] hidden lg:inline">Alt</span>
-          {el.alt ? <span className="w-1.5 h-1.5 rounded-full bg-[#00C4CC]" title="Has alt text" /> : null}
+          {el.alt ? <span className="w-1.5 h-1.5 rounded-full bg-[#4F9D8F]" title="Has alt text" /> : null}
         </button>
       </PopoverTrigger>
-      <PopoverContent align="center" side="bottom" className="w-[300px] rounded-2xl bg-[#FFFFFF] border-black/10 text-[#0E1318] p-3.5">
+      <PopoverContent align="center" side="bottom" className="w-[300px] rounded-2xl bg-[#1D1740] border-white/10 text-white p-3.5">
         <div className="text-[13px] font-bold mb-1 flex items-center gap-1.5">
-          <Accessibility size={13} className="text-[#00C4CC]" /> Alt text
+          <Accessibility size={13} className="text-[#4F9D8F]" /> Alt text
         </div>
-        <p className="text-[11px] text-[#0E1318]/55 mb-2.5 leading-snug">
+        <p className="text-[11px] text-white/55 mb-2.5 leading-snug">
           One sentence describing what is in the image — read aloud by screen readers, required for accessible
           exports.
         </p>
@@ -944,7 +944,7 @@ export function AltTextPopover({ el }: { el: ImageElement }) {
           value={value}
           onChange={(e) => setValue(e.target.value)}
           placeholder="e.g. A barista pouring latte art in a sunlit café"
-          className="w-full h-20 resize-none rounded-lg bg-black/5 border border-black/10 px-2.5 py-2 text-[12px] text-[#0E1318]/85 placeholder:text-[#0E1318]/30 focus:outline-none focus:border-[#00C4CC]"
+          className="w-full h-20 resize-none rounded-lg bg-white/5 border border-white/10 px-2.5 py-2 text-[12px] text-white/85 placeholder:text-white/30 focus:outline-none focus:border-[#4F9D8F]"
           aria-label="Alt text"
           maxLength={200}
           data-testid="alt-text-input"
@@ -952,11 +952,11 @@ export function AltTextPopover({ el }: { el: ImageElement }) {
         <div className="flex gap-1.5 mt-2.5">
           <Button
             variant="ghost"
-            className="h-9 px-3 text-[12px] text-[#0E1318]/70 hover:text-[#0E1318] border border-black/10"
+            className="h-9 px-3 text-[12px] text-white/70 hover:text-white border border-white/10"
             onClick={() => void generate()}
             disabled={busy}
           >
-            {busy ? <Loader2 size={13} className="animate-spin" /> : <Sparkles size={13} className="text-[#00C4CC]" />}
+            {busy ? <Loader2 size={13} className="animate-spin" /> : <Sparkles size={13} className="text-[#4F9D8F]" />}
             Generate
           </Button>
           <Button className="btn-cv h-9 px-3 ml-auto text-[12px]" onClick={save}>

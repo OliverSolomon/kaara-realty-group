@@ -29,18 +29,18 @@ export function AppsPanel() {
             {CANVIX_APPS.map((app) => (
               <AppCard key={app.id} app={app} onOpen={() => setOpen(app)} />
             ))}
-            <div className="col-span-2 mt-1 rounded-xl border border-dashed border-black/12 p-3 text-center">
-              <p className="text-[11px] text-[#0E1318]/40 leading-relaxed">
+            <div className="col-span-2 mt-1 rounded-xl border border-dashed border-white/12 p-3 text-center">
+              <p className="text-[11px] text-white/40 leading-relaxed">
                 Canvix apps are open —{' '}
                 <a
                   href="https://github.com/mir-ashiq/canvix"
                   target="_blank"
                   rel="noreferrer"
-                  className="text-[#00C4CC] hover:underline"
+                  className="text-[#4F9D8F] hover:underline"
                 >
                   build your own
                 </a>{' '}
-                by registering a component in <code className="text-[#0E1318]/60">apps/registry.tsx</code>.
+                by registering a component in <code className="text-white/60">apps/registry.tsx</code>.
               </p>
             </div>
           </div>
@@ -73,15 +73,15 @@ function AppCard({ app, onOpen }: { app: CanvixApp; onOpen: () => void }) {
           handleClick()
         }
       }}
-      className="rounded-xl border border-black/10 bg-black/[0.03] p-3 hover:border-[#7D2AE8] transition-colors flex flex-col cursor-pointer focus:outline-none focus-visible:border-[#7D2AE8]"
+      className="rounded-xl border border-white/10 bg-white/[0.03] p-3 hover:border-[#2E7D6F] transition-colors flex flex-col cursor-pointer focus:outline-none focus-visible:border-[#2E7D6F]"
     >
       <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: `${app.color}22` }}>
         <Icon size={20} style={{ color: app.color }} />
       </div>
       <div className="mt-2 text-[13px] font-semibold">{app.name}</div>
-      <div className="text-[11px] text-[#0E1318]/45 leading-tight flex-1">{app.desc}</div>
+      <div className="text-[11px] text-white/45 leading-tight flex-1">{app.desc}</div>
       <button
-        className={cn('mt-2.5 h-8 rounded-lg text-[11px] font-semibold flex items-center justify-center gap-1 transition-colors', soon ? 'bg-black/5 text-[#0E1318]/40' : 'bg-[#7D2AE8] hover:bg-[#6A22C9] text-white')}
+        className={cn('mt-2.5 h-8 rounded-lg text-[11px] font-semibold flex items-center justify-center gap-1 transition-colors', soon ? 'bg-white/5 text-white/40' : 'bg-[#2E7D6F] hover:bg-[#4F9D8F] text-white')}
         onClick={(e) => {
           e.stopPropagation()
           handleClick()

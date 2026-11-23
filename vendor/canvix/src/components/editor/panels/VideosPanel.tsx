@@ -151,8 +151,8 @@ export function VideosPanel() {
                 className={cn(
                   'h-7 shrink-0 whitespace-nowrap rounded-full px-3 text-[11.5px] font-semibold transition-colors border',
                   activeProvider === p
-                    ? 'bg-black/[0.16] text-[#0E1318] border-black/25'
-                    : 'bg-transparent text-[#0E1318]/65 border-black/10 hover:bg-black/[0.07] hover:text-[#0E1318]',
+                    ? 'bg-white/[0.16] text-white border-white/25'
+                    : 'bg-transparent text-white/65 border-white/10 hover:bg-white/[0.07] hover:text-white',
                 )}
                 aria-pressed={activeProvider === p}
               >
@@ -166,27 +166,27 @@ export function VideosPanel() {
       {showResults ? (
         <div className="mb-2">
           <div className="flex items-center gap-1.5 mb-2">
-            <Clapperboard size={12} className="text-[#00C4CC]" />
-            <span className="text-[10.5px] font-bold text-[#0E1318]/55 uppercase tracking-wide">
+            <Clapperboard size={12} className="text-[#4F9D8F]" />
+            <span className="text-[10.5px] font-bold text-white/55 uppercase tracking-wide">
               Stock videos {results ? `(${results.length})` : ''}
             </span>
-            {busy && <Loader2 size={11} className="animate-spin text-[#0E1318]/40 ml-1" />}
+            {busy && <Loader2 size={11} className="animate-spin text-white/40 ml-1" />}
           </div>
 
           {error?.kind === 'no-provider' ? (
-            <p className="text-[11.5px] text-[#0E1318]/40 py-2 leading-relaxed">
+            <p className="text-[11.5px] text-white/40 py-2 leading-relaxed">
               Stock video search needs a provider key on the server — set{' '}
-              <code className="text-[#0E1318]/55">PEXELS_API_KEY</code> or{' '}
-              <code className="text-[#0E1318]/55">PIXABAY_API_KEY</code> (free keys; see{' '}
-              <code className="text-[#0E1318]/55">docs/STOCK-VIDEO.md</code>).
+              <code className="text-white/55">PEXELS_API_KEY</code> or{' '}
+              <code className="text-white/55">PIXABAY_API_KEY</code> (free keys; see{' '}
+              <code className="text-white/55">docs/STOCK-VIDEO.md</code>).
             </p>
           ) : error?.kind === 'service' ? (
-            <p className="text-[11.5px] text-[#0E1318]/40 py-2">{error.message}</p>
+            <p className="text-[11.5px] text-white/40 py-2">{error.message}</p>
           ) : results && results.length === 0 && !busy ? (
             <div className="py-10 text-center">
-              <VideoOff size={24} className="mx-auto text-[#0E1318]/25 mb-2" />
-              <p className="text-[12.5px] text-[#0E1318]/50 font-medium">No stock videos matched</p>
-              <p className="text-[11.5px] text-[#0E1318]/35 mt-1">Try other keywords.</p>
+              <VideoOff size={24} className="mx-auto text-white/25 mb-2" />
+              <p className="text-[12.5px] text-white/50 font-medium">No stock videos matched</p>
+              <p className="text-[11.5px] text-white/35 mt-1">Try other keywords.</p>
             </div>
           ) : (
             <div className="grid grid-cols-2 gap-2.5">
@@ -200,7 +200,7 @@ export function VideosPanel() {
                     onMouseEnter={() => setHovered(t.id)}
                     onMouseLeave={() => setHovered((h) => (h === t.id ? null : h))}
                     disabled={busyTile !== null}
-                    className="group relative rounded-xl overflow-hidden border border-black/10 hover:border-[#7D2AE8] transition-colors bg-[#EBECF0] disabled:opacity-60"
+                    className="group relative rounded-xl overflow-hidden border border-white/10 hover:border-[#2E7D6F] transition-colors bg-[#0B0819] disabled:opacity-60"
                     style={{ aspectRatio: aspect }}
                     aria-label={`Add stock video by ${t.credit.author}`}
                     title={`${t.credit.provider} · ${t.credit.author} — ${t.credit.license}`}
@@ -224,7 +224,7 @@ export function VideosPanel() {
                       />
                     ) : (
                       <span className="absolute inset-0 flex items-center justify-center">
-                        <Clapperboard size={20} className="text-[#0E1318]/25" />
+                        <Clapperboard size={20} className="text-white/25" />
                       </span>
                     )}
 
@@ -241,7 +241,7 @@ export function VideosPanel() {
                     ) : null}
 
                     <span className="absolute inset-0 hidden group-hover:flex items-center justify-center">
-                      <span className="h-8 px-3 rounded-full bg-[#7D2AE8] text-white text-[11.5px] font-bold flex items-center gap-1.5 shadow-lg">
+                      <span className="h-8 px-3 rounded-full bg-[#2E7D6F] text-white text-[11.5px] font-bold flex items-center gap-1.5 shadow-lg">
                         {isBusy ? <Loader2 size={12} className="animate-spin" /> : <Plus size={12} />}
                         {isBusy ? 'Adding…' : 'Add'}
                       </span>
@@ -261,9 +261,9 @@ export function VideosPanel() {
               server has no videoGeneration capability */}
           <AIVideoCard />
           <div className="py-10 text-center">
-            <Clapperboard size={26} className="mx-auto text-[#0E1318]/25 mb-3" />
-            <p className="text-[13px] text-[#0E1318]/50 font-medium">Search free stock videos</p>
-            <p className="text-[11.5px] text-[#0E1318]/35 mt-1 leading-relaxed max-w-[240px] mx-auto">
+            <Clapperboard size={26} className="mx-auto text-white/25 mb-3" />
+            <p className="text-[13px] text-white/50 font-medium">Search free stock videos</p>
+            <p className="text-[11.5px] text-white/35 mt-1 leading-relaxed max-w-[240px] mx-auto">
               Type at least two letters. Every video carries its creator and license —
               shown when you add it and saved with the design.
             </p>
@@ -271,7 +271,7 @@ export function VideosPanel() {
         </div>
       )}
 
-      <p className="text-[10.5px] text-[#0E1318]/30 mt-3 leading-relaxed">
+      <p className="text-[10.5px] text-white/30 mt-3 leading-relaxed">
         Stock videos come from {providers.length > 0 ? providers.map((p) => p[0].toUpperCase() + p.slice(1)).join(' and ') : 'the configured provider'} under their
         free licenses (Pexels License / Pixabay Content License). Inserted videos are
         downloaded into your media library — attribution stays on the element.

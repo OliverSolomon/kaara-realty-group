@@ -92,12 +92,12 @@ export function ResizeDialog({ open, onOpenChange }: { open: boolean; onOpenChan
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="rounded-[28px] bg-[#FFFFFF] border-black/10 text-[#0E1318] sm:max-w-lg">
+      <DialogContent className="rounded-[28px] bg-[#171232] border-white/10 text-white sm:max-w-lg">
         <DialogHeader>
           <DialogTitle className="text-lg font-bold flex items-center gap-2">
-            <Wand2 size={17} className="text-[#00C4CC]" /> Magic Resize
+            <Wand2 size={17} className="text-[#4F9D8F]" /> Magic Resize
           </DialogTitle>
-          <DialogDescription className="text-[#0E1318]/60">
+          <DialogDescription className="text-white/60">
             Resize this design for every channel. Pick sizes, then copy & resize — your elements are
             re-laid-out automatically.
           </DialogDescription>
@@ -106,7 +106,7 @@ export function ResizeDialog({ open, onOpenChange }: { open: boolean; onOpenChan
         <div className="space-y-4 max-h-[52vh] overflow-y-auto cv-scroll pr-1">
           {groups.map((g) => (
             <div key={g.label}>
-              <h3 className="text-xs font-semibold text-[#0E1318]/50 uppercase tracking-wide mb-2">{g.label}</h3>
+              <h3 className="text-xs font-semibold text-white/50 uppercase tracking-wide mb-2">{g.label}</h3>
               <div className="grid grid-cols-2 gap-2">
                 {g.sizes.map((s) => {
                   const active = checked[s.name]
@@ -117,25 +117,25 @@ export function ResizeDialog({ open, onOpenChange }: { open: boolean; onOpenChan
                       onClick={() => toggle(s.name)}
                       aria-pressed={active}
                       className={cn(
-                        'flex items-center gap-2.5 rounded-xl bg-black/5 border border-black/10 px-3 py-2.5 text-left transition-colors group',
-                        active ? 'bg-[#7D2AE8] border-transparent' : 'hover:bg-black/10'
+                        'flex items-center gap-2.5 rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 text-left transition-colors group',
+                        active ? 'bg-[#2E7D6F] border-transparent' : 'hover:bg-white/10'
                       )}
                     >
                       <span
                         className={cn(
                           'w-4 h-4 rounded-[5px] border flex items-center justify-center shrink-0',
-                          active ? 'border-[#7D2AE8] bg-black/90' : 'border-black/30'
+                          active ? 'border-white bg-white/90' : 'border-white/30'
                         )}
                       >
                         {active && (
                           <svg viewBox="0 0 12 12" className="w-3 h-3">
-                            <path d="M2 6l2.5 2.5L10 3" fill="none" stroke="#7D2AE8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                            <path d="M2 6l2.5 2.5L10 3" fill="none" stroke="#2E7D6F" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                           </svg>
                         )}
                       </span>
                       <span className="min-w-0">
                         <span className="block text-[13px] font-semibold truncate">{s.name}</span>
-                        <span className={cn('block text-[11px]', active ? 'text-[#0E1318]/85' : 'text-[#0E1318]/50')}>
+                        <span className={cn('block text-[11px]', active ? 'text-white/85' : 'text-white/50')}>
                           {s.w} × {s.h}{isCurrent ? ' · current' : ''}
                         </span>
                       </span>
@@ -147,23 +147,23 @@ export function ResizeDialog({ open, onOpenChange }: { open: boolean; onOpenChan
           ))}
 
           <div>
-            <h3 className="text-xs font-semibold text-[#0E1318]/50 uppercase tracking-wide mb-2">Custom size</h3>
+            <h3 className="text-xs font-semibold text-white/50 uppercase tracking-wide mb-2">Custom size</h3>
             <div className="flex items-center gap-2">
               <Input
                 type="number"
                 placeholder="Width"
                 value={custom.w}
                 onChange={(e) => setCustom((c) => ({ ...c, w: e.target.value }))}
-                className="bg-black/5 border-black/10 text-[#0E1318] h-10 [color-scheme:dark]"
+                className="bg-white/5 border-white/10 text-white h-10 [color-scheme:dark]"
                 aria-label="Custom width"
               />
-              <span className="text-[#0E1318]/40">×</span>
+              <span className="text-white/40">×</span>
               <Input
                 type="number"
                 placeholder="Height"
                 value={custom.h}
                 onChange={(e) => setCustom((c) => ({ ...c, h: e.target.value }))}
-                className="bg-black/5 border-black/10 text-[#0E1318] h-10 [color-scheme:dark]"
+                className="bg-white/5 border-white/10 text-white h-10 [color-scheme:dark]"
                 aria-label="Custom height"
               />
               <Button className="btn-cv h-10 px-4 shrink-0" onClick={applyCustom}>
@@ -177,7 +177,7 @@ export function ResizeDialog({ open, onOpenChange }: { open: boolean; onOpenChan
         <div className="flex items-center gap-2 pt-1">
           <Button
             variant="outline"
-            className="h-11 flex-1 rounded-xl border-black/15 bg-black/5 hover:bg-black/10 hover:text-[#0E1318]"
+            className="h-11 flex-1 rounded-xl border-white/15 bg-white/5 hover:bg-white/10 hover:text-white"
             disabled={selected.length !== 1}
             onClick={() => applyInPlace(selected[0].w, selected[0].h)}
             title={selected.length === 1 ? `Resize this design to ${selected[0].w}×${selected[0].h}` : 'Check exactly one size to resize in place'}

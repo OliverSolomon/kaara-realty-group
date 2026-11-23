@@ -142,14 +142,14 @@ export function AssistantApp({ onClose }: AppPanelProps) {
       )}
 
       {/* chat log */}
-      <div ref={scrollRef} className="h-[340px] overflow-y-auto cv-scroll rounded-xl border border-black/10 bg-black/[0.03] p-2.5 space-y-2.5 mb-2.5">
+      <div ref={scrollRef} className="h-[340px] overflow-y-auto cv-scroll rounded-xl border border-white/10 bg-white/[0.03] p-2.5 space-y-2.5 mb-2.5">
         {empty && (
           <div className="h-full flex flex-col items-center justify-center gap-3 text-center px-3">
-            <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#7D2AE8] to-[#00C4CC] flex items-center justify-center shadow-lg">
-              <Sparkles size={20} className="text-[#0E1318]" />
+            <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#2E7D6F] to-[#4F9D8F] flex items-center justify-center shadow-lg">
+              <Sparkles size={20} className="text-white" />
             </div>
-            <p className="text-[13px] font-bold text-[#0E1318]">Your design-aware copilot</p>
-            <p className="text-[11px] text-[#0E1318]/50 leading-snug">
+            <p className="text-[13px] font-bold text-white">Your design-aware copilot</p>
+            <p className="text-[11px] text-white/50 leading-snug">
               It sees your page — elements, colors, fonts and layout. Ask it to restyle, move, recolor or animate
               anything. Every change is undoable (Ctrl+Z).
             </p>
@@ -161,7 +161,7 @@ export function AssistantApp({ onClose }: AppPanelProps) {
             <div
               className={cn(
                 'w-6 h-6 rounded-lg flex items-center justify-center shrink-0 mt-0.5',
-                t.role === 'user' ? 'bg-black/12 text-[#0E1318]/80' : 'bg-gradient-to-br from-[#7D2AE8] to-[#9B6BFF] text-white'
+                t.role === 'user' ? 'bg-white/12 text-white/80' : 'bg-gradient-to-br from-[#2E7D6F] to-[#9B6BFF] text-white'
               )}
               aria-hidden
             >
@@ -171,7 +171,7 @@ export function AssistantApp({ onClose }: AppPanelProps) {
               <div
                 className={cn(
                   'rounded-2xl px-3 py-2 text-[12px] leading-relaxed whitespace-pre-wrap',
-                  t.role === 'user' ? 'bg-[#7D2AE8] text-white rounded-tr-sm' : 'bg-black/[0.07] text-[#0E1318]/90 rounded-tl-sm border border-black/[0.06]'
+                  t.role === 'user' ? 'bg-[#2E7D6F] text-white rounded-tr-sm' : 'bg-white/[0.07] text-white/90 rounded-tl-sm border border-white/[0.06]'
                 )}
               >
                 {t.content}
@@ -190,8 +190,8 @@ export function AssistantApp({ onClose }: AppPanelProps) {
                           className={cn(
                             'flex-1 flex items-center gap-2 rounded-xl border px-2.5 py-2 text-left text-[11px] font-semibold transition-colors',
                             done
-                              ? 'border-[#00C4CC]/30 bg-[#00C4CC]/10 text-[#7BE8EC]'
-                              : 'border-[#7D2AE8]/40 bg-[#7D2AE8]/15 text-white hover:bg-[#7D2AE8]/30 cursor-pointer'
+                              ? 'border-[#4F9D8F]/30 bg-[#4F9D8F]/10 text-[#7BE8EC]'
+                              : 'border-[#2E7D6F]/40 bg-[#2E7D6F]/15 text-white hover:bg-[#2E7D6F]/30 cursor-pointer'
                           )}
                         >
                           <Wand2 size={12} className="shrink-0" />
@@ -204,7 +204,7 @@ export function AssistantApp({ onClose }: AppPanelProps) {
                   {t.done && canUndo && (
                     <button
                       onClick={() => useEditorStore.getState().undo()}
-                      className="text-[10px] font-semibold text-[#0E1318]/40 hover:text-[#0E1318]/80 underline underline-offset-2 cursor-pointer"
+                      className="text-[10px] font-semibold text-white/40 hover:text-white/80 underline underline-offset-2 cursor-pointer"
                     >
                       Undo last change (Ctrl+Z)
                     </button>
@@ -218,13 +218,13 @@ export function AssistantApp({ onClose }: AppPanelProps) {
 
         {busy && (
           <div className="flex gap-2">
-            <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-[#7D2AE8] to-[#9B6BFF] flex items-center justify-center shrink-0 mt-0.5">
-              <Bot size={12} className="text-[#0E1318]" />
+            <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-[#2E7D6F] to-[#9B6BFF] flex items-center justify-center shrink-0 mt-0.5">
+              <Bot size={12} className="text-white" />
             </div>
-            <div className="rounded-2xl rounded-tl-sm bg-black/[0.07] border border-black/[0.06] px-3 py-2.5 flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-black/60 animate-bounce" style={{ animationDelay: '0ms' }} />
-              <span className="w-1.5 h-1.5 rounded-full bg-black/60 animate-bounce" style={{ animationDelay: '120ms' }} />
-              <span className="w-1.5 h-1.5 rounded-full bg-black/60 animate-bounce" style={{ animationDelay: '240ms' }} />
+            <div className="rounded-2xl rounded-tl-sm bg-white/[0.07] border border-white/[0.06] px-3 py-2.5 flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-white/60 animate-bounce" style={{ animationDelay: '0ms' }} />
+              <span className="w-1.5 h-1.5 rounded-full bg-white/60 animate-bounce" style={{ animationDelay: '120ms' }} />
+              <span className="w-1.5 h-1.5 rounded-full bg-white/60 animate-bounce" style={{ animationDelay: '240ms' }} />
             </div>
           </div>
         )}
@@ -237,7 +237,7 @@ export function AssistantApp({ onClose }: AppPanelProps) {
             <button
               key={s}
               onClick={() => void send(s)}
-              className="block w-full text-left text-[11px] text-[#0E1318]/55 hover:text-[#0E1318] rounded-lg border border-black/[0.07] hover:border-black/20 px-2.5 py-1.5 transition-colors cursor-pointer"
+              className="block w-full text-left text-[11px] text-white/55 hover:text-white rounded-lg border border-white/[0.07] hover:border-white/20 px-2.5 py-1.5 transition-colors cursor-pointer"
             >
               “{s}”
             </button>
@@ -247,21 +247,21 @@ export function AssistantApp({ onClose }: AppPanelProps) {
 
       {/* input */}
       <div className="flex gap-1.5">
-        <div className="flex-1 rounded-xl border border-black/10 bg-black/[0.04] focus-within:border-[#7D2AE8] transition-colors px-3 flex items-center">
+        <div className="flex-1 rounded-xl border border-white/10 bg-white/[0.04] focus-within:border-[#2E7D6F] transition-colors px-3 flex items-center">
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && void send(input)}
             placeholder="Ask your copilot…"
             maxLength={800}
-            className="w-full bg-transparent outline-none text-[12.5px] text-[#0E1318] placeholder:text-[#0E1318]/35 h-10"
+            className="w-full bg-transparent outline-none text-[12.5px] text-white placeholder:text-white/35 h-10"
             aria-label="Message the Canvix AI assistant"
           />
         </div>
         <button
           onClick={() => void send(input)}
           disabled={busy || !input.trim()}
-          className="w-10 h-10 rounded-xl bg-gradient-to-r from-[#7D2AE8] to-[#9B6BFF] text-white flex items-center justify-center disabled:opacity-40 hover:brightness-110 transition-all shrink-0"
+          className="w-10 h-10 rounded-xl bg-gradient-to-r from-[#2E7D6F] to-[#9B6BFF] text-white flex items-center justify-center disabled:opacity-40 hover:brightness-110 transition-all shrink-0"
           aria-label="Send message"
         >
           {busy ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />}
@@ -278,7 +278,7 @@ function PaletteSwatches({ turn }: { turn: Turn }) {
   return (
     <div className="flex gap-1 pt-0.5">
       {palette.colors.map((c) => (
-        <span key={c} className="flex-1 h-4 rounded-md border border-black/15" style={{ background: c }} title={c} />
+        <span key={c} className="flex-1 h-4 rounded-md border border-white/15" style={{ background: c }} title={c} />
       ))}
     </div>
   )

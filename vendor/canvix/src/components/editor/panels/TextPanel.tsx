@@ -15,7 +15,7 @@ export function TextPanel() {
       {/* canva signature purple pill */}
       <button
         onClick={() => addText('body')}
-        className="w-full h-11 rounded-full bg-[#7D2AE8] hover:bg-[#6A22C9] text-white text-[14px] font-semibold flex items-center justify-center gap-2 transition-colors mt-1 shadow-lg shadow-[#7D2AE8]/25"
+        className="w-full h-11 rounded-full bg-[#2E7D6F] hover:bg-[#4F9D8F] text-white text-[14px] font-semibold flex items-center justify-center gap-2 transition-colors mt-1 shadow-lg shadow-[#2E7D6F]/25"
         aria-label="Add a text box"
       >
         <Plus size={16} /> Add a text box
@@ -23,42 +23,42 @@ export function TextPanel() {
 
       <div className="flex gap-2 mt-2">
         <button
-          className="flex-1 h-10 rounded-xl border border-black/12 bg-black/[0.05] hover:bg-black/10 text-[12px] font-semibold flex items-center justify-center gap-1.5 text-[#0E1318]/85 transition-colors"
+          className="flex-1 h-10 rounded-xl border border-white/12 bg-white/[0.05] hover:bg-white/10 text-[12px] font-semibold flex items-center justify-center gap-1.5 text-white/85 transition-colors"
           onClick={() => addTextStyled({ text: 'Draft magic copy with Canvix AI…', fontSize: 28, fontFamily: 'Poppins', width: 640 })}
           aria-label="Magic Write"
         >
-          <Sparkles size={13} className="text-[#00C4CC]" /> Magic Write
+          <Sparkles size={13} className="text-[#4F9D8F]" /> Magic Write
         </button>
       </div>
 
       <div className="space-y-2 mt-5">
         <button
           onClick={() => addText('heading')}
-          className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-4 hover:border-[#7D2AE8] hover:bg-[#7D2AE8]/10 transition-all flex items-center gap-3"
+          className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-4 hover:border-[#2E7D6F] hover:bg-[#2E7D6F]/10 transition-all flex items-center gap-3"
           aria-label="Add a heading"
         >
-          <Heading1 size={20} className="text-[#0E1318]/50" />
-          <span style={{ fontFamily: 'Montserrat', fontWeight: 800, fontSize: 26 }} className="leading-none text-[#0E1318]">Add a heading</span>
+          <Heading1 size={20} className="text-white/50" />
+          <span style={{ fontFamily: 'Montserrat', fontWeight: 800, fontSize: 26 }} className="leading-none text-white">Add a heading</span>
         </button>
         <button
           onClick={() => addText('subheading')}
-          className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-4 hover:border-[#7D2AE8] hover:bg-[#7D2AE8]/10 transition-all flex items-center gap-3"
+          className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-4 hover:border-[#2E7D6F] hover:bg-[#2E7D6F]/10 transition-all flex items-center gap-3"
           aria-label="Add a subheading"
         >
-          <Heading2 size={18} className="text-[#0E1318]/50" />
-          <span style={{ fontFamily: 'Poppins', fontWeight: 700, fontSize: 19 }} className="leading-none text-[#0E1318]">Add a subheading</span>
+          <Heading2 size={18} className="text-white/50" />
+          <span style={{ fontFamily: 'Poppins', fontWeight: 700, fontSize: 19 }} className="leading-none text-white">Add a subheading</span>
         </button>
         <button
           onClick={() => addText('body')}
-          className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-4 hover:border-[#7D2AE8] hover:bg-[#7D2AE8]/10 transition-all flex items-center gap-3"
+          className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-4 hover:border-[#2E7D6F] hover:bg-[#2E7D6F]/10 transition-all flex items-center gap-3"
           aria-label="Add body text"
         >
-          <TypeIcon size={16} className="text-[#0E1318]/50" />
-          <span style={{ fontFamily: 'Poppins', fontSize: 15 }} className="leading-none text-[#0E1318]/90">Add a little bit of body text</span>
+          <TypeIcon size={16} className="text-white/50" />
+          <span style={{ fontFamily: 'Poppins', fontSize: 15 }} className="leading-none text-white/90">Add a little bit of body text</span>
         </button>
       </div>
 
-      <h4 className="mt-6 mb-3 text-xs font-semibold text-[#0E1318]/50 uppercase tracking-wide">Font combinations</h4>
+      <h4 className="mt-6 mb-3 text-xs font-semibold text-white/50 uppercase tracking-wide">Font combinations</h4>
       <div className="grid grid-cols-2 gap-3">
         {FONT_STYLES.map((style) => (
           <button
@@ -80,18 +80,18 @@ export function TextPanel() {
                 y: undefined,
               })
             }}
-            className="rounded-xl border border-white/10 bg-white/[0.03] p-4 hover:border-[#7D2AE8] hover:bg-[#7D2AE8]/10 transition-all text-left"
+            className="rounded-xl border border-white/10 bg-white/[0.03] p-4 hover:border-[#2E7D6F] hover:bg-[#2E7D6F]/10 transition-all text-left"
             aria-label={`Add ${style.name} font pairing`}
           >
             <div
               style={{ fontFamily: style.heading.family, fontWeight: style.heading.weight, fontSize: 22, lineHeight: 1.15 }}
-              className="truncate text-[#0E1318]"
+              className="truncate text-white"
             >
               {style.name.split(' ')[0]}
             </div>
             <div
               style={{ fontFamily: style.body.family, fontWeight: style.body.weight, fontSize: 13, lineHeight: 1.4 }}
-              className="mt-1 text-[#0E1318]/55 truncate"
+              className="mt-1 text-white/55 truncate"
             >
               Body text sample
             </div>
@@ -100,21 +100,21 @@ export function TextPanel() {
       </div>
 
       {/* brand kit section — canva-style */}
-      <div className="mt-6 rounded-xl border border-black/10 overflow-hidden">
-        <div className="flex items-center gap-1.5 px-3 py-2.5 bg-black/[0.04]">
-          <BookMarked size={13} className="text-[#0E1318]/60" />
-          <span className="text-[11px] font-bold uppercase tracking-wide text-[#0E1318]/70">Brand Kit</span>
+      <div className="mt-6 rounded-xl border border-white/10 overflow-hidden">
+        <div className="flex items-center gap-1.5 px-3 py-2.5 bg-white/[0.04]">
+          <BookMarked size={13} className="text-white/60" />
+          <span className="text-[11px] font-bold uppercase tracking-wide text-white/70">Brand Kit</span>
         </div>
         <div className="p-3 flex items-center gap-3">
           <span
-            className="text-[#0E1318] truncate"
+            className="text-white truncate"
             style={{ fontFamily: brand.headingFont, fontWeight: 800, fontSize: 18 }}
           >
             {brand.headingFont}
           </span>
-          <span className="text-[#0E1318]/40 text-[11px]">+ body font</span>
+          <span className="text-white/40 text-[11px]">+ body font</span>
           <button
-            className="ml-auto h-8 px-3 rounded-lg bg-white/10 hover:bg-[#7D2AE8] text-[11px] font-semibold text-white transition-colors shrink-0"
+            className="ml-auto h-8 px-3 rounded-lg bg-white/10 hover:bg-[#2E7D6F] text-[11px] font-semibold text-white transition-colors shrink-0"
             onClick={() => {
               addTextStyled({ text: 'Brand heading sample', fontFamily: brand.headingFont, bold: true, fontSize: 64, width: 700 })
               addTextStyled({ text: 'And its matching brand body font.', fontFamily: brand.bodyFont, fontSize: 26, width: 620 })

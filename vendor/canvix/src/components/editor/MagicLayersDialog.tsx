@@ -227,12 +227,12 @@ export function MagicLayersDialog({ open, onOpenChange }: { open: boolean; onOpe
 
   return (
     <Dialog open={open} onOpenChange={close}>
-      <DialogContent className="rounded-[28px] sm:max-w-2xl bg-[#FFFFFF] border-black/10 text-[#0E1318] max-h-[88vh] overflow-y-auto">
+      <DialogContent className="rounded-[28px] sm:max-w-2xl bg-[#171232] border-white/10 text-white max-h-[88vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-lg font-bold">
-            <Wand2 size={18} className="text-[#00C4CC]" /> Magic Layers
+            <Wand2 size={18} className="text-[#4F9D8F]" /> Magic Layers
           </DialogTitle>
-          <DialogDescription className="text-[#0E1318]/60">
+          <DialogDescription className="text-white/60">
             Turn a flat design image into an editable layout — text, images and shapes become real layers you can move, restyle and edit.
           </DialogDescription>
         </DialogHeader>
@@ -260,7 +260,7 @@ export function MagicLayersDialog({ open, onOpenChange }: { open: boolean; onOpe
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="w-full rounded-2xl border-2 border-dashed border-white/15 hover:border-[#7D2AE8] bg-white/[0.03] hover:bg-[#7D2AE8]/10 transition-all py-10 flex flex-col items-center gap-3 cursor-pointer"
+              className="w-full rounded-2xl border-2 border-dashed border-white/15 hover:border-[#2E7D6F] bg-white/[0.03] hover:bg-[#2E7D6F]/10 transition-all py-10 flex flex-col items-center gap-3 cursor-pointer"
               onDragOver={(e) => e.preventDefault()}
               onDrop={(e) => {
                 e.preventDefault()
@@ -268,11 +268,11 @@ export function MagicLayersDialog({ open, onOpenChange }: { open: boolean; onOpe
                 if (file?.type.startsWith('image/')) void analyzeFile(file)
               }}
             >
-              <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#00C4CC] to-[#7D2AE8] flex items-center justify-center">
-                <Upload size={22} className="text-[#0E1318]" />
+              <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#4F9D8F] to-[#2E7D6F] flex items-center justify-center">
+                <Upload size={22} className="text-white" />
               </div>
               <div className="text-sm font-semibold">Upload a flat design</div>
-              <div className="text-xs text-[#0E1318]/50">PNG, JPG or WebP — drop it here or click to browse</div>
+              <div className="text-xs text-white/50">PNG, JPG or WebP — drop it here or click to browse</div>
             </button>
             <input
               ref={fileInputRef}
@@ -290,27 +290,27 @@ export function MagicLayersDialog({ open, onOpenChange }: { open: boolean; onOpe
               <button
                 type="button"
                 onClick={() => void analyzeSelected()}
-                className="w-full rounded-xl border border-black/10 bg-black/[0.04] hover:bg-black/[0.08] p-3 flex items-center gap-3 text-left cursor-pointer transition-colors"
+                className="w-full rounded-xl border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] p-3 flex items-center gap-3 text-left cursor-pointer transition-colors"
               >
-                <div className="w-10 h-10 rounded-lg bg-[#7D2AE8]/20 flex items-center justify-center shrink-0">
+                <div className="w-10 h-10 rounded-lg bg-[#2E7D6F]/20 flex items-center justify-center shrink-0">
                   <MousePointer2 size={16} className="text-[#c39bff]" />
                 </div>
                 <div className="min-w-0">
                   <div className="text-sm font-semibold">Analyze the selected image</div>
-                  <div className="text-xs text-[#0E1318]/50 truncate">
+                  <div className="text-xs text-white/50 truncate">
                     Uses the image currently selected on your canvas
                   </div>
                 </div>
               </button>
             )}
 
-            <div className="rounded-xl bg-black/[0.03] border border-black/[0.07] p-3.5 text-xs text-[#0E1318]/55 space-y-1.5">
-              <div className="font-semibold text-[#0E1318]/75 flex items-center gap-1.5">
-                <Sparkles size={12} className="text-[#00C4CC]" /> How it works
+            <div className="rounded-xl bg-white/[0.03] border border-white/[0.07] p-3.5 text-xs text-white/55 space-y-1.5">
+              <div className="font-semibold text-white/75 flex items-center gap-1.5">
+                <Sparkles size={12} className="text-[#4F9D8F]" /> How it works
               </div>
               <p>
                 A vision model detects text, photos, shapes and the background, then Canvix rebuilds each region as a
-                <strong className="text-[#0E1318]/80"> native editable element</strong>. Exact fonts can&apos;t be recovered —
+                <strong className="text-white/80"> native editable element</strong>. Exact fonts can&apos;t be recovered —
                 the closest family from the Canvix library is used. Uncertain regions are flagged so you can review them.
               </p>
             </div>
@@ -322,11 +322,11 @@ export function MagicLayersDialog({ open, onOpenChange }: { open: boolean; onOpe
           <div className="py-10 flex flex-col items-center gap-4">
             {imageUrl && (
                
-              <img src={imageUrl} alt="Design being analyzed" className="max-h-44 rounded-xl border border-black/10 object-contain" />
+              <img src={imageUrl} alt="Design being analyzed" className="max-h-44 rounded-xl border border-white/10 object-contain" />
             )}
-            <Loader2 size={28} className="animate-spin text-[#00C4CC]" />
+            <Loader2 size={28} className="animate-spin text-[#4F9D8F]" />
             <div className="text-sm font-semibold">Detecting layers…</div>
-            <div className="text-xs text-[#0E1318]/50">Reading text, photos, shapes and the background.</div>
+            <div className="text-xs text-white/50">Reading text, photos, shapes and the background.</div>
           </div>
         )}
 
@@ -334,7 +334,7 @@ export function MagicLayersDialog({ open, onOpenChange }: { open: boolean; onOpe
         {stage === 'review' && analysis && imageUrl && (
           <div className="space-y-4">
             {analysis.notes && (
-              <div className="rounded-xl border border-black/10 bg-black/[0.04] p-3 text-xs text-[#0E1318]/60 flex gap-2">
+              <div className="rounded-xl border border-white/10 bg-white/[0.04] p-3 text-xs text-white/60 flex gap-2">
                 <AlertTriangle size={14} className="shrink-0 mt-0.5 text-amber-300/80" />
                 <span>{analysis.notes}</span>
               </div>
@@ -342,7 +342,7 @@ export function MagicLayersDialog({ open, onOpenChange }: { open: boolean; onOpe
 
             <div className="grid grid-cols-[220px_1fr] gap-4">
               {/* preview with region outlines */}
-              <div className="relative rounded-xl overflow-hidden border border-black/10 bg-[#EBECF0]">
+              <div className="relative rounded-xl overflow-hidden border border-white/10 bg-[#0B0819]">
                 { }
                 <img src={imageUrl} alt="Analyzed design" className="w-full block" />
                 {analysis.regions.map((r) => {
@@ -357,10 +357,10 @@ export function MagicLayersDialog({ open, onOpenChange }: { open: boolean; onOpe
                       className={cn(
                         'absolute border-2 transition-all',
                         isDiscarded
-                          ? 'border-black/20 opacity-25'
+                          ? 'border-white/20 opacity-25'
                           : low
                             ? 'border-amber-400'
-                            : 'border-[#00C4CC]'
+                            : 'border-[#4F9D8F]'
                       )}
                       style={{
                         left: `${r.bounds.x * 100}%`,
@@ -371,7 +371,7 @@ export function MagicLayersDialog({ open, onOpenChange }: { open: boolean; onOpe
                     >
                       {isDiscarded && (
                         <span className="absolute inset-0 flex items-center justify-center">
-                          <EyeOff size={12} className="text-[#0E1318]/70" />
+                          <EyeOff size={12} className="text-white/70" />
                         </span>
                       )}
                     </button>
@@ -382,7 +382,7 @@ export function MagicLayersDialog({ open, onOpenChange }: { open: boolean; onOpe
               {/* region list */}
               <div className="min-h-0">
                 <div className="flex items-center justify-between mb-2">
-                  <div className="text-xs font-semibold text-[#0E1318]/70">
+                  <div className="text-xs font-semibold text-white/70">
                     {keptCount} of {regionCount} layers kept
                     {lowConfidenceCount > 0 && (
                       <span className="ml-2 text-amber-300/80">
@@ -393,7 +393,7 @@ export function MagicLayersDialog({ open, onOpenChange }: { open: boolean; onOpe
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="h-7 text-xs text-[#0E1318]/70 hover:bg-black/10 hover:text-[#0E1318]"
+                    className="h-7 text-xs text-white/70 hover:bg-white/10 hover:text-white"
                     onClick={() => setDiscarded(new Set())}
                   >
                     <RefreshCw size={11} className="mr-1" /> Keep all
@@ -422,11 +422,11 @@ export function MagicLayersDialog({ open, onOpenChange }: { open: boolean; onOpe
                   onClick={() => setInsertMode(m.id)}
                   className={cn(
                     'rounded-xl border-2 p-2.5 text-left transition-all cursor-pointer',
-                    insertMode === m.id ? 'border-[#00C4CC] bg-[#00C4CC]/10' : 'border-black/10 hover:border-black/25'
+                    insertMode === m.id ? 'border-[#4F9D8F] bg-[#4F9D8F]/10' : 'border-white/10 hover:border-white/25'
                   )}
                 >
                   <div className="text-[13px] font-semibold">{m.label}</div>
-                  <div className="text-[11px] text-[#0E1318]/50">{m.hint}</div>
+                  <div className="text-[11px] text-white/50">{m.hint}</div>
                 </button>
               ))}
             </div>
@@ -435,7 +435,7 @@ export function MagicLayersDialog({ open, onOpenChange }: { open: boolean; onOpe
 
         {stage === 'rebuilding' && (
           <div className="py-10 flex flex-col items-center gap-4">
-            <Loader2 size={28} className="animate-spin text-[#7D2AE8]" />
+            <Loader2 size={28} className="animate-spin text-[#2E7D6F]" />
             <div className="text-sm font-semibold">Building editable layers…</div>
           </div>
         )}
@@ -443,7 +443,7 @@ export function MagicLayersDialog({ open, onOpenChange }: { open: boolean; onOpe
         <div className="flex items-center gap-2 justify-end pt-1">
           {stage === 'review' && (
             <>
-              <Button variant="ghost" className="text-[#0E1318]/70 hover:bg-black/10 hover:text-[#0E1318]" onClick={() => reset()}>
+              <Button variant="ghost" className="text-white/70 hover:bg-white/10 hover:text-white" onClick={() => reset()}>
                 <RefreshCw size={14} className="mr-1.5" /> Start over
               </Button>
               <Button className="btn-brand-gradient gap-2 px-5" onClick={() => void createLayers()} disabled={keptCount === 0}>
@@ -453,12 +453,12 @@ export function MagicLayersDialog({ open, onOpenChange }: { open: boolean; onOpe
             </>
           )}
           {stage === 'upload' && imageUrl === null && (
-            <Button variant="ghost" className="text-[#0E1318]/70 hover:bg-black/10 hover:text-[#0E1318]" onClick={() => close(false)}>
+            <Button variant="ghost" className="text-white/70 hover:bg-white/10 hover:text-white" onClick={() => close(false)}>
               <X size={14} className="mr-1.5" /> Close
             </Button>
           )}
           {(stage === 'upload' || stage === 'review') && imageUrl && (
-            <Button variant="ghost" className="text-[#0E1318]/70 hover:bg-black/10 hover:text-[#0E1318]" onClick={insertAsImage}>
+            <Button variant="ghost" className="text-white/70 hover:bg-white/10 hover:text-white" onClick={insertAsImage}>
               <ImageIcon size={14} className="mr-1.5" /> Place flat instead
             </Button>
           )}
@@ -488,33 +488,33 @@ function RegionRow({ region, discarded, onToggle }: { region: MagicRegion; disca
       className={cn(
         'w-full rounded-lg border p-2 flex items-center gap-2 text-left transition-all cursor-pointer',
         discarded
-          ? 'border-black/[0.06] bg-transparent opacity-45'
+          ? 'border-white/[0.06] bg-transparent opacity-45'
           : low
             ? 'border-amber-400/40 bg-amber-400/5 hover:bg-amber-400/10'
-            : 'border-black/10 bg-black/[0.04] hover:bg-black/[0.08]'
+            : 'border-white/10 bg-white/[0.04] hover:bg-white/[0.08]'
       )}
     >
       <div
         className="w-6 h-6 rounded-md flex items-center justify-center text-[10px] font-bold shrink-0"
-        style={{ background: region.color ?? '#00C4CC', color: readableOn(region.color) }}
+        style={{ background: region.color ?? '#4F9D8F', color: readableOn(region.color) }}
       >
         {icon}
       </div>
       <div className="min-w-0 flex-1">
-        <div className="text-[12px] font-medium text-[#0E1318]/85 truncate">{label}</div>
-        <div className="text-[10px] text-[#0E1318]/40 flex items-center gap-1.5">
+        <div className="text-[12px] font-medium text-white/85 truncate">{label}</div>
+        <div className="text-[10px] text-white/40 flex items-center gap-1.5">
           {region.type}
           <span
             className={cn(
               'px-1 rounded font-semibold',
-              low ? 'bg-amber-400/20 text-amber-300' : 'bg-[#00C4CC]/15 text-[#00C4CC]'
+              low ? 'bg-amber-400/20 text-amber-300' : 'bg-[#4F9D8F]/15 text-[#4F9D8F]'
             )}
           >
             {(region.confidence * 100).toFixed(0)}%
           </span>
         </div>
       </div>
-      {discarded ? <EyeOff size={13} className="text-[#0E1318]/30 shrink-0" /> : <Check size={13} className="text-[#00C4CC] shrink-0" />}
+      {discarded ? <EyeOff size={13} className="text-white/30 shrink-0" /> : <Check size={13} className="text-[#4F9D8F] shrink-0" />}
     </button>
   )
 }

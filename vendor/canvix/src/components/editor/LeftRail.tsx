@@ -44,7 +44,7 @@ export function LeftRail({ vertical = true }: { vertical?: boolean }) {
   return (
     <nav
       className={cn(
-        'bg-[#0E1318] shrink-0 z-30 border-r border-white/[0.06]',
+        'bg-[#0B0819] shrink-0 z-30 border-r border-white/[0.06]',
         vertical ? 'w-[72px] flex flex-col items-center pt-1 gap-0.5' : 'flex items-center justify-around px-2 h-14 overflow-x-auto cv-scroll-dark'
       )}
       aria-label="Editor tools"
@@ -58,7 +58,7 @@ export function LeftRail({ vertical = true }: { vertical?: boolean }) {
               className={cn(
                 'flex flex-col items-center justify-center gap-1 transition-colors text-white/60 hover:text-white',
                 vertical ? 'w-[72px] h-[72px] rounded-2xl' : 'w-16 h-11 shrink-0 rounded-xl',
-                active && 'bg-white/15 text-white'
+                active && 'bg-[#1F3F45] text-white'
               )}
               aria-label={p.label}
               aria-pressed={active}

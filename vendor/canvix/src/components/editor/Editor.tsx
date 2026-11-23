@@ -498,7 +498,7 @@ export default function Editor() {
   const hasPanel = panel !== null
 
   return (
-    <div className="h-screen w-full flex flex-col bg-[#EBECF0] overflow-hidden">
+    <div className="h-screen w-full flex flex-col bg-[#0B0819] overflow-hidden">
       <TopBar onSave={() => save(true)} onShortcuts={() => setShortcutsOpen(true)} />
       {readOnly && (
         <div className="flex items-center justify-center gap-2 bg-[#3B2A00] border-b border-[#F59E0B]/25 px-4 py-1.5 text-[12px] text-[#FBBF24]" role="status">
@@ -517,8 +517,8 @@ export default function Editor() {
           <aside
             className={
               isMobile
-                ? 'fixed inset-x-0 bottom-14 top-14 z-40 bg-[#FFFFFF] shadow-2xl flex flex-col'
-                : 'w-[340px] bg-[#FFFFFF] border-r border-black/[0.07] flex flex-col shrink-0'
+                ? 'fixed inset-x-0 bottom-14 top-14 z-40 bg-[#171232] shadow-2xl flex flex-col'
+                : 'w-[340px] bg-[#171232] border-r border-white/[0.07] flex flex-col shrink-0'
             }
           >
             <CommentsPanel />
@@ -530,14 +530,14 @@ export default function Editor() {
           <aside
             className={
               isMobile
-                ? 'fixed inset-x-0 bottom-14 top-14 z-40 bg-[#FFFFFF] shadow-2xl flex flex-col'
-                : 'w-[320px] bg-[#FFFFFF] border-r border-black/[0.07] flex flex-col shrink-0'
+                ? 'fixed inset-x-0 bottom-14 top-14 z-40 bg-[#171232] shadow-2xl flex flex-col'
+                : 'w-[320px] bg-[#171232] border-r border-white/[0.07] flex flex-col shrink-0'
             }
           >
             {isMobile && (
-              <div className="flex items-center justify-between px-4 py-3 border-b border-black/[0.07] shrink-0">
-                <h2 className="font-bold text-sm text-[#0E1318]">{PANEL_TITLES[panel]}</h2>
-                <Button variant="ghost" size="icon" className="rounded-full text-[#0E1318] hover:bg-black/10 hover:text-[#0E1318]" onClick={() => setPanel(null)} aria-label="Close panel">
+              <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.07] shrink-0">
+                <h2 className="font-bold text-sm text-white">{PANEL_TITLES[panel]}</h2>
+                <Button variant="ghost" size="icon" className="rounded-full text-white hover:bg-white/10 hover:text-white" onClick={() => setPanel(null)} aria-label="Close panel">
                   <X size={16} />
                 </Button>
               </div>
@@ -559,7 +559,7 @@ export default function Editor() {
 
         {/* v0.5: Animate panel — canva-style right side panel */}
         {animateOpen && (
-          <aside className="w-[300px] bg-[#FFFFFF] border-l border-black/[0.07] flex flex-col shrink-0 hidden md:flex">
+          <aside className="w-[300px] bg-[#171232] border-l border-white/[0.07] flex flex-col shrink-0 hidden md:flex">
             <AnimatePanel onClose={() => setAnimateOpen(false)} />
           </aside>
         )}
@@ -573,13 +573,13 @@ export default function Editor() {
       )}
 
       {/* mobile rail */}
-      <div className="md:hidden border-t border-black/[0.07]">
+      <div className="md:hidden border-t border-white/[0.07]">
         <LeftRail vertical={false} />
       </div>
 
       {/* save indicator (mobile) */}
       {isMobile && saving && (
-        <div className="fixed top-16 left-1/2 -translate-x-1/2 z-50 text-xs bg-[#7D2AE8] text-white px-3 py-1 rounded-full">
+        <div className="fixed top-16 left-1/2 -translate-x-1/2 z-50 text-xs bg-[#2E7D6F] text-white px-3 py-1 rounded-full">
           Saving…
         </div>
       )}
@@ -594,17 +594,17 @@ export default function Editor() {
       )}
 
       <Dialog open={shortcutsOpen} onOpenChange={setShortcutsOpen}>
-        <DialogContent className="rounded-[28px] bg-[#FFFFFF] border-black/10 text-[#0E1318] sm:max-w-sm">
+        <DialogContent className="rounded-[28px] bg-[#171232] border-white/10 text-white sm:max-w-sm">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-lg font-bold">
-              <Keyboard size={18} className="text-[#00C4CC]" /> Keyboard shortcuts
+              <Keyboard size={18} className="text-[#4F9D8F]" /> Keyboard shortcuts
             </DialogTitle>
           </DialogHeader>
           <div className="divide-y divide-white/[0.07]">
             {SHORTCUTS.map(([keys, label]) => (
               <div key={keys} className="flex items-center justify-between py-2">
-                <span className="text-[13px] text-[#0E1318]/70">{label}</span>
-                <kbd className="text-[11px] font-semibold bg-black/[0.08] border border-black/10 rounded-md px-2 py-1">{keys}</kbd>
+                <span className="text-[13px] text-white/70">{label}</span>
+                <kbd className="text-[11px] font-semibold bg-white/[0.08] border border-white/10 rounded-md px-2 py-1">{keys}</kbd>
               </div>
             ))}
           </div>

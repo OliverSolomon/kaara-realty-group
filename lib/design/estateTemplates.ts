@@ -39,8 +39,14 @@ export const FORMATS = [
   { id: "post", label: "Instagram post", width: 1080, height: 1080 },
   { id: "portrait", label: "Portrait post", width: 1080, height: 1350 },
   { id: "story", label: "Story or status", width: 1080, height: 1920 },
+  { id: "pin", label: "Pinterest pin", width: 1000, height: 1500 },
   { id: "wide", label: "Facebook or LinkedIn", width: 1200, height: 630 },
+  { id: "thumb", label: "Video thumbnail", width: 1280, height: 720 },
+  { id: "slide", label: "Presentation", width: 1920, height: 1080 },
   { id: "flyer", label: "A4 flyer", width: 2480, height: 3508 },
+  { id: "poster", label: "A4 landscape", width: 1754, height: 1240 },
+  { id: "card", label: "Business card", width: 1050, height: 600 },
+  { id: "banner", label: "LinkedIn banner", width: 1584, height: 396 },
 ] as const;
 
 export const LAYOUTS = [
@@ -131,7 +137,7 @@ export function estateTemplateName(spec: EstateSpec) {
 }
 
 /** One finished, fully editable page. `scale` lowers photo resolution for gallery previews. */
-export function buildEstatePage(spec: EstateSpec, listing: EstateListing, scale = 1): PageData {
+export function buildEstatePage(spec: EstateSpec, listing: EstateListing, scale = 1, photoOffset = 0): PageData {
   const campaign = CAMPAIGNS.find((item) => item.id === spec.campaign)!;
   const format = FORMATS.find((item) => item.id === spec.format)!;
   const colours = PALETTES.find((item) => item.id === spec.palette)!;
@@ -148,7 +154,7 @@ export function buildEstatePage(spec: EstateSpec, listing: EstateListing, scale 
     createTextElement({ text: value, x, y, width, height, fontSize: Math.round(size), fontFamily: SANS, fill, align: "left", lineHeight: 1.15, autoFit: true, ...extra });
 
   const photo = (index: number, x: number, y: number, width: number, height: number) => {
-    const source = listing.photos.length ? listing.photos[index % listing.photos.length] : null;
+    const source = listing.photos.length ? listing.photos[(index + photoOffset) % listing.photos.length] : null;
     if (!source) {
       add(
         rect(x, y, width, height, colours.panel, { name: "Photo placeholder" }),
@@ -173,8 +179,8 @@ export function buildEstatePage(spec: EstateSpec, listing: EstateListing, scale 
   };
 
   /** Stacks the copy tightly and shrinks it together, so short and long titles both look set. */
-  const details = (x: number, y: number, width: number, height: number, options: { price?: boolean; anchor?: "top" | "bottom" } = {}) => {
-    const { price = true, anchor = "top" } = options;
+  const details = (x: number, y: number, width: number, height: number, options: { price?: boolean; site?: boolean; anchor?: "top" | "bottom" } = {}) => {
+    const { price = true, site = true, anchor = "top" } = options;
     const specs = specLine(listing);
     const titleLines = Math.min(2, Math.ceil((listing.title.length * 72 * unit * 0.56) / width));
     const rows = [
@@ -182,7 +188,7 @@ export function buildEstatePage(spec: EstateSpec, listing: EstateListing, scale 
       { value: placeLine(listing), size: 32, lines: 1, gap: 8, fill: colours.muted, extra: { name: "Location" } },
       ...(specs ? [{ value: specs, size: 30, lines: 1, gap: 18, fill: colours.muted, extra: { bold: true, name: "Specs" } }] : []),
       ...(price ? [{ value: priceLine(campaign, listing), size: 54, lines: 1, gap: 14, fill: colours.accent, extra: { bold: true, name: "Price" } }] : []),
-      { value: SITE, size: 26, lines: 1, gap: 0, fill: colours.muted, extra: { name: "Website" } },
+      ...(site ? [{ value: SITE, size: 26, lines: 1, gap: 0, fill: colours.muted, extra: { name: "Website" } }] : []),
     ];
     const needed = rows.reduce((total, row) => total + (row.size * 1.2 * row.lines + row.gap) * unit, 0);
     const fit = Math.min(1, height / needed);
@@ -252,8 +258,9 @@ export function buildEstatePage(spec: EstateSpec, listing: EstateListing, scale 
   } else {
     const bandHeight = wide ? H * 0.3 : H * 0.17;
     const bandY = H - bandHeight;
-    photo(0, 0, 0, W, wide ? bandY : H * 0.56);
-    if (!wide) details(margin, H * 0.56 + margin * 0.5, W - margin * 2, bandY - H * 0.56 - margin * 0.8, { price: false });
+    const photoEnd = H / W >= 1.5 ? 0.66 : 0.56;
+    photo(0, 0, 0, W, wide ? bandY : H * photoEnd);
+    if (!wide) details(margin, H * photoEnd + margin * 0.5, W - margin * 2, bandY - H * photoEnd - margin * 0.8, { price: false, site: false });
     badge(margin, margin);
     add(rect(0, bandY, W, bandHeight, colours.accent, { name: "Price band" }));
     add(text(priceLine(campaign, listing), margin, bandY + bandHeight * 0.18, W - margin * 2, bandHeight * 0.42, Math.min(bandHeight * 0.34, 84 * unit), colours.onAccent, { bold: true, name: "Price" }));
@@ -262,9 +269,18 @@ export function buildEstatePage(spec: EstateSpec, listing: EstateListing, scale 
   return page;
 }
 
-export function allEstateSpecs(format: FormatId): EstateSpec[] {
-  return CAMPAIGNS.flatMap((campaign) =>
-    LAYOUTS.flatMap((layout) => PALETTES.map((palette) => ({ campaign: campaign.id, format, layout: layout.id, palette: palette.id })))
+/** Very long banners only suit layouts that put the photo beside the words. */
+export function layoutsFor(format: FormatId) {
+  const size = FORMATS.find((item) => item.id === format)!;
+  return size.width / size.height >= 2.4 ? LAYOUTS.filter((item) => item.id === "split" || item.id === "gallery") : [...LAYOUTS];
+}
+
+export function allEstateSpecs(format: FormatId | "all"): EstateSpec[] {
+  const formats = format === "all" ? FORMATS.map((item) => item.id) : [format];
+  return formats.flatMap((id) =>
+    CAMPAIGNS.flatMap((campaign) =>
+      layoutsFor(id).flatMap((layout) => PALETTES.map((palette) => ({ campaign: campaign.id, format: id, layout: layout.id, palette: palette.id })))
+    )
   );
 }
 
@@ -272,7 +288,7 @@ export function allEstateSpecs(format: FormatId): EstateSpec[] {
 export function estateTemplateDefs() {
   return CAMPAIGNS.flatMap((campaign, campaignIndex) =>
     LAYOUTS.flatMap((layout, layoutIndex) =>
-      FORMATS.filter((format) => format.id !== "flyer").map((format) => {
+      FORMATS.filter((format) => format.id !== "flyer" && layoutsFor(format.id).some((item) => item.id === layout.id)).map((format) => {
         const palette = PALETTES[(campaignIndex + layoutIndex) % PALETTES.length];
         const spec: EstateSpec = { campaign: campaign.id, format: format.id, layout: layout.id, palette: palette.id };
         return {

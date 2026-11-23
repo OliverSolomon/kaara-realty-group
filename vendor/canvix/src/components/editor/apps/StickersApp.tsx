@@ -33,12 +33,12 @@ export function StickersApp({ onClose }: AppPanelProps) {
   return (
     <div>
       <AppHeader icon={Smile} title="Stickers" onClose={onClose} />
-      <div className="flex items-center gap-2 h-9 rounded-lg bg-black/[0.06] border border-black/10 px-2.5 mb-3">
-        <Search size={12} className="text-[#0E1318]/40 shrink-0" />
+      <div className="flex items-center gap-2 h-9 rounded-lg bg-white/[0.06] border border-white/10 px-2.5 mb-3">
+        <Search size={12} className="text-white/40 shrink-0" />
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="bg-transparent outline-none text-[12px] text-[#0E1318] w-full placeholder:text-[#0E1318]/35"
+          className="bg-transparent outline-none text-[12px] text-white w-full placeholder:text-white/35"
           placeholder="Search 160+ stickers"
           aria-label="Search stickers"
         />
@@ -50,7 +50,7 @@ export function StickersApp({ onClose }: AppPanelProps) {
           onClick={() => setPack('all')}
           className={cn(
             'shrink-0 whitespace-nowrap rounded-full px-3 py-1 text-xs font-medium border transition-colors',
-            pack === 'all' ? 'bg-[#7D2AE8] text-white border-transparent' : 'border-black/12 text-[#0E1318]/60 hover:border-black/30 hover:text-[#0E1318]',
+            pack === 'all' ? 'bg-[#2E7D6F] text-white border-transparent' : 'border-white/12 text-white/60 hover:border-white/30 hover:text-white',
           )}
         >
           All
@@ -61,7 +61,7 @@ export function StickersApp({ onClose }: AppPanelProps) {
             onClick={() => setPack(p.id)}
             className={cn(
               'shrink-0 whitespace-nowrap rounded-full px-3 py-1 text-xs font-medium border transition-colors',
-              pack === p.id ? 'bg-[#7D2AE8] text-white border-transparent' : 'border-black/12 text-[#0E1318]/60 hover:border-black/30 hover:text-[#0E1318]',
+              pack === p.id ? 'bg-[#2E7D6F] text-white border-transparent' : 'border-white/12 text-white/60 hover:border-white/30 hover:text-white',
             )}
           >
             {p.icon} {p.name}
@@ -71,7 +71,7 @@ export function StickersApp({ onClose }: AppPanelProps) {
           onClick={() => setPack('emoji')}
           className={cn(
             'shrink-0 whitespace-nowrap rounded-full px-3 py-1 text-xs font-medium border transition-colors',
-            pack === 'emoji' ? 'bg-[#7D2AE8] text-white border-transparent' : 'border-black/12 text-[#0E1318]/60 hover:border-black/30 hover:text-[#0E1318]',
+            pack === 'emoji' ? 'bg-[#2E7D6F] text-white border-transparent' : 'border-white/12 text-white/60 hover:border-white/30 hover:text-white',
           )}
         >
           😀 Emoji
@@ -81,7 +81,7 @@ export function StickersApp({ onClose }: AppPanelProps) {
       {/* vector packs */}
       {shown.map(({ pack: p, stickers }) => (
         <div key={p.id} className="mb-4">
-          <h4 className="text-xs font-semibold text-[#0E1318]/50 mb-2">
+          <h4 className="text-xs font-semibold text-white/50 mb-2">
             {p.icon} {p.name}
           </h4>
           <div className="grid grid-cols-4 gap-1.5">
@@ -90,8 +90,8 @@ export function StickersApp({ onClose }: AppPanelProps) {
                 key={s.id}
                 onClick={() => addPackSticker(s)}
                 className={cn(
-                  'aspect-square rounded-xl bg-white/[0.04] hover:bg-[#7D2AE8]/25 border border-white/10',
-                  'hover:border-[#7D2AE8] hover:scale-105 transition-all flex items-center justify-center p-1',
+                  'aspect-square rounded-xl bg-white/[0.04] hover:bg-[#2E7D6F]/25 border border-white/10',
+                  'hover:border-[#2E7D6F] hover:scale-105 transition-all flex items-center justify-center p-1',
                 )}
                 aria-label={`Add sticker ${s.name}`}
                 title={`${s.name} · ${p.name} pack`}
@@ -111,13 +111,13 @@ export function StickersApp({ onClose }: AppPanelProps) {
       {/* emoji quick set */}
       {(pack === 'all' || pack === 'emoji') && (
         <div className="mb-4">
-          <h4 className="text-xs font-semibold text-[#0E1318]/50 mb-2">😀 Emoji</h4>
+          <h4 className="text-xs font-semibold text-white/50 mb-2">😀 Emoji</h4>
           <div className="grid grid-cols-6 gap-1.5">
             {EMOJI_STICKERS.map((e) => (
               <button
                 key={e}
                 onClick={() => addSticker(e)}
-                className="aspect-square rounded-lg text-xl leading-none flex items-center justify-center hover:bg-[#7D2AE8]/25 hover:scale-110 transition-all"
+                className="aspect-square rounded-lg text-xl leading-none flex items-center justify-center hover:bg-[#2E7D6F]/25 hover:scale-110 transition-all"
                 aria-label={`Add sticker ${e}`}
               >
                 {e}
@@ -128,9 +128,9 @@ export function StickersApp({ onClose }: AppPanelProps) {
       )}
 
       {!shown.length && pack !== 'emoji' && (
-        <p className="text-center text-[12px] text-[#0E1318]/40 py-6">No stickers match “{query}”</p>
+        <p className="text-center text-[12px] text-white/40 py-6">No stickers match “{query}”</p>
       )}
-      <p className="mt-3 text-[10px] text-[#0E1318]/30 text-center">
+      <p className="mt-3 text-[10px] text-white/30 text-center">
         {vectorCount} vector stickers · 40 emoji · works offline
       </p>
     </div>

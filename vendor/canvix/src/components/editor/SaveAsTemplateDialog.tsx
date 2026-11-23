@@ -38,7 +38,7 @@ function SaveAsTemplateForm({ onOpenChange }: { onOpenChange: (open: boolean) =>
   const strongFill = state0.pages[state0.currentPage]?.elements.find(
     (e) => typeof (e as { fill?: string }).fill === 'string' && !['#FFFFFF', '#ffffff', '#00000000', 'transparent'].includes((e as { fill: string }).fill)
   ) as { fill?: string } | undefined
-  const [accent, setAccent] = useState(/^#[0-9a-fA-F]{6}$/.test(strongFill?.fill ?? '') ? (strongFill?.fill as string) : '#7D2AE8')
+  const [accent, setAccent] = useState(/^#[0-9a-fA-F]{6}$/.test(strongFill?.fill ?? '') ? (strongFill?.fill as string) : '#2E7D6F')
 
   const save = async () => {
     const state = useEditorStore.getState()
@@ -74,12 +74,12 @@ function SaveAsTemplateForm({ onOpenChange }: { onOpenChange: (open: boolean) =>
   }
 
   return (
-      <DialogContent className="rounded-[28px] sm:max-w-sm bg-[#FFFFFF] border-black/10 text-[#0E1318]">
+      <DialogContent className="rounded-[28px] sm:max-w-sm bg-[#171232] border-white/10 text-white">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <BookMarked size={16} className="text-[#00C4CC]" /> Save as template
+            <BookMarked size={16} className="text-[#4F9D8F]" /> Save as template
           </DialogTitle>
-          <DialogDescription className="text-[#0E1318]/55">
+          <DialogDescription className="text-white/55">
             Your design becomes a private starter template — reuse it anytime from the Templates panel.
           </DialogDescription>
         </DialogHeader>
@@ -92,7 +92,7 @@ function SaveAsTemplateForm({ onOpenChange }: { onOpenChange: (open: boolean) =>
               value={name}
               onChange={(e) => setName(e.target.value)}
               maxLength={80}
-              className="mt-1 bg-black/[0.06] border-black/10 text-[#0E1318] [color-scheme:dark]"
+              className="mt-1 bg-white/[0.06] border-white/10 text-white [color-scheme:dark]"
               placeholder="My template"
             />
           </div>
@@ -105,7 +105,7 @@ function SaveAsTemplateForm({ onOpenChange }: { onOpenChange: (open: boolean) =>
                   onClick={() => setCategory(c.id)}
                   className={cn(
                     'rounded-full px-3 py-1 text-xs font-medium border transition-colors',
-                    category === c.id ? 'bg-[#7D2AE8] text-white border-transparent' : 'border-black/12 text-[#0E1318]/60 hover:text-[#0E1318]'
+                    category === c.id ? 'bg-[#2E7D6F] text-white border-transparent' : 'border-white/12 text-white/60 hover:text-white'
                   )}
                 >
                   {c.label}
@@ -119,15 +119,15 @@ function SaveAsTemplateForm({ onOpenChange }: { onOpenChange: (open: boolean) =>
               type="color"
               value={accent}
               onChange={(e) => setAccent(e.target.value)}
-              className="h-8 w-12 rounded-lg border border-black/15 cursor-pointer bg-transparent"
+              className="h-8 w-12 rounded-lg border border-white/15 cursor-pointer bg-transparent"
               aria-label="Template card colour"
             />
-            <span className="text-xs text-[#0E1318]/40">{sizeLabel}</span>
+            <span className="text-xs text-white/40">{sizeLabel}</span>
           </div>
         </div>
 
         <DialogFooter>
-          <Button variant="outline" className="border-black/15 bg-transparent text-[#0E1318] hover:bg-black/10 hover:text-[#0E1318]" onClick={() => onOpenChange(false)}>
+          <Button variant="outline" className="border-white/15 bg-transparent text-white hover:bg-white/10 hover:text-white" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
           <Button className="btn-cv" onClick={() => void save()} disabled={saving || !name.trim()}>

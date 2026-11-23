@@ -53,21 +53,21 @@ export function QRApp({ onClose }: AppPanelProps) {
   return (
     <div>
       <AppHeader icon={QrCode} title="QR generator" onClose={onClose} />
-      <label className="block text-[11px] font-semibold text-[#0E1318]/55 mb-1.5">Link or text</label>
+      <label className="block text-[11px] font-semibold text-white/55 mb-1.5">Link or text</label>
       <input
         value={text}
         onChange={(e) => setText(e.target.value)}
         placeholder="https://example.com"
-        className="w-full h-10 rounded-xl bg-black/[0.05] border border-black/10 px-3 text-[12px] text-[#0E1318] outline-none focus:border-[#7D2AE8] mb-3"
+        className="w-full h-10 rounded-xl bg-white/[0.05] border border-white/10 px-3 text-[12px] text-white outline-none focus:border-[#2E7D6F] mb-3"
         aria-label="QR content"
       />
       <div className="grid grid-cols-2 gap-2 mb-3">
         <div>
-          <label className="block text-[11px] font-semibold text-[#0E1318]/55 mb-1.5">Size</label>
+          <label className="block text-[11px] font-semibold text-white/55 mb-1.5">Size</label>
           <select
             value={size}
             onChange={(e) => setSize(Number(e.target.value))}
-            className="w-full h-9 rounded-xl bg-black/[0.05] border border-black/10 px-2 text-[12px] text-[#0E1318] outline-none [color-scheme:dark]"
+            className="w-full h-9 rounded-xl bg-white/[0.05] border border-white/10 px-2 text-[12px] text-white outline-none [color-scheme:dark]"
             aria-label="QR size"
           >
             {[160, 240, 320, 480].map((s) => (
@@ -76,12 +76,12 @@ export function QRApp({ onClose }: AppPanelProps) {
           </select>
         </div>
         <div>
-          <label className="block text-[11px] font-semibold text-[#0E1318]/55 mb-1.5">Colour</label>
+          <label className="block text-[11px] font-semibold text-white/55 mb-1.5">Colour</label>
           <input
             type="color"
             value={dark}
             onChange={(e) => setDark(e.target.value)}
-            className="w-full h-9 rounded-xl bg-black/[0.05] border border-black/10 px-1 cursor-pointer"
+            className="w-full h-9 rounded-xl bg-white/[0.05] border border-white/10 px-1 cursor-pointer"
             aria-label="QR colour"
           />
         </div>
@@ -91,7 +91,7 @@ export function QRApp({ onClose }: AppPanelProps) {
       </button>
 
       {preview && (
-        <div className="rounded-xl border border-black/12 bg-white p-3 flex flex-col items-center">
+        <div className="rounded-xl border border-white/12 bg-white p-3 flex flex-col items-center">
           <img src={preview} alt="QR code preview" className="w-[150px] h-[150px]" />
           <button className="btn-cv h-9 px-4 text-[12px] mt-3 w-full" onClick={addToCanvas}>
             Add to canvas

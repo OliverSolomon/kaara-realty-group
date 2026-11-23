@@ -56,7 +56,7 @@ export function PresenceAvatars() {
         </span>
       ) : (
         <span
-          className="hidden xl:flex items-center gap-1 text-[11px] font-semibold text-[#0E1318]/40"
+          className="hidden xl:flex items-center gap-1 text-[11px] font-semibold text-white/40"
           title={
             pendingOps > 0
               ? `Offline — ${pendingOps} change${pendingOps === 1 ? '' : 's'} saved locally and will sync automatically`
@@ -80,35 +80,35 @@ export function PresenceAvatars() {
               <AvatarChip key={c.id} name={initials(c.name)} color={c.color} title={c.name} />
             ))}
             {collaborators.length > 3 && (
-              <span className="w-6 h-6 rounded-full bg-black/20 border-2 border-[#4B2E93] text-[9px] font-bold text-[#0E1318] flex items-center justify-center">
+              <span className="w-6 h-6 rounded-full bg-white/20 border-2 border-[#4B2E93] text-[9px] font-bold text-white flex items-center justify-center">
                 +{collaborators.length - 3}
               </span>
             )}
           </button>
         </PopoverTrigger>
-        <PopoverContent align="end" className="w-64 rounded-2xl bg-[#FFFFFF] border-black/10 text-[#0E1318] p-3">
-          <div className="text-xs font-semibold text-[#0E1318]/60 mb-2">In this design</div>
+        <PopoverContent align="end" className="w-64 rounded-2xl bg-[#171232] border-white/10 text-white p-3">
+          <div className="text-xs font-semibold text-white/60 mb-2">In this design</div>
           <div className="space-y-1.5">
-            <div className="flex items-center gap-2.5 rounded-lg bg-black/[0.06] p-2">
+            <div className="flex items-center gap-2.5 rounded-lg bg-white/[0.06] p-2">
               <AvatarChip name={initials(me.name)} color={me.color} title={me.name} size={30} />
               <div className="min-w-0 flex-1">
                 <div className="text-[13px] font-semibold truncate">{me.name} (you)</div>
-                <div className="text-[11px] text-[#0E1318]/45">Editing</div>
+                <div className="text-[11px] text-white/45">Editing</div>
               </div>
             </div>
             {collaborators.map((c) => (
-              <div key={c.id} className="flex items-center gap-2.5 rounded-lg p-2 hover:bg-black/[0.05]">
+              <div key={c.id} className="flex items-center gap-2.5 rounded-lg p-2 hover:bg-white/[0.05]">
                 <AvatarChip name={initials(c.name)} color={c.color} title={c.name} size={30} />
                 <div className="min-w-0 flex-1">
                   <div className="text-[13px] font-semibold truncate">{c.name}</div>
-                  <div className="text-[11px] text-[#0E1318]/45">
+                  <div className="text-[11px] text-white/45">
                     {c.cursor ? `Page ${c.cursor.page + 1}${c.cursor.selection?.length ? ' · selecting' : ''}` : 'Viewing'}
                   </div>
                 </div>
               </div>
             ))}
             {collaborators.length === 0 && (
-              <div className="text-[12px] text-[#0E1318]/40 px-2 pb-1">
+              <div className="text-[12px] text-white/40 px-2 pb-1">
                 Share the design link to edit together in real time.
               </div>
             )}
@@ -123,8 +123,8 @@ export function PresenceAvatars() {
 function NameEditor({ current }: { current: string }) {
   const [name, setName] = useState(current)
   return (
-    <div className="mt-3 pt-3 border-t border-black/10 flex items-center gap-2">
-      <Pencil size={12} className="text-[#0E1318]/40 shrink-0" />
+    <div className="mt-3 pt-3 border-t border-white/10 flex items-center gap-2">
+      <Pencil size={12} className="text-white/40 shrink-0" />
       <Input
         value={name}
         maxLength={40}
@@ -132,7 +132,7 @@ function NameEditor({ current }: { current: string }) {
         onBlur={() => setDisplayName(name)}
         onKeyDown={(e) => e.key === 'Enter' && e.currentTarget.blur()}
         placeholder="Your display name"
-        className="h-8 text-[12px] bg-black/[0.06] border-black/10 text-[#0E1318] placeholder:text-[#0E1318]/30"
+        className="h-8 text-[12px] bg-white/[0.06] border-white/10 text-white placeholder:text-white/30"
         aria-label="Your display name"
       />
     </div>
@@ -142,7 +142,7 @@ function NameEditor({ current }: { current: string }) {
 function AvatarChip({ name, color, title, size = 24 }: { name: string; color: string; title: string; size?: number }) {
   return (
     <span
-      className={cn('rounded-full flex items-center justify-center text-[9px] font-bold text-[#0E1318] border-2 border-[#4B2E93] shrink-0')}
+      className={cn('rounded-full flex items-center justify-center text-[9px] font-bold text-white border-2 border-[#4B2E93] shrink-0')}
       style={{ width: size, height: size, background: color, fontSize: size >= 30 ? '11px' : '9px' }}
       title={title}
     >

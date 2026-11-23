@@ -93,7 +93,7 @@ export function PaletteApp({ onClose }: AppPanelProps) {
             key={m}
             onClick={() => regen(m)}
             className={`rounded-full px-3 py-1 text-[11px] font-medium border capitalize transition-colors ${
-              mode === m ? 'bg-[#7D2AE8] text-white border-transparent' : 'border-black/12 text-[#0E1318]/60 hover:text-[#0E1318]'
+              mode === m ? 'bg-[#2E7D6F] text-white border-transparent' : 'border-white/12 text-white/60 hover:text-white'
             }`}
           >
             {m}
@@ -101,7 +101,7 @@ export function PaletteApp({ onClose }: AppPanelProps) {
         ))}
         <button
           onClick={() => regen()}
-          className="ml-auto h-7 w-7 rounded-full border border-black/12 text-[#0E1318]/70 hover:text-[#0E1318] hover:border-black/30 flex items-center justify-center"
+          className="ml-auto h-7 w-7 rounded-full border border-white/12 text-white/70 hover:text-white hover:border-white/30 flex items-center justify-center"
           title="Regenerate"
           aria-label="Regenerate palette"
         >
@@ -109,7 +109,7 @@ export function PaletteApp({ onClose }: AppPanelProps) {
         </button>
       </div>
 
-      <div className="flex rounded-xl overflow-hidden border border-black/10 h-20 mb-3">
+      <div className="flex rounded-xl overflow-hidden border border-white/10 h-20 mb-3">
         {colors.map((c, i) => (
           <button
             key={i}
@@ -128,7 +128,7 @@ export function PaletteApp({ onClose }: AppPanelProps) {
         <button className="btn-cv h-9 text-[12px]" onClick={addToCanvas}>
           Add to canvas
         </button>
-        <button className="h-9 rounded-xl border border-black/12 hover:bg-black/[0.06] text-[#0E1318]/80 text-[12px] font-semibold transition-colors" onClick={saveToBrand}>
+        <button className="h-9 rounded-xl border border-white/12 hover:bg-white/[0.06] text-white/80 text-[12px] font-semibold transition-colors" onClick={saveToBrand}>
           Save to Brand Kit
         </button>
       </div>

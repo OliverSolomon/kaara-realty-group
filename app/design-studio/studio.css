@@ -1,69 +1,73 @@
 @import "../../vendor/canvix/canvix.css";
 @source "../../vendor/canvix/src";
 
-/* The Canva-style editor look shared with Sauti Salama. */
+/* Kaara's navy and jade over the editor's own colour tokens. */
 :root,
 .dark {
-  --cv-teal: #00c4cc;
-  --cv-violet: #7d2ae8;
-  --cv-violet-hover: #6a22c9;
-  --cv-violet-press: #5b1cb0;
-  --cv-magenta: #ff3d81;
-  --cv-app: #ffffff;
-  --cv-rail: #0e1318;
-  --cv-rail-editor: #0e1318;
-  --cv-rail-active: rgba(255, 255, 255, 0.15);
-  --cv-surface: #ffffff;
-  --cv-surface-2: #f1f1f4;
-  --cv-panel: #ffffff;
-  --cv-panel-header: #ffffff;
-  --cv-workspace: #ebecf0;
-  --cv-ink: #0e1318;
-  --cv-text: rgba(14, 19, 24, 0.92);
-  --cv-text-2: rgba(14, 19, 24, 0.72);
-  --cv-text-3: rgba(14, 19, 24, 0.56);
-  --cv-border: rgba(14, 19, 24, 0.12);
-  --cv-selection: #7d2ae8;
-  --cv-guide: #ff3d81;
-  --cv-menu: #ffffff;
-  --cv-menu-item: #f1f1f4;
-  --cv-slider-fill: #7d2ae8;
-  --cv-grad-bar: linear-gradient(90deg, #00c4cc, #7d2ae8);
-  --cv-grad-brand: linear-gradient(90deg, #068297, #7d2ae8);
-  --background: #ffffff;
-  --foreground: #0e1318;
-  --card: #ffffff;
-  --card-foreground: #0e1318;
-  --popover: #ffffff;
-  --popover-foreground: #0e1318;
-  --primary: #7d2ae8;
-  --primary-foreground: #ffffff;
-  --secondary: #f1f1f4;
-  --secondary-foreground: #0e1318;
-  --muted: #f1f1f4;
-  --muted-foreground: rgba(14, 19, 24, 0.6);
-  --accent: #f1e8fd;
-  --accent-foreground: #0e1318;
-  --border: rgba(14, 19, 24, 0.12);
-  --input: rgba(14, 19, 24, 0.16);
-  --ring: #7d2ae8;
+  --cv-teal: #4f9d8f;
+  --cv-violet: #2e7d6f;
+  --cv-violet-hover: #4f9d8f;
+  --cv-violet-press: #256257;
+  --cv-magenta: #d8c07a;
+  --cv-app: #100b28;
+  --cv-rail: #0b0819;
+  --cv-rail-editor: #0b0819;
+  --cv-rail-active: #1f3f45;
+  --cv-surface: #171232;
+  --cv-surface-2: #1d1740;
+  --cv-panel: #171232;
+  --cv-panel-header: #100b28;
+  --cv-workspace: #0b0819;
+  --cv-ink: #100b28;
+  --cv-text: rgba(239, 235, 227, 0.94);
+  --cv-text-2: rgba(239, 235, 227, 0.72);
+  --cv-text-3: rgba(239, 235, 227, 0.55);
+  --cv-border: rgba(239, 235, 227, 0.11);
+  --cv-selection: #4f9d8f;
+  --cv-guide: #7fd0c1;
+  --cv-menu: #171232;
+  --cv-menu-item: #1d1740;
+  --cv-slider-fill: #4f9d8f;
+  --cv-grad-bar: #100b28;
+  --cv-grad-brand: linear-gradient(120deg, #2e7d6f 0%, #4f9d8f 100%);
+  --background: #100b28;
+  --foreground: #efebe3;
+  --card: #171232;
+  --card-foreground: #efebe3;
+  --popover: #171232;
+  --popover-foreground: #efebe3;
+  --primary: #2e7d6f;
+  --primary-foreground: #f4faf8;
+  --secondary: #1d1740;
+  --secondary-foreground: #efebe3;
+  --muted: #1d1740;
+  --muted-foreground: rgba(239, 235, 227, 0.6);
+  --accent: #1f3f45;
+  --accent-foreground: #efebe3;
+  --border: rgba(239, 235, 227, 0.12);
+  --input: rgba(239, 235, 227, 0.16);
+  --ring: #4f9d8f;
 }
 
 html,
 body {
   height: 100%;
   overflow: hidden;
-  background: #ebecf0;
-  color: #0e1318;
+  background: #0b0819;
+}
+
+.cv-topbar-gradient {
+  border-bottom: 1px solid rgba(239, 235, 227, 0.11);
 }
 
 .btn-cv-white {
-  background: #ffffff;
-  color: #7d2ae8;
+  background: #2e7d6f;
+  color: #f4faf8;
+  border-radius: 0;
 }
 
 .btn-cv-white:hover {
-  background: rgba(255, 255, 255, 0.9);
+  background: #4f9d8f;
 }
 
 /* Co-editors cannot invite other people. */

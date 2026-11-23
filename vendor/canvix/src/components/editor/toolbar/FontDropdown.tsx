@@ -131,18 +131,18 @@ export function FontDropdown({ value, onChange }: FontDropdownProps) {
           <div className="fixed inset-0 z-[60]" onClick={() => setOpen(false)} onContextMenu={(e) => { e.preventDefault(); setOpen(false) }} />
           <div className="cv-menu !min-w-[262px] !max-w-[262px] !p-0" style={{ left: pos.x, top: pos.y }}>
             {/* search */}
-            <div className="p-2.5 pb-2 border-b border-black/[0.07]">
-              <div className="flex items-center gap-2 h-9 rounded-lg bg-black/[0.06] border border-black/10 px-2.5">
-                <Search size={13} className="text-[#0E1318]/40 shrink-0" />
+            <div className="p-2.5 pb-2 border-b border-white/[0.07]">
+              <div className="flex items-center gap-2 h-9 rounded-lg bg-white/[0.06] border border-white/10 px-2.5">
+                <Search size={13} className="text-white/40 shrink-0" />
                 <input
                   autoFocus
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  className="bg-transparent outline-none text-[12px] text-[#0E1318] w-full placeholder:text-[#0E1318]/35"
+                  className="bg-transparent outline-none text-[12px] text-white w-full placeholder:text-white/35"
                   placeholder="Search 369 fonts…"
                   aria-label="Search fonts"
                 />
-                <SlidersHorizontal size={13} className="text-[#0E1318]/40 shrink-0" />
+                <SlidersHorizontal size={13} className="text-white/40 shrink-0" />
               </div>
               {/* category pills */}
               <div className="flex gap-1.5 mt-2 flex-wrap">
@@ -152,7 +152,7 @@ export function FontDropdown({ value, onChange }: FontDropdownProps) {
                     onClick={() => setCat(c)}
                     className={cn(
                       'h-6 px-2.5 rounded-full text-[11px] font-medium capitalize border transition-colors',
-                      cat === c ? 'bg-black/[0.16] text-[#0E1318] border-black/25' : 'bg-transparent text-[#0E1318]/60 border-black/12 hover:text-[#0E1318]'
+                      cat === c ? 'bg-white/[0.16] text-white border-white/25' : 'bg-transparent text-white/60 border-white/12 hover:text-white'
                     )}
                   >
                     {c}
@@ -170,8 +170,8 @@ export function FontDropdown({ value, onChange }: FontDropdownProps) {
                   <div
                     key={f.family}
                     className={cn(
-                      'group w-full flex items-center gap-2.5 px-3 h-[38px] text-left hover:bg-black/[0.07]',
-                      value === f.family && 'bg-black/[0.09]'
+                      'group w-full flex items-center gap-2.5 px-3 h-[38px] text-left hover:bg-white/[0.07]',
+                      value === f.family && 'bg-white/[0.09]'
                     )}
                     role="option"
                     aria-selected={value === f.family}
@@ -181,14 +181,14 @@ export function FontDropdown({ value, onChange }: FontDropdownProps) {
                       onClick={() => { onChange(f.family); ensureFontLoaded(f.family); setOpen(false) }}
                       className="flex items-center gap-2.5 flex-1 min-w-0 h-full"
                     >
-                      <Star size={12} className={cn('shrink-0', value === f.family ? 'text-[#FFD166]' : 'text-[#0E1318]/20')} />
-                      <span className="text-[12px] text-[#0E1318]/85 truncate w-[86px] shrink-0" style={{ fontFamily: 'Inter' }}>{f.label}</span>
-                      <span className="text-[17px] text-[#0E1318] truncate flex-1" style={{ fontFamily: f.family }}>AaBbCc 123</span>
+                      <Star size={12} className={cn('shrink-0', value === f.family ? 'text-[#FFD166]' : 'text-white/20')} />
+                      <span className="text-[12px] text-white/85 truncate w-[86px] shrink-0" style={{ fontFamily: 'Inter' }}>{f.label}</span>
+                      <span className="text-[17px] text-white truncate flex-1" style={{ fontFamily: f.family }}>AaBbCc 123</span>
                     </button>
                     {customFont && (
                       <button
                         onClick={() => void removeCustom(customFont.id)}
-                        className="opacity-0 group-hover:opacity-100 text-[#0E1318]/40 hover:text-red-400 shrink-0"
+                        className="opacity-0 group-hover:opacity-100 text-white/40 hover:text-red-400 shrink-0"
                         aria-label={`Delete font ${f.label}`}
                         title="Delete uploaded font"
                       >
@@ -199,14 +199,14 @@ export function FontDropdown({ value, onChange }: FontDropdownProps) {
                 )
               })}
               {!list.length && (
-                <div className="px-3 py-6 text-center text-[12px] text-[#0E1318]/40">No fonts match “{query}”</div>
+                <div className="px-3 py-6 text-center text-[12px] text-white/40">No fonts match “{query}”</div>
               )}
             </div>
 
             {/* upload */}
             <button
               onClick={() => fileRef.current?.click()}
-              className="w-full flex items-center justify-center gap-1.5 h-10 border-t border-black/[0.07] text-[12px] text-[#0E1318]/60 hover:text-[#0E1318] hover:bg-black/[0.05] transition-colors"
+              className="w-full flex items-center justify-center gap-1.5 h-10 border-t border-white/[0.07] text-[12px] text-white/60 hover:text-white hover:bg-white/[0.05] transition-colors"
               aria-label="Upload a custom font"
             >
               <Upload size={13} /> Upload a font (.ttf .otf .woff .woff2)

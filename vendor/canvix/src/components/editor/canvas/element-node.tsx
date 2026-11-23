@@ -411,7 +411,7 @@ function AudioNode({ el, common }: { el: AudioElement; common: Record<string, un
         x={18}
         y={midY - 13}
         data="M13 0 L26 13 L13 26 Z"
-        fill="#00C4CC"
+        fill="#4F9D8F"
       />
       {/* waveform */}
       {bars.length > 0 ? (
@@ -454,8 +454,8 @@ function AudioNode({ el, common }: { el: AudioElement; common: Record<string, un
       />
       {el.bpm ? (
         <Group x={el.width - 62} y={el.height - 21}>
-          <Rect width={50} height={14} cornerRadius={7} fill="#00C4CC26" />
-          <Text x={4} y={2.5} text={`${Math.round(el.bpm)} BPM`} fontSize={9} fontFamily="Inter, system-ui, sans-serif" fill="#00C4CC" />
+          <Rect width={50} height={14} cornerRadius={7} fill="#4F9D8F26" />
+          <Text x={4} y={2.5} text={`${Math.round(el.bpm)} BPM`} fontSize={9} fontFamily="Inter, system-ui, sans-serif" fill="#4F9D8F" />
         </Group>
       ) : null}
     </Group>
@@ -470,7 +470,7 @@ function VideoNode({ el, common }: { el: VideoElement; common: Record<string, un
   const isTrimmed = el.trimStart > 0.05 || el.trimEnd < el.duration - 0.05
   return (
     <Group {...common} clip={undefined}>
-      <Rect width={el.width} height={el.height} cornerRadius={12} fill="#101218" />
+      <Rect width={el.width} height={el.height} cornerRadius={12} fill="#100B28" />
       <KonvaImage
         image={image ?? undefined}
         x={0}

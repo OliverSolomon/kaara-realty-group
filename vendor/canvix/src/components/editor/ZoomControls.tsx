@@ -47,12 +47,12 @@ export function ZoomControls() {
   }
 
   return (
-    <div className="absolute bottom-3 right-3 z-30 flex items-center gap-0.5 rounded-xl bg-[#F1F1F4]/95 backdrop-blur border border-black/10 shadow-xl shadow-black/40 px-1 py-1">
-      <button className="h-10 w-10 rounded-xl flex items-center justify-center text-[#0E1318]/75 hover:bg-black/10 hover:text-[#0E1318]" onClick={zoomOut} aria-label="Zoom out" title="Zoom out">
+    <div className="absolute bottom-3 right-3 z-30 flex items-center gap-0.5 rounded-xl bg-[#0B0819]/95 backdrop-blur border border-white/10 shadow-xl shadow-black/40 px-1 py-1">
+      <button className="h-10 w-10 rounded-xl flex items-center justify-center text-white/75 hover:bg-white/10 hover:text-white" onClick={zoomOut} aria-label="Zoom out" title="Zoom out">
         <ZoomOut size={16} />
       </button>
       <button
-        className="h-10 min-w-[64px] px-2 rounded-xl text-[13px] font-semibold text-[#0E1318]/90 hover:bg-black/10 flex items-center justify-center gap-1"
+        className="h-10 min-w-[64px] px-2 rounded-xl text-[13px] font-semibold text-white/90 hover:bg-white/10 flex items-center justify-center gap-1"
         onClick={() => setOpen(!open)}
         aria-label="Zoom options"
         aria-expanded={open}
@@ -61,12 +61,12 @@ export function ZoomControls() {
       >
         {percent}% <ChevronsUpDown size={11} className="opacity-50" />
       </button>
-      <button className="h-10 w-10 rounded-xl flex items-center justify-center text-[#0E1318]/75 hover:bg-black/10 hover:text-[#0E1318]" onClick={zoomIn} aria-label="Zoom in" title="Zoom in">
+      <button className="h-10 w-10 rounded-xl flex items-center justify-center text-white/75 hover:bg-white/10 hover:text-white" onClick={zoomIn} aria-label="Zoom in" title="Zoom in">
         <ZoomIn size={16} />
       </button>
-      <span className="h-5 w-px bg-black/15 mx-0.5" aria-hidden="true" />
+      <span className="h-5 w-px bg-white/15 mx-0.5" aria-hidden="true" />
       <button
-        className="h-10 w-10 rounded-xl flex items-center justify-center text-[#0E1318]/75 hover:bg-black/10 hover:text-[#0E1318]"
+        className="h-10 w-10 rounded-xl flex items-center justify-center text-white/75 hover:bg-white/10 hover:text-white"
         onClick={() => {
           if (canvasBridge.fitToScreen) canvasBridge.fitToScreen()
           else fitToScreen()
@@ -79,8 +79,8 @@ export function ZoomControls() {
       {/* v0.18 (Wave 3): grid overlay toggle */}
       <button
         className={cn(
-          'h-10 w-10 rounded-xl flex items-center justify-center hover:bg-black/10 hover:text-[#0E1318]',
-          showGrid ? 'text-[#00C4CC] bg-black/10' : 'text-[#0E1318]/75'
+          'h-10 w-10 rounded-xl flex items-center justify-center hover:bg-white/10 hover:text-white',
+          showGrid ? 'text-[#4F9D8F] bg-white/10' : 'text-white/75'
         )}
         onClick={() => setShowGrid(!showGrid)}
         aria-label="Toggle grid"
@@ -94,8 +94,8 @@ export function ZoomControls() {
       {showGrid && (
         <button
           className={cn(
-            'h-10 w-10 rounded-xl flex items-center justify-center hover:bg-black/10 hover:text-[#0E1318]',
-            snapToGrid ? 'text-[#00C4CC] bg-black/10' : 'text-[#0E1318]/75'
+            'h-10 w-10 rounded-xl flex items-center justify-center hover:bg-white/10 hover:text-white',
+            snapToGrid ? 'text-[#4F9D8F] bg-white/10' : 'text-white/75'
           )}
           onClick={() => setSnapToGrid(!snapToGrid)}
           aria-label="Snap to grid"
@@ -110,7 +110,7 @@ export function ZoomControls() {
         <select
           value={gridSize}
           onChange={(e) => setGridSize(Number(e.target.value))}
-          className="h-8 rounded-lg bg-black/30 border border-white/10 text-[12px] text-white/80 px-1.5 focus:outline-none focus:border-[#00C4CC]"
+          className="h-8 rounded-lg bg-black/30 border border-white/10 text-[12px] text-white/80 px-1.5 focus:outline-none focus:border-[#4F9D8F]"
           aria-label="Grid size"
           title="Grid size"
           data-testid="grid-size"
@@ -137,11 +137,11 @@ export function ZoomControls() {
                 key={p}
                 role="option"
                 aria-selected={percent === p}
-                className={cn('cv-menu-item !h-10 !justify-between', percent === p && 'bg-black/[0.08]')}
+                className={cn('cv-menu-item !h-10 !justify-between', percent === p && 'bg-white/[0.08]')}
                 onClick={() => applyPreset(p)}
               >
                 {p}%
-                {percent === p && <Check size={13} className="text-[#0E1318]/80" />}
+                {percent === p && <Check size={13} className="text-white/80" />}
               </button>
             ))}
             <div className="cv-menu-sep" />
@@ -156,7 +156,7 @@ export function ZoomControls() {
         }}
             >
               <span className="flex items-center gap-2"><Scan size={13} /> Fit</span>
-              {isFit && <Check size={13} className="text-[#0E1318]/80" />}
+              {isFit && <Check size={13} className="text-white/80" />}
             </button>
             <button role="option" aria-selected={false} className="cv-menu-item !h-10" onClick={doFill}>
               Fill

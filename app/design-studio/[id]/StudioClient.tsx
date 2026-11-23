@@ -8,7 +8,7 @@ import ShareDialog from "@/app/admin/(panel)/ShareDialog";
 
 const Editor = dynamic(() => import("@canvix/components/editor/Editor"), {
   ssr: false,
-  loading: () => <p style={{ padding: 32, color: "#0e1318" }}>Opening your design…</p>,
+  loading: () => <p style={{ padding: 32, color: "#efebe3" }}>Opening your design…</p>,
 });
 
 export default function StudioClient({ design, canShare }: { design: { id: string; name: string } & Record<string, unknown>; canShare: boolean }) {

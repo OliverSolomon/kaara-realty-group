@@ -114,7 +114,7 @@ export function PreviewOverlay() {
   const inClass = transitionClass(transitionKind, 'in', page?.transition?.direction)
 
   return (
-    <div className="fixed inset-0 z-[100] bg-[#0F1015] flex flex-col" role="dialog" aria-label="Design preview">
+    <div className="fixed inset-0 z-[100] bg-[#0B0819] flex flex-col" role="dialog" aria-label="Design preview">
       <div className="h-14 flex items-center justify-between px-3 shrink-0">
         <div className="flex items-center gap-2 text-sm font-semibold text-white/90 px-2">
           Preview <span className="text-white/50 font-normal">— page {safeIndex + 1} of {pages.length}</span>
@@ -135,7 +135,7 @@ export function PreviewOverlay() {
           <Button
             variant="ghost"
             size="icon"
-            className={cn('rounded-full text-white hover:bg-white/15 hover:text-white', reduceMotion && 'bg-white/15 text-[#00C4CC]')}
+            className={cn('rounded-full text-white hover:bg-white/15 hover:text-white', reduceMotion && 'bg-white/15 text-[#4F9D8F]')}
             onClick={() => setReduceMotion((v) => !v)}
             aria-label="Toggle reduced motion"
             title="Reduce motion (accessibility)"
@@ -148,7 +148,7 @@ export function PreviewOverlay() {
         </div>
       </div>
 
-      <div className="flex-1 min-h-0 relative bg-[#0F1015]">
+      <div className="flex-1 min-h-0 relative bg-[#0B0819]">
         <div className="absolute inset-0 p-4 pb-16">
           <div className="relative w-full h-full max-w-[min(100%,calc((100vh-10rem)*var(--ar)))] mx-auto" style={{ ['--ar' as string]: `${width / height}` }}>
             {/* outgoing page (during a transition) */}
@@ -181,7 +181,7 @@ export function PreviewOverlay() {
             <button
               onClick={prev}
               disabled={safeIndex === 0}
-              className={cn('absolute left-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-[#16171D]/90 text-white flex items-center justify-center hover:bg-[#7D2AE8] transition-colors disabled:opacity-30 disabled:hover:bg-[#16171D]/90')}
+              className={cn('absolute left-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-[#171232]/90 text-white flex items-center justify-center hover:bg-[#2E7D6F] transition-colors disabled:opacity-30 disabled:hover:bg-[#171232]/90')}
               aria-label="Previous page"
             >
               <ChevronLeft size={22} />
@@ -189,7 +189,7 @@ export function PreviewOverlay() {
             <button
               onClick={next}
               disabled={safeIndex === pages.length - 1 && !autoPlay}
-              className={cn('absolute right-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-[#16171D]/90 text-white flex items-center justify-center hover:bg-[#7D2AE8] transition-colors disabled:opacity-30 disabled:hover:bg-[#16171D]/90')}
+              className={cn('absolute right-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-[#171232]/90 text-white flex items-center justify-center hover:bg-[#2E7D6F] transition-colors disabled:opacity-30 disabled:hover:bg-[#171232]/90')}
               aria-label="Next page"
             >
               <ChevronRight size={22} />
@@ -204,7 +204,7 @@ export function PreviewOverlay() {
             <button
               key={i}
               onClick={() => goTo(i)}
-              className={cn('h-2 rounded-full transition-all', i === safeIndex ? 'w-7 bg-[#00C4CC]' : 'w-2 bg-white/25 hover:bg-white/50')}
+              className={cn('h-2 rounded-full transition-all', i === safeIndex ? 'w-7 bg-[#4F9D8F]' : 'w-2 bg-white/25 hover:bg-white/50')}
               aria-label={`Go to page ${i + 1}`}
               aria-current={i === index}
             />

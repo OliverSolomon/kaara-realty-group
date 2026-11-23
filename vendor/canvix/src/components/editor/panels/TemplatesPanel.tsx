@@ -101,8 +101,8 @@ export function TemplatesPanel() {
   }
 
   return (
-    <div className="flex flex-col h-full bg-[#FFFFFF] text-[#0E1318]">
-      <div className="px-4 pt-4 pb-3 border-b border-black/[0.07] shrink-0">
+    <div className="flex flex-col h-full bg-[#171232] text-[#EDEEF2]">
+      <div className="px-4 pt-4 pb-3 border-b border-white/[0.07] shrink-0">
         <div className="flex items-center justify-between">
           <h3 className="font-bold text-sm">Templates</h3>
           {/* v0.7: the promise — every template, free forever */}
@@ -110,17 +110,17 @@ export function TemplatesPanel() {
             <BadgeCheck size={11} /> 100% free forever
           </span>
         </div>
-        <div className="flex items-center gap-2 h-9 rounded-lg bg-black/[0.06] border border-black/10 px-2.5 mt-2.5">
-          <Search size={13} className="text-[#0E1318]/40 shrink-0" />
+        <div className="flex items-center gap-2 h-9 rounded-lg bg-white/[0.06] border border-white/10 px-2.5 mt-2.5">
+          <Search size={13} className="text-white/40 shrink-0" />
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="bg-transparent outline-none text-[12px] text-[#0E1318] w-full placeholder:text-[#0E1318]/35"
+            className="bg-transparent outline-none text-[12px] text-white w-full placeholder:text-white/35"
             placeholder="Search templates"
             aria-label="Search templates"
           />
           {query && (
-            <button onClick={() => setQuery('')} aria-label="Clear search" className="text-[#0E1318]/40 hover:text-[#0E1318]">
+            <button onClick={() => setQuery('')} aria-label="Clear search" className="text-white/40 hover:text-white">
               <X size={12} />
             </button>
           )}
@@ -133,7 +133,7 @@ export function TemplatesPanel() {
               onClick={() => setCategory(c.id)}
               className={cn(
                 'shrink-0 whitespace-nowrap rounded-full px-3 py-1 text-xs font-medium border transition-colors',
-                category === c.id ? 'bg-[#7D2AE8] text-white border-transparent' : 'border-black/12 text-[#0E1318]/60 hover:border-black/30 hover:text-[#0E1318]'
+                category === c.id ? 'bg-[#2E7D6F] text-white border-transparent' : 'border-white/12 text-white/60 hover:border-white/30 hover:text-white'
               )}
             >
               {c.label}
@@ -159,19 +159,19 @@ export function TemplatesPanel() {
                   {userTemplates.map((u) => (
                     <div
                       key={u.id}
-                      className="group relative text-left rounded-lg overflow-hidden border border-black/10 hover:border-[#7D2AE8] transition-all"
+                      className="group relative text-left rounded-lg overflow-hidden border border-white/10 hover:border-[#2E7D6F] transition-all"
                       aria-label={`Your template ${u.name}`}
                     >
                       <button className="block w-full" onClick={() => applyUserTemplate(u)} aria-label={`Apply ${u.name}`}>
-                        <div className="bg-[#EBECF0]" style={{ aspectRatio: `${u.width} / ${u.height}` }}>
+                        <div className="bg-[#0B0819]" style={{ aspectRatio: `${u.width} / ${u.height}` }}>
                           <LazyPreview page={u.pages[0]} width={u.width} height={u.height} />
                         </div>
                       </button>
-                      <div className="px-2 py-1.5 text-[11px] font-medium truncate bg-[#FFFFFF] text-[#0E1318]/80 flex items-center justify-between">
+                      <div className="px-2 py-1.5 text-[11px] font-medium truncate bg-[#171232] text-white/80 flex items-center justify-between">
                         <span className="truncate">{u.name}</span>
                         <button
                           onClick={() => void deleteUserTemplate(u.id)}
-                          className="opacity-0 group-hover:opacity-100 text-[#0E1318]/40 hover:text-red-400 shrink-0"
+                          className="opacity-0 group-hover:opacity-100 text-white/40 hover:text-red-400 shrink-0"
                           aria-label={`Delete template ${u.name}`}
                         >
                           <Trash2 size={11} />
@@ -226,31 +226,31 @@ export function TemplatesPanel() {
       {fillTarget && fillTarget.fields && (
         <>
           <div className="fixed inset-0 z-[75] bg-black/60 backdrop-blur-[2px]" onClick={() => setFillTarget(null)} />
-          <div className="fixed z-[76] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[min(440px,92vw)] max-h-[86vh] overflow-y-auto cv-scroll rounded-2xl bg-[#FFFFFF] border border-black/12 shadow-2xl p-4">
+          <div className="fixed z-[76] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[min(440px,92vw)] max-h-[86vh] overflow-y-auto cv-scroll rounded-2xl bg-[#171232] border border-white/12 shadow-2xl p-4">
             <div className="flex items-center justify-between mb-1">
-              <span className="text-sm font-bold text-[#0E1318] truncate">{fillTarget.name}</span>
-              <button className="text-[#0E1318]/60 hover:text-[#0E1318]" onClick={() => setFillTarget(null)} aria-label="Close fill dialog">
+              <span className="text-sm font-bold text-white truncate">{fillTarget.name}</span>
+              <button className="text-white/60 hover:text-white" onClick={() => setFillTarget(null)} aria-label="Close fill dialog">
                 <X size={16} />
               </button>
             </div>
-            <p className="text-[11px] text-[#0E1318]/50 mb-3">Fill in the fields — they flow into the design's marked slots.</p>
+            <p className="text-[11px] text-white/50 mb-3">Fill in the fields — they flow into the design's marked slots.</p>
             <div className="space-y-3">
               {fillTarget.fields.map((f) => (
                 <div key={f.key}>
-                  <label className="text-[11px] font-semibold text-[#0E1318]/60" htmlFor={`fill-${f.key}`}>{f.label}</label>
+                  <label className="text-[11px] font-semibold text-white/60" htmlFor={`fill-${f.key}`}>{f.label}</label>
                   <input
                     id={`fill-${f.key}`}
                     value={fillValues[f.key] ?? ''}
                     onChange={(e) => setFillValues((v) => ({ ...v, [f.key]: e.target.value }))}
                     maxLength={200}
-                    className="mt-1 w-full h-10 rounded-xl bg-black/[0.06] border border-black/10 px-3 text-[13px] text-[#0E1318] outline-none focus:border-[#7D2AE8] placeholder:text-[#0E1318]/30"
+                    className="mt-1 w-full h-10 rounded-xl bg-white/[0.06] border border-white/10 px-3 text-[13px] text-white outline-none focus:border-[#2E7D6F] placeholder:text-white/30"
                     placeholder={f.example}
                   />
                 </div>
               ))}
             </div>
             <div className="flex items-center justify-between mt-4">
-              <span className="text-[10px] text-[#0E1318]/35">Tip: fill with CSV in bulk from the dashboard</span>
+              <span className="text-[10px] text-white/35">Tip: fill with CSV in bulk from the dashboard</span>
               <button className="btn-cv h-9 px-4 text-[13px] flex items-center gap-1.5" onClick={applyFilled}>
                 <Check size={14} /> Use this template
               </button>
@@ -263,30 +263,30 @@ export function TemplatesPanel() {
       {preview && (
         <>
           <div className="fixed inset-0 z-[75] bg-black/60 backdrop-blur-[2px]" onClick={() => setPreview(null)} />
-          <div className="fixed z-[76] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[min(520px,92vw)] rounded-2xl bg-[#FFFFFF] border border-black/12 shadow-2xl p-4">
+          <div className="fixed z-[76] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[min(520px,92vw)] rounded-2xl bg-[#171232] border border-white/12 shadow-2xl p-4">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
-                <span className="text-sm font-bold text-[#0E1318] truncate">{preview.name}</span>
+                <span className="text-sm font-bold text-white truncate">{preview.name}</span>
                 {preview.badge === 'premium' && (
                   <span className="flex items-center gap-1 text-[10px] font-bold text-[#F5C518] bg-[#F5C518]/10 border border-[#F5C518]/25 rounded-full px-2 py-0.5 shrink-0">
                     <Gem size={10} /> Premium · Free
                   </span>
                 )}
                 {preview.fields?.length ? (
-                  <span className="flex items-center gap-1 text-[10px] font-bold text-[#00C4CC] bg-[#00C4CC]/10 border border-[#00C4CC]/25 rounded-full px-2 py-0.5 shrink-0">
+                  <span className="flex items-center gap-1 text-[10px] font-bold text-[#4F9D8F] bg-[#4F9D8F]/10 border border-[#4F9D8F]/25 rounded-full px-2 py-0.5 shrink-0">
                     <Braces size={10} /> {preview.fields.length} fields
                   </span>
                 ) : null}
               </div>
-              <button className="text-[#0E1318]/60 hover:text-[#0E1318]" onClick={() => setPreview(null)} aria-label="Close preview">
+              <button className="text-white/60 hover:text-white" onClick={() => setPreview(null)} aria-label="Close preview">
                 <X size={16} />
               </button>
             </div>
-            <div className="rounded-xl overflow-hidden border border-black/10 bg-[#EBECF0]" style={{ aspectRatio: `${preview.width} / ${preview.height}` }}>
+            <div className="rounded-xl overflow-hidden border border-white/10 bg-[#0B0819]" style={{ aspectRatio: `${preview.width} / ${preview.height}` }}>
               <DesignPreview page={preview.pages[0]} width={preview.width} height={preview.height} />
             </div>
             <div className="flex items-center justify-between mt-3">
-              <span className="text-[11px] text-[#0E1318]/50">
+              <span className="text-[11px] text-white/50">
                 {preview.width} × {preview.height} px · {preview.pages.length} page{preview.pages.length > 1 ? 's' : ''}
                 {designHasContent && ' · replaces current pages'}
               </span>
@@ -344,11 +344,11 @@ const LazyPreview = memo(function LazyPreview({ page, width, height }: { page: i
 const TemplateCard = memo(function TemplateCard({ t, onApply, onPreview }: { t: TemplateDef; onApply: () => void; onPreview: () => void }) {
   return (
     <div
-      className="group relative text-left rounded-lg overflow-hidden border border-black/10 hover:border-[#7D2AE8] transition-all"
+      className="group relative text-left rounded-lg overflow-hidden border border-white/10 hover:border-[#2E7D6F] transition-all"
       aria-label={`Template ${t.name}`}
     >
       <button className="block w-full" onClick={onPreview} aria-label={`Preview ${t.name}`}>
-        <div className="bg-[#EBECF0]" style={{ aspectRatio: `${t.width} / ${t.height}` }}>
+        <div className="bg-[#0B0819]" style={{ aspectRatio: `${t.width} / ${t.height}` }}>
           <LazyPreview page={t.pages[0]} width={t.width} height={t.height} />
         </div>
       </button>
@@ -358,13 +358,13 @@ const TemplateCard = memo(function TemplateCard({ t, onApply, onPreview }: { t: 
           <Gem size={9} /> PREMIUM
         </span>
       )}
-      <div className="px-2 py-1.5 text-[11px] font-medium truncate bg-[#FFFFFF] text-[#0E1318]/80 flex items-center justify-between">
+      <div className="px-2 py-1.5 text-[11px] font-medium truncate bg-[#171232] text-white/80 flex items-center justify-between">
         <span className="truncate">{t.name}</span>
       </div>
       <div className="absolute inset-x-0 bottom-9 p-1.5 opacity-0 group-hover:opacity-100 transition-opacity bg-gradient-to-t from-black/70 to-transparent">
         <button
           onClick={onApply}
-          className="w-full h-8 rounded-lg bg-[#7D2AE8] hover:bg-[#6A22C9] text-white text-[11px] font-bold transition-colors"
+          className="w-full h-8 rounded-lg bg-[#2E7D6F] hover:bg-[#4F9D8F] text-white text-[11px] font-bold transition-colors"
           aria-label={`Apply ${t.name}`}
         >
           Apply
@@ -376,7 +376,7 @@ const TemplateCard = memo(function TemplateCard({ t, onApply, onPreview }: { t: 
 
 function SectionLabel({ icon, children }: { icon: React.ReactNode; children: React.ReactNode }) {
   return (
-    <h4 className="flex items-center gap-1.5 text-[11px] font-bold text-[#0E1318]/45 uppercase tracking-wide mb-2.5">
+    <h4 className="flex items-center gap-1.5 text-[11px] font-bold text-white/45 uppercase tracking-wide mb-2.5">
       {icon} {children}
     </h4>
   )
@@ -384,10 +384,10 @@ function SectionLabel({ icon, children }: { icon: React.ReactNode; children: Rea
 
 function EmptyState({ label }: { label: string }) {
   return (
-    <div className="flex flex-col items-center py-10 text-[#0E1318]/35">
+    <div className="flex flex-col items-center py-10 text-white/35">
       <Search size={26} strokeWidth={1.4} />
       <p className="text-xs mt-2.5 text-center">{label}</p>
-      <p className="text-[11px] mt-1 text-[#0E1318]/25">Try “instagram”, “poster” or “logo”</p>
+      <p className="text-[11px] mt-1 text-white/25">Try “instagram”, “poster” or “logo”</p>
     </div>
   )
 }

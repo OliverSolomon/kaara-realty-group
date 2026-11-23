@@ -75,7 +75,7 @@ export function ColorMenu({ value, onChange, gradient, onGradient, title = 'Colo
       <button ref={triggerRef} onClick={openMenu} className="cv-tbtn" aria-label={title} title={title}>
         {children ?? (
           <span
-            className="block h-[18px] w-[18px] rounded-full border-2 border-black/90 shadow-[0_0_0_1px_rgba(0,0,0,0.35)]"
+            className="block h-[18px] w-[18px] rounded-full border-2 border-white/90 shadow-[0_0_0_1px_rgba(0,0,0,0.35)]"
             style={{
               background: gradient
                 ? gradient.type === 'radial'
@@ -94,24 +94,24 @@ export function ColorMenu({ value, onChange, gradient, onGradient, title = 'Colo
           <div className="fixed inset-0 z-[70]" onClick={() => setOpen(false)} onContextMenu={(e) => { e.preventDefault(); setOpen(false) }} />
           <div className="cv-menu !min-w-[250px] !max-w-[250px] !p-0" style={{ left: pos.x, top: pos.y }}>
             {/* header */}
-            <div className="flex items-center justify-between px-3 h-10 border-b border-black/[0.07]">
-              <span className="text-[13px] font-bold text-[#0E1318]">{title}</span>
-              <button className="text-[#0E1318]/60 hover:text-[#0E1318]" onClick={() => setOpen(false)} aria-label="Close colour menu">
+            <div className="flex items-center justify-between px-3 h-10 border-b border-white/[0.07]">
+              <span className="text-[13px] font-bold text-white">{title}</span>
+              <button className="text-white/60 hover:text-white" onClick={() => setOpen(false)} aria-label="Close colour menu">
                 <X size={15} />
               </button>
             </div>
 
             {/* hex input */}
             <div className="px-3 pt-2.5 pb-1">
-              <div className="flex items-center gap-2 h-8 rounded-lg bg-black/[0.06] border border-black/10 px-2.5">
-                <Search size={12} className="text-[#0E1318]/40 shrink-0" />
+              <div className="flex items-center gap-2 h-8 rounded-lg bg-white/[0.06] border border-white/10 px-2.5">
+                <Search size={12} className="text-white/40 shrink-0" />
                 <input
                   value={hex}
                   onChange={(e) => setHex(e.target.value)}
                   onKeyDown={(e) => { if (e.key === 'Enter') tryHex() }}
                   onBlur={tryHex}
-                  className="bg-transparent outline-none text-[12px] text-[#0E1318] w-full placeholder:text-[#0E1318]/35"
-                  placeholder="Try “blue” or “#00c4cc”"
+                  className="bg-transparent outline-none text-[12px] text-white w-full placeholder:text-white/35"
+                  placeholder="Try “blue” or “#4F9D8F”"
                   maxLength={9}
                 />
               </div>
@@ -126,7 +126,7 @@ export function ColorMenu({ value, onChange, gradient, onGradient, title = 'Colo
                 >
                   <span className="absolute inset-0 flex items-center justify-center">
                     <span className="h-5 w-5 rounded-full bg-[#1a1b22] flex items-center justify-center">
-                      <Plus size={12} className="text-[#0E1318]" />
+                      <Plus size={12} className="text-white" />
                     </span>
                   </span>
                 </span>
@@ -139,11 +139,11 @@ export function ColorMenu({ value, onChange, gradient, onGradient, title = 'Colo
                   aria-label="Open spectrum picker"
                 />
               </label>
-              <button className="h-9 w-9 rounded-full bg-black/[0.08] border border-black/10 flex items-center justify-center text-[#0E1318]/80 hover:bg-black/[0.14]" onClick={eyedropper} title="Eyedropper" aria-label="Eyedropper">
+              <button className="h-9 w-9 rounded-full bg-white/[0.08] border border-white/10 flex items-center justify-center text-white/80 hover:bg-white/[0.14]" onClick={eyedropper} title="Eyedropper" aria-label="Eyedropper">
                 <Pipette size={14} />
               </button>
               <button
-                className="h-9 w-9 rounded-full border-2 border-black/80"
+                className="h-9 w-9 rounded-full border-2 border-white/80"
                 style={{ background: value === 'transparent' ? 'repeating-conic-gradient(#e3e3e8 0% 25%, #ffffff 0% 50%) 50% / 8px 8px' : value }}
                 title="Current colour"
                 aria-label="Current colour"
@@ -184,15 +184,15 @@ export function ColorMenu({ value, onChange, gradient, onGradient, title = 'Colo
                   ))}
                   <button
                     className="cv-swatch h-7 w-7"
-                    style={{ background: `radial-gradient(circle, ${gradient?.from ?? '#7D2AE8'}, ${gradient?.to ?? '#00C4CC'})` }}
-                    onClick={() => onGradient({ type: 'radial', from: gradient?.from ?? '#7D2AE8', to: gradient?.to ?? '#00C4CC', angle: 0 }, true)}
+                    style={{ background: `radial-gradient(circle, ${gradient?.from ?? '#7D2AE8'}, ${gradient?.to ?? '#4F9D8F'})` }}
+                    onClick={() => onGradient({ type: 'radial', from: gradient?.from ?? '#7D2AE8', to: gradient?.to ?? '#4F9D8F', angle: 0 }, true)}
                     aria-label="Radial gradient"
                     title="Radial gradient"
                   />
                 </div>
 
                 {gradient && (
-                  <div className="px-3 pb-3 space-y-2.5 border-t border-black/[0.05] pt-2.5">
+                  <div className="px-3 pb-3 space-y-2.5 border-t border-white/[0.05] pt-2.5">
                     {/* type toggle */}
                     <div className="flex items-center gap-1.5">
                       {(['linear', 'radial'] as const).map((t) => (
@@ -201,7 +201,7 @@ export function ColorMenu({ value, onChange, gradient, onGradient, title = 'Colo
                           onClick={() => onGradient({ ...gradient, type: t }, true)}
                           className={cn(
                             'flex-1 h-7 rounded-lg text-[11px] font-semibold capitalize transition-colors',
-                            gradient.type === t ? 'bg-[#7D2AE8] text-white' : 'bg-black/[0.08] text-[#0E1318]/70 hover:bg-black/[0.14]'
+                            gradient.type === t ? 'bg-[#2E7D6F] text-white' : 'bg-white/[0.08] text-white/70 hover:bg-white/[0.14]'
                           )}
                         >
                           {t}
@@ -212,7 +212,7 @@ export function ColorMenu({ value, onChange, gradient, onGradient, title = 'Colo
                     {/* angle (linear only) */}
                     {gradient.type === 'linear' && (
                       <div className="flex items-center gap-2">
-                        <span className="text-[10px] text-[#0E1318]/50 w-8 shrink-0">Angle</span>
+                        <span className="text-[10px] text-white/50 w-8 shrink-0">Angle</span>
                         <input
                           type="range"
                           min={0}
@@ -220,10 +220,10 @@ export function ColorMenu({ value, onChange, gradient, onGradient, title = 'Colo
                           value={gradient.angle}
                           onChange={(e) => onGradient({ ...gradient, angle: Number(e.target.value) }, false)}
                           onPointerUp={() => onGradient(gradient, true)}
-                          className="flex-1 accent-[#7D2AE8] h-1.5"
+                          className="flex-1 accent-[#2E7D6F] h-1.5"
                           aria-label="Gradient angle"
                         />
-                        <span className="text-[10px] text-[#0E1318]/70 w-8 text-right tabular-nums">{gradient.angle}°</span>
+                        <span className="text-[10px] text-white/70 w-8 text-right tabular-nums">{gradient.angle}°</span>
                       </div>
                     )}
 
@@ -231,9 +231,9 @@ export function ColorMenu({ value, onChange, gradient, onGradient, title = 'Colo
                     <div className="flex items-center gap-2">
                       {(['from', 'to'] as const).map((stop) => (
                         <label key={stop} className="relative flex-1 cursor-pointer" title={`Gradient ${stop}`}>
-                          <span className="flex items-center gap-1.5 h-7 rounded-lg bg-black/[0.06] border border-black/10 px-2">
+                          <span className="flex items-center gap-1.5 h-7 rounded-lg bg-white/[0.06] border border-white/10 px-2">
                             <span className="h-4 w-4 rounded border border-black/10" style={{ background: gradient[stop] }} />
-                            <span className="text-[10px] text-[#0E1318]/60 capitalize">{stop}</span>
+                            <span className="text-[10px] text-white/60 capitalize">{stop}</span>
                           </span>
                           <input
                             type="color"
@@ -249,7 +249,7 @@ export function ColorMenu({ value, onChange, gradient, onGradient, title = 'Colo
 
                     <button
                       onClick={() => onGradient(null, true)}
-                      className="w-full h-7 rounded-lg bg-black/[0.06] border border-black/10 text-[11px] font-semibold text-[#0E1318]/70 hover:text-[#0E1318] hover:bg-black/[0.12]"
+                      className="w-full h-7 rounded-lg bg-white/[0.06] border border-white/10 text-[11px] font-semibold text-white/70 hover:text-white hover:bg-white/[0.12]"
                     >
                       Remove gradient
                     </button>
@@ -267,8 +267,8 @@ export function ColorMenu({ value, onChange, gradient, onGradient, title = 'Colo
 function Section({ label, icon, children }: { label: string; icon: string; children: React.ReactNode }) {
   const [expanded, setExpanded] = useState(true)
   return (
-    <div className="border-t border-black/[0.07]">
-      <button className="w-full flex items-center gap-2 px-3 py-2 text-[12px] font-semibold text-[#0E1318]/85 hover:text-[#0E1318]" onClick={() => setExpanded(!expanded)}>
+    <div className="border-t border-white/[0.07]">
+      <button className="w-full flex items-center gap-2 px-3 py-2 text-[12px] font-semibold text-white/85 hover:text-white" onClick={() => setExpanded(!expanded)}>
         <ChevronRight size={12} className={cn('transition-transform', expanded && 'rotate-90')} />
         {label}
       </button>

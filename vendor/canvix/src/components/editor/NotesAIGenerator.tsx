@@ -71,7 +71,7 @@ export function NotesAIGenerator() {
   return (
     <>
       <button
-        className="flex items-center gap-1 text-[11px] text-[#00C4CC] hover:text-[#4de0e8] px-1.5 h-7 rounded-md hover:bg-[#00C4CC]/10 font-semibold"
+        className="flex items-center gap-1 text-[11px] text-[#4F9D8F] hover:text-[#4de0e8] px-1.5 h-7 rounded-md hover:bg-[#4F9D8F]/10 font-semibold"
         onClick={() => void generate()}
         disabled={busy}
         title="Generate speaker notes for every page with AI"
@@ -83,22 +83,22 @@ export function NotesAIGenerator() {
       </button>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-[560px] max-h-[80vh] overflow-y-auto rounded-2xl bg-[#14161B] border-black/10 text-[#0E1318]">
+        <DialogContent className="max-w-[560px] max-h-[80vh] overflow-y-auto rounded-2xl bg-[#14161B] border-white/10 text-white">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-1.5 text-[15px]">
-              <NotebookPen size={15} className="text-[#00C4CC]" /> Speaker notes — review & edit
+              <NotebookPen size={15} className="text-[#4F9D8F]" /> Speaker notes — review & edit
             </DialogTitle>
           </DialogHeader>
-          <p className="text-[12px] text-[#0E1318]/55 -mt-1 mb-2 leading-snug">
+          <p className="text-[12px] text-white/55 -mt-1 mb-2 leading-snug">
             AI drafts for {draft.length} page{draft.length === 1 ? '' : 's'}. Edit anything — Apply writes each
             page&apos;s notes (existing notes are replaced).
           </p>
           <div className="space-y-2.5">
             {draft.map((n, i) => (
               <div key={n.page}>
-                <div className="text-[11px] font-semibold text-[#0E1318]/60 mb-1 flex items-baseline gap-2">
+                <div className="text-[11px] font-semibold text-white/60 mb-1 flex items-baseline gap-2">
                   Page {n.page}
-                  <span className="text-[#0E1318]/35 font-normal truncate">
+                  <span className="text-white/35 font-normal truncate">
                     {pages[n.page - 1]
                       ? (pages[n.page - 1].elements ?? [])
                           .filter((e) => e.type === 'text')
@@ -111,7 +111,7 @@ export function NotesAIGenerator() {
                   onChange={(e) =>
                     setDraft((d) => d.map((x, j) => (j === i ? { ...x, text: e.target.value } : x)))
                   }
-                  className="w-full h-20 resize-none rounded-lg bg-black/30 border border-white/10 px-2.5 py-2 text-[12.5px] text-white/85 focus:outline-none focus:border-[#00C4CC]"
+                  className="w-full h-20 resize-none rounded-lg bg-black/30 border border-white/10 px-2.5 py-2 text-[12.5px] text-white/85 focus:outline-none focus:border-[#4F9D8F]"
                   aria-label={`Notes for page ${n.page}`}
                   maxLength={600}
                 />
@@ -119,7 +119,7 @@ export function NotesAIGenerator() {
             ))}
           </div>
           <div className="flex justify-end gap-2 mt-1">
-            <Button variant="ghost" className="h-9 text-[12px] text-[#0E1318]/70 hover:text-[#0E1318]" onClick={() => setOpen(false)}>
+            <Button variant="ghost" className="h-9 text-[12px] text-white/70 hover:text-white" onClick={() => setOpen(false)}>
               Cancel
             </Button>
             <Button className="btn-cv h-9 px-4 text-[12px]" onClick={apply}>

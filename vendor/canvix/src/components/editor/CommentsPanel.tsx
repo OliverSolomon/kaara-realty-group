@@ -57,13 +57,13 @@ export function CommentsPanel() {
   return (
     <div className="flex flex-col h-full">
       <div className="flex items-center justify-between px-4 pt-4 pb-3 shrink-0">
-        <h2 className="font-bold text-sm text-[#0E1318] flex items-center gap-2">
-          <MessageSquare size={15} className="text-[#00C4CC]" /> Comments
+        <h2 className="font-bold text-sm text-white flex items-center gap-2">
+          <MessageSquare size={15} className="text-[#4F9D8F]" /> Comments
         </h2>
         <Button
           variant="ghost"
           size="icon"
-          className="rounded-full text-[#0E1318]/70 hover:bg-black/10 hover:text-[#0E1318] h-7 w-7"
+          className="rounded-full text-white/70 hover:bg-white/10 hover:text-white h-7 w-7"
           onClick={() => setCommentsOpen(false)}
           aria-label="Close comments"
         >
@@ -73,14 +73,14 @@ export function CommentsPanel() {
 
       {/* filters */}
       <div className="px-4 pb-3 shrink-0">
-        <div className="flex gap-1 rounded-lg bg-black/[0.05] p-0.5">
+        <div className="flex gap-1 rounded-lg bg-white/[0.05] p-0.5">
           {(['open', 'resolved', 'all'] as const).map((f) => (
             <button
               key={f}
               onClick={() => setFilter(f)}
               className={cn(
                 'flex-1 rounded-md px-2 py-1.5 text-[11px] font-semibold capitalize transition-colors cursor-pointer',
-                filter === f ? 'bg-black/[0.12] text-[#0E1318]' : 'text-[#0E1318]/50 hover:text-[#0E1318]/80'
+                filter === f ? 'bg-white/[0.12] text-white' : 'text-white/50 hover:text-white/80'
               )}
             >
               {f} {f === 'open' && threads.filter((t) => !t.root.resolved).length > 0 && `(${threads.filter((t) => !t.root.resolved).length})`}
@@ -92,11 +92,11 @@ export function CommentsPanel() {
       <div className="flex-1 min-h-0 overflow-y-auto px-3 pb-4 space-y-2">
         {filtered.length === 0 && (
           <div className="text-center py-10 px-4">
-            <MessageCircle size={26} className="mx-auto text-[#0E1318]/20 mb-2" />
-            <div className="text-[13px] font-semibold text-[#0E1318]/60">
+            <MessageCircle size={26} className="mx-auto text-white/20 mb-2" />
+            <div className="text-[13px] font-semibold text-white/60">
               {filter === 'open' ? 'No open comments' : filter === 'resolved' ? 'No resolved comments' : 'No comments yet'}
             </div>
-            <p className="text-[11px] text-[#0E1318]/40 mt-1">
+            <p className="text-[11px] text-white/40 mt-1">
               In comments mode, click anywhere on the canvas to drop a pin.
             </p>
           </div>
@@ -208,43 +208,43 @@ function ThreadCard({
       className={cn(
         'rounded-xl border p-2.5 cursor-pointer transition-colors',
         highlighted
-          ? 'border-[#00C4CC]/50 bg-[#00C4CC]/[0.07]'
-          : 'border-black/[0.08] bg-black/[0.03] hover:bg-black/[0.06]'
+          ? 'border-[#4F9D8F]/50 bg-[#4F9D8F]/[0.07]'
+          : 'border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.06]'
       )}
       onClick={onFocus}
     >
       <div className="flex items-start gap-2">
         <span
-          className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold text-[#0E1318] shrink-0 mt-0.5"
+          className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold text-white shrink-0 mt-0.5"
           style={{ background: root.authorColor }}
         >
           {initials(root.authorName)}
         </span>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-1.5">
-            <span className="text-[12px] font-semibold text-[#0E1318]/90 truncate">{root.authorName}</span>
-            <span className="text-[10px] text-[#0E1318]/35 shrink-0">{timeAgo(root.createdAt)}</span>
+            <span className="text-[12px] font-semibold text-white/90 truncate">{root.authorName}</span>
+            <span className="text-[10px] text-white/35 shrink-0">{timeAgo(root.createdAt)}</span>
             {root.resolved && (
               <span className="text-[9px] font-semibold text-emerald-300/80 flex items-center gap-0.5 shrink-0">
                 <Check size={9} /> resolved
               </span>
             )}
           </div>
-          <p className="text-[12px] text-[#0E1318]/75 mt-0.5 break-words">{root.body}</p>
+          <p className="text-[12px] text-white/75 mt-0.5 break-words">{root.body}</p>
 
           {replies.length > 0 && (
-            <div className="mt-1.5 space-y-1.5 pl-2 border-l border-black/[0.08]">
+            <div className="mt-1.5 space-y-1.5 pl-2 border-l border-white/[0.08]">
               {replies.map((r) => (
                 <div key={r.id} className="flex items-start gap-1.5">
                   <span
-                    className="w-4.5 h-4.5 w-[18px] h-[18px] rounded-full flex items-center justify-center text-[7px] font-bold text-[#0E1318] shrink-0 mt-0.5"
+                    className="w-4.5 h-4.5 w-[18px] h-[18px] rounded-full flex items-center justify-center text-[7px] font-bold text-white shrink-0 mt-0.5"
                     style={{ background: r.authorColor }}
                   >
                     {initials(r.authorName)}
                   </span>
                   <div className="min-w-0">
-                    <span className="text-[11px] font-semibold text-[#0E1318]/70">{r.authorName}</span>
-                    <p className="text-[11px] text-[#0E1318]/60 break-words">{r.body}</p>
+                    <span className="text-[11px] font-semibold text-white/70">{r.authorName}</span>
+                    <p className="text-[11px] text-white/60 break-words">{r.body}</p>
                   </div>
                 </div>
               ))}
@@ -254,7 +254,7 @@ function ThreadCard({
           {/* thread actions */}
           <div className="flex items-center gap-1 mt-1.5 -ml-1">
             <button
-              className="text-[10px] font-semibold text-[#0E1318]/50 hover:text-[#0E1318] px-1.5 py-0.5 rounded flex items-center gap-1 cursor-pointer"
+              className="text-[10px] font-semibold text-white/50 hover:text-white px-1.5 py-0.5 rounded flex items-center gap-1 cursor-pointer"
               onClick={(e) => {
                 e.stopPropagation()
                 setReplyOpen((v) => !v)
@@ -263,7 +263,7 @@ function ThreadCard({
               <Reply size={10} /> Reply
             </button>
             <button
-              className="text-[10px] font-semibold text-[#0E1318]/50 hover:text-[#0E1318] px-1.5 py-0.5 rounded flex items-center gap-1 cursor-pointer"
+              className="text-[10px] font-semibold text-white/50 hover:text-white px-1.5 py-0.5 rounded flex items-center gap-1 cursor-pointer"
               onClick={(e) => {
                 e.stopPropagation()
                 void toggleResolve()
@@ -273,7 +273,7 @@ function ThreadCard({
             </button>
             {root.authorId === meId && (
               <button
-                className="text-[10px] font-semibold text-[#0E1318]/50 hover:text-red-300 px-1.5 py-0.5 rounded flex items-center gap-1 cursor-pointer"
+                className="text-[10px] font-semibold text-white/50 hover:text-red-300 px-1.5 py-0.5 rounded flex items-center gap-1 cursor-pointer"
                 onClick={(e) => {
                   e.stopPropagation()
                   void deleteComment()
@@ -282,7 +282,7 @@ function ThreadCard({
                 <Trash2 size={10} /> Delete
               </button>
             )}
-            <span className="ml-auto text-[9px] text-[#0E1318]/25 shrink-0">Page {pageIndex + 1}</span>
+            <span className="ml-auto text-[9px] text-white/25 shrink-0">Page {pageIndex + 1}</span>
           </div>
 
           {replyOpen && (
@@ -294,7 +294,7 @@ function ThreadCard({
                 placeholder={`Reply to ${root.authorName}…`}
                 maxLength={2000}
                 autoFocus
-                className="flex-1 h-8 rounded-lg bg-black/[0.06] border border-black/10 px-2.5 text-[12px] text-[#0E1318] placeholder:text-[#0E1318]/30 outline-none focus:border-[#00C4CC]/50"
+                className="flex-1 h-8 rounded-lg bg-white/[0.06] border border-white/10 px-2.5 text-[12px] text-white placeholder:text-white/30 outline-none focus:border-[#4F9D8F]/50"
               />
               <Button
                 size="sm"

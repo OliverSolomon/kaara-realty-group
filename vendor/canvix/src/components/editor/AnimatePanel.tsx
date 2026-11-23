@@ -90,13 +90,13 @@ export function AnimatePanel({ onClose }: { onClose: () => void }) {
   return (
     <div className="flex flex-col h-full">
       <div className="flex items-center justify-between px-4 pt-4 pb-3 shrink-0">
-        <h2 className="font-bold text-sm text-[#0E1318] flex items-center gap-2">
-          <Zap size={15} className="text-[#00C4CC]" /> Animate
+        <h2 className="font-bold text-sm text-white flex items-center gap-2">
+          <Zap size={15} className="text-[#4F9D8F]" /> Animate
         </h2>
         <Button
           variant="ghost"
           size="icon"
-          className="rounded-full text-[#0E1318]/70 hover:bg-black/10 hover:text-[#0E1318] h-7 w-7"
+          className="rounded-full text-white/70 hover:bg-white/10 hover:text-white h-7 w-7"
           onClick={onClose}
           aria-label="Close animate panel"
         >
@@ -106,14 +106,14 @@ export function AnimatePanel({ onClose }: { onClose: () => void }) {
 
       {/* tabs — canva: Page / Element / Text (we fold text into element) */}
       <div className="px-4 pb-3 shrink-0">
-        <div className="flex gap-1 rounded-lg bg-black/[0.05] p-0.5">
+        <div className="flex gap-1 rounded-lg bg-white/[0.05] p-0.5">
           {(['page', 'element'] as const).map((t) => (
             <button
               key={t}
               onClick={() => setTab(t)}
               className={cn(
                 'flex-1 rounded-md px-2 py-1.5 text-[11px] font-semibold capitalize transition-colors cursor-pointer',
-                tab === t ? 'bg-black/[0.12] text-[#0E1318]' : 'text-[#0E1318]/50 hover:text-[#0E1318]/80'
+                tab === t ? 'bg-white/[0.12] text-white' : 'text-white/50 hover:text-white/80'
               )}
             >
               {t === 'page' ? 'Page' : 'Element'}
@@ -128,19 +128,19 @@ export function AnimatePanel({ onClose }: { onClose: () => void }) {
           <div className="space-y-4">
             {/* Magic Animate */}
             <button
-              className="w-full rounded-xl bg-gradient-to-r from-[#00C4CC] to-[#7D2AE8] p-[1px] cursor-pointer group"
+              className="w-full rounded-xl bg-gradient-to-r from-[#4F9D8F] to-[#2E7D6F] p-[1px] cursor-pointer group"
               onClick={() => {
                 magicAnimateCurrentPage(speed)
                 toast({ title: 'Magic Animate applied', description: 'Every element got a fitting animation. Preview to see it play.' })
               }}
             >
-              <div className="rounded-[11px] bg-[#FFFFFF] px-3 py-3 flex items-center gap-2.5 group-hover:bg-transparent transition-colors">
-                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#00C4CC] to-[#7D2AE8] flex items-center justify-center shrink-0">
-                  <Sparkles size={16} className="text-[#0E1318]" />
+              <div className="rounded-[11px] bg-[#171232] px-3 py-3 flex items-center gap-2.5 group-hover:bg-transparent transition-colors">
+                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#4F9D8F] to-[#2E7D6F] flex items-center justify-center shrink-0">
+                  <Sparkles size={16} className="text-white" />
                 </div>
                 <div className="text-left">
-                  <div className="text-[13px] font-bold text-[#0E1318]">Magic Animate</div>
-                  <div className="text-[11px] text-[#0E1318]/55">One click — animate everything on this page</div>
+                  <div className="text-[13px] font-bold text-white">Magic Animate</div>
+                  <div className="text-[11px] text-white/55">One click — animate everything on this page</div>
                 </div>
               </div>
             </button>
@@ -148,9 +148,9 @@ export function AnimatePanel({ onClose }: { onClose: () => void }) {
             {/* speed */}
             <div>
               <div className="flex items-center justify-between mb-1.5">
-                <span className="text-[11px] font-semibold text-[#0E1318]/60">Animation speed</span>
+                <span className="text-[11px] font-semibold text-white/60">Animation speed</span>
                 <button
-                  className="text-[10px] text-[#00C4CC] font-semibold cursor-pointer"
+                  className="text-[10px] text-[#4F9D8F] font-semibold cursor-pointer"
                   onClick={() => setShowSpeed((v) => !v)}
                 >
                   {showSpeed ? 'hide presets' : 'show presets'}
@@ -164,7 +164,7 @@ export function AnimatePanel({ onClose }: { onClose: () => void }) {
                       onClick={() => setSpeed(s)}
                       className={cn(
                         'rounded-lg border px-2 py-1.5 text-[11px] font-semibold capitalize cursor-pointer transition-colors',
-                        speed === s ? 'border-[#00C4CC] bg-[#00C4CC]/10 text-white' : 'border-black/10 text-[#0E1318]/60 hover:border-black/25'
+                        speed === s ? 'border-[#4F9D8F] bg-[#4F9D8F]/10 text-white' : 'border-white/10 text-white/60 hover:border-white/25'
                       )}
                     >
                       {s}
@@ -176,8 +176,8 @@ export function AnimatePanel({ onClose }: { onClose: () => void }) {
 
             {/* page transition */}
             <div>
-              <span className="text-[11px] font-semibold text-[#0E1318]/60 block mb-1.5">Page transition</span>
-              <p className="text-[10px] text-[#0E1318]/35 mb-2">Plays when this page appears after another.</p>
+              <span className="text-[11px] font-semibold text-white/60 block mb-1.5">Page transition</span>
+              <p className="text-[10px] text-white/35 mb-2">Plays when this page appears after another.</p>
               <div className="grid grid-cols-2 gap-1.5">
                 {TRANSITION_KINDS.map((t) => (
                   <button
@@ -186,12 +186,12 @@ export function AnimatePanel({ onClose }: { onClose: () => void }) {
                     className={cn(
                       'rounded-lg border px-2.5 py-2 text-left cursor-pointer transition-colors',
                       pageTransition?.kind === t.kind
-                        ? 'border-[#00C4CC] bg-[#00C4CC]/10'
-                        : 'border-black/10 hover:border-black/25'
+                        ? 'border-[#4F9D8F] bg-[#4F9D8F]/10'
+                        : 'border-white/10 hover:border-white/25'
                     )}
                   >
-                    <div className="text-[12px] font-semibold text-[#0E1318]/90">{t.label}</div>
-                    <div className="text-[10px] text-[#0E1318]/40">{t.hint}</div>
+                    <div className="text-[12px] font-semibold text-white/90">{t.label}</div>
+                    <div className="text-[10px] text-white/40">{t.hint}</div>
                   </button>
                 ))}
               </div>
@@ -199,8 +199,8 @@ export function AnimatePanel({ onClose }: { onClose: () => void }) {
               {pageTransition && pageTransition.kind !== 'none' && (
                 <div className="mt-2.5">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-[10px] font-semibold text-[#0E1318]/50">Duration</span>
-                    <span className="text-[10px] text-[#0E1318]/60">{pageTransition.duration.toFixed(1)}s</span>
+                    <span className="text-[10px] font-semibold text-white/50">Duration</span>
+                    <span className="text-[10px] text-white/60">{pageTransition.duration.toFixed(1)}s</span>
                   </div>
                   <input
                     type="range"
@@ -211,7 +211,7 @@ export function AnimatePanel({ onClose }: { onClose: () => void }) {
                     onChange={(e) =>
                       setPageTransition({ ...pageTransition, duration: Number(e.target.value) })
                     }
-                    className="w-full accent-[#00C4CC]"
+                    className="w-full accent-[#4F9D8F]"
                     aria-label="Transition duration"
                   />
                   {(pageTransition.kind === 'slide') && (
@@ -224,8 +224,8 @@ export function AnimatePanel({ onClose }: { onClose: () => void }) {
                           className={cn(
                             'flex-1 rounded-md border py-1.5 flex items-center justify-center cursor-pointer',
                             (pageTransition.direction ?? 'left') === d.id
-                              ? 'border-[#00C4CC] bg-[#00C4CC]/10 text-white'
-                              : 'border-black/10 text-[#0E1318]/50 hover:border-black/25'
+                              ? 'border-[#4F9D8F] bg-[#4F9D8F]/10 text-white'
+                              : 'border-white/10 text-white/50 hover:border-white/25'
                           )}
                         >
                           <d.icon size={12} />
@@ -256,7 +256,7 @@ export function AnimatePanel({ onClose }: { onClose: () => void }) {
               <Button
                 size="sm"
                 variant="ghost"
-                className="text-[#0E1318]/70 hover:bg-black/10 hover:text-[#0E1318] gap-1.5"
+                className="text-white/70 hover:bg-white/10 hover:text-white gap-1.5"
                 onClick={() => clearPageAnimations()}
                 title="Remove all animations from this page"
               >
@@ -271,15 +271,15 @@ export function AnimatePanel({ onClose }: { onClose: () => void }) {
           <div className="space-y-4">
             {!selection ? (
               <div className="text-center py-10 px-2">
-                <Zap size={26} className="mx-auto text-[#0E1318]/20 mb-2" />
-                <div className="text-[13px] font-semibold text-[#0E1318]/60">Select an element</div>
-                <p className="text-[11px] text-[#0E1318]/40 mt-1">
+                <Zap size={26} className="mx-auto text-white/20 mb-2" />
+                <div className="text-[13px] font-semibold text-white/60">Select an element</div>
+                <p className="text-[11px] text-white/40 mt-1">
                   Pick one or more elements on the canvas, then choose an animation.
                 </p>
               </div>
             ) : (
               <>
-                <p className="text-[11px] text-[#0E1318]/50">
+                <p className="text-[11px] text-white/50">
                   Animating {selectedIds.length} element{selectedIds.length > 1 ? 's' : ''}
                 </p>
 
@@ -292,23 +292,23 @@ export function AnimatePanel({ onClose }: { onClose: () => void }) {
                       className={cn(
                         'rounded-lg border px-2 py-2 text-center cursor-pointer transition-colors',
                         (selectedAnim?.kind ?? 'none') === k.kind
-                          ? 'border-[#00C4CC] bg-[#00C4CC]/10'
-                          : 'border-black/10 hover:border-black/25'
+                          ? 'border-[#4F9D8F] bg-[#4F9D8F]/10'
+                          : 'border-white/10 hover:border-white/25'
                       )}
                     >
                       <AnimationGlyph kind={k.kind} />
-                      <div className="text-[11px] font-semibold text-[#0E1318]/85 mt-1">{k.label}</div>
+                      <div className="text-[11px] font-semibold text-white/85 mt-1">{k.label}</div>
                     </button>
                   ))}
                 </div>
 
                 {/* timing controls */}
                 {selectedAnim && selectedAnim.kind !== 'none' && (
-                  <div className="space-y-3 rounded-xl border border-black/[0.08] bg-black/[0.03] p-3">
+                  <div className="space-y-3 rounded-xl border border-white/[0.08] bg-white/[0.03] p-3">
                     <div>
                       <div className="flex items-center justify-between mb-1">
-                        <span className="text-[10px] font-semibold text-[#0E1318]/50">Duration</span>
-                        <span className="text-[10px] text-[#0E1318]/60">{selectedAnim.duration.toFixed(1)}s</span>
+                        <span className="text-[10px] font-semibold text-white/50">Duration</span>
+                        <span className="text-[10px] text-white/60">{selectedAnim.duration.toFixed(1)}s</span>
                       </div>
                       <input
                         type="range"
@@ -317,14 +317,14 @@ export function AnimatePanel({ onClose }: { onClose: () => void }) {
                         step={0.1}
                         value={selectedAnim.duration}
                         onChange={(e) => patchAnim({ duration: Number(e.target.value) })}
-                        className="w-full accent-[#00C4CC]"
+                        className="w-full accent-[#4F9D8F]"
                         aria-label="Animation duration"
                       />
                     </div>
                     <div>
                       <div className="flex items-center justify-between mb-1">
-                        <span className="text-[10px] font-semibold text-[#0E1318]/50">Delay</span>
-                        <span className="text-[10px] text-[#0E1318]/60">{selectedAnim.delay.toFixed(1)}s</span>
+                        <span className="text-[10px] font-semibold text-white/50">Delay</span>
+                        <span className="text-[10px] text-white/60">{selectedAnim.delay.toFixed(1)}s</span>
                       </div>
                       <input
                         type="range"
@@ -333,12 +333,12 @@ export function AnimatePanel({ onClose }: { onClose: () => void }) {
                         step={0.1}
                         value={selectedAnim.delay}
                         onChange={(e) => patchAnim({ delay: Number(e.target.value) })}
-                        className="w-full accent-[#00C4CC]"
+                        className="w-full accent-[#4F9D8F]"
                         aria-label="Animation delay"
                       />
                     </div>
                     <div>
-                      <span className="text-[10px] font-semibold text-[#0E1318]/50 block mb-1.5">Easing</span>
+                      <span className="text-[10px] font-semibold text-white/50 block mb-1.5">Easing</span>
                       <div className="grid grid-cols-3 gap-1">
                         {EASINGS.map((e) => (
                           <button
@@ -347,8 +347,8 @@ export function AnimatePanel({ onClose }: { onClose: () => void }) {
                             className={cn(
                               'rounded-md border py-1 text-[10px] font-semibold cursor-pointer',
                               (selectedAnim.easing ?? 'easeOut') === e.id
-                                ? 'border-[#00C4CC] bg-[#00C4CC]/10 text-white'
-                                : 'border-black/10 text-[#0E1318]/50 hover:border-black/25'
+                                ? 'border-[#4F9D8F] bg-[#4F9D8F]/10 text-white'
+                                : 'border-white/10 text-white/50 hover:border-white/25'
                             )}
                           >
                             {e.label}
@@ -358,7 +358,7 @@ export function AnimatePanel({ onClose }: { onClose: () => void }) {
                     </div>
                     {['pan', 'rise', 'wipe', 'rotate'].includes(selectedAnim.kind) && (
                       <div>
-                        <span className="text-[10px] font-semibold text-[#0E1318]/50 block mb-1.5">Direction</span>
+                        <span className="text-[10px] font-semibold text-white/50 block mb-1.5">Direction</span>
                         <div className="flex gap-1">
                           {DIRECTIONS.map((d) => (
                             <button
@@ -368,8 +368,8 @@ export function AnimatePanel({ onClose }: { onClose: () => void }) {
                               className={cn(
                                 'flex-1 rounded-md border py-1.5 flex items-center justify-center cursor-pointer',
                                 (selectedAnim.direction ?? 'up') === d.id
-                                  ? 'border-[#00C4CC] bg-[#00C4CC]/10 text-white'
-                                  : 'border-black/10 text-[#0E1318]/50 hover:border-black/25'
+                                  ? 'border-[#4F9D8F] bg-[#4F9D8F]/10 text-white'
+                                  : 'border-white/10 text-white/50 hover:border-white/25'
                               )}
                             >
                               <d.icon size={12} />
@@ -397,7 +397,7 @@ export function AnimatePanel({ onClose }: { onClose: () => void }) {
 }
 
 function AnimationGlyph({ kind }: { kind: AnimationKind }) {
-  const cls = 'mx-auto w-7 h-7 rounded-md bg-black/[0.06] flex items-center justify-center text-[#00C4CC]'
+  const cls = 'mx-auto w-7 h-7 rounded-md bg-white/[0.06] flex items-center justify-center text-[#4F9D8F]'
   switch (kind) {
     case 'none':
       return <div className={cls}><RotateCcw size={12} /></div>
@@ -431,12 +431,12 @@ function AnimationGlyph({ kind }: { kind: AnimationKind }) {
 function SfxPicker({ label, value, onChange }: { label: string; value: string | undefined; onChange: (sfxId: string | undefined) => void }) {
   return (
     <div className="mt-2.5" data-testid="sfx-picker">
-      <span className="text-[10px] font-semibold text-[#0E1318]/50 block mb-1.5">{label}</span>
+      <span className="text-[10px] font-semibold text-white/50 block mb-1.5">{label}</span>
       <div className="flex items-center gap-1.5">
         <select
           value={value ?? ''}
           onChange={(e) => onChange(e.target.value || undefined)}
-          className="min-w-0 flex-1 rounded-md border border-black/10 bg-[#FFFFFF] px-2 py-1.5 text-[11px] text-[#0E1318]/85 outline-none focus:border-[#00C4CC]"
+          className="min-w-0 flex-1 rounded-md border border-white/10 bg-[#171232] px-2 py-1.5 text-[11px] text-white/85 outline-none focus:border-[#4F9D8F]"
           aria-label={label}
         >
           <option value="">None</option>
@@ -451,12 +451,12 @@ function SfxPicker({ label, value, onChange }: { label: string; value: string | 
           disabled={!value}
           title={value ? 'Audition this sound' : 'Pick a sound first'}
           aria-label={`Audition ${label}`}
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-black/10 text-[#0E1318]/60 transition-colors hover:text-[#0E1318] hover:border-black/25 disabled:opacity-40"
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-white/10 text-white/60 transition-colors hover:text-white hover:border-white/25 disabled:opacity-40"
         >
           <Volume2 size={13} />
         </button>
       </div>
-      <p className="mt-1 text-[9px] leading-snug text-[#0E1318]/30">
+      <p className="mt-1 text-[9px] leading-snug text-white/30">
         Plays in Preview and Present. For video export, insert the sound from the Audio panel as an autoplay element instead.
       </p>
     </div>

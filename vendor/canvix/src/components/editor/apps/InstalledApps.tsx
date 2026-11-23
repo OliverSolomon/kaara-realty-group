@@ -28,7 +28,7 @@ const PluginRuntime = dynamic(() => import('./PluginRuntime').then((m) => m.Plug
   ssr: false,
   loading: () => (
     <div className="flex items-center justify-center h-64">
-      <Loader2 size={18} className="text-[#00C4CC] animate-spin" />
+      <Loader2 size={18} className="text-[#4F9D8F] animate-spin" />
     </div>
   ),
 })
@@ -174,9 +174,9 @@ export function InstalledApps() {
   return (
     <section className="mt-4" aria-label="Installed plugin apps">
       <div className="flex items-center gap-1.5 mb-2">
-        <Puzzle size={12} className="text-[#00C4CC]" />
-        <span className="text-[11px] font-bold uppercase tracking-wider text-[#0E1318]/50">Installed</span>
-        <span className="text-[10px] text-[#0E1318]/30">({installs.length})</span>
+        <Puzzle size={12} className="text-[#4F9D8F]" />
+        <span className="text-[11px] font-bold uppercase tracking-wider text-white/50">Installed</span>
+        <span className="text-[10px] text-white/30">({installs.length})</span>
       </div>
 
       <div className="flex gap-1.5 mb-2.5">
@@ -188,12 +188,12 @@ export function InstalledApps() {
           }}
           placeholder="https://example.com/plugin/manifest.json"
           aria-label="Plugin manifest URL"
-          className="flex-1 min-w-0 h-8 rounded-lg bg-black/[0.05] border border-black/10 px-2.5 text-[11px] text-[#0E1318] placeholder:text-[#0E1318]/25 focus:outline-none focus:border-[#7D2AE8]"
+          className="flex-1 min-w-0 h-8 rounded-lg bg-white/[0.05] border border-white/10 px-2.5 text-[11px] text-white placeholder:text-white/25 focus:outline-none focus:border-[#2E7D6F]"
         />
         <button
           onClick={() => void install(url)}
           disabled={installing || !url.trim()}
-          className="h-8 px-3 rounded-lg bg-[#7D2AE8] hover:bg-[#6A22C9] disabled:opacity-40 text-white text-[11px] font-semibold flex items-center gap-1 shrink-0 transition-colors"
+          className="h-8 px-3 rounded-lg bg-[#2E7D6F] hover:bg-[#4F9D8F] disabled:opacity-40 text-white text-[11px] font-semibold flex items-center gap-1 shrink-0 transition-colors"
         >
           {installing ? <Loader2 size={11} className="animate-spin" /> : null}
           Install
@@ -207,24 +207,24 @@ export function InstalledApps() {
               key={b.slug}
               onClick={() => void install(bundledManifestUrl(b.slug))}
               disabled={installing}
-              className="w-full text-left rounded-xl border border-[#7D2AE8]/30 bg-[#7D2AE8]/[0.08] hover:bg-[#7D2AE8]/[0.16] disabled:opacity-40 p-2.5 transition-colors group"
+              className="w-full text-left rounded-xl border border-[#2E7D6F]/30 bg-[#2E7D6F]/[0.08] hover:bg-[#2E7D6F]/[0.16] disabled:opacity-40 p-2.5 transition-colors group"
               aria-label={`Install ${b.name} (bundled)`}
             >
               <div className="flex items-center gap-1.5">
-                <Plus size={11} className="text-[#00C4CC] shrink-0" />
-                <span className="text-[12px] font-semibold text-[#0E1318] group-hover:text-[#00C4CC] transition-colors">
+                <Plus size={11} className="text-[#4F9D8F] shrink-0" />
+                <span className="text-[12px] font-semibold text-white group-hover:text-[#4F9D8F] transition-colors">
                   {b.name}
                 </span>
-                <span className="text-[9px] font-mono text-[#0E1318]/30 shrink-0">bundled</span>
+                <span className="text-[9px] font-mono text-white/30 shrink-0">bundled</span>
               </div>
-              <div className="text-[10px] text-[#0E1318]/40 leading-relaxed">{b.description}</div>
+              <div className="text-[10px] text-white/40 leading-relaxed">{b.description}</div>
             </button>
           ))}
         </div>
       )}
 
       {installs.length === 0 ? (
-        <p className="text-[11px] text-[#0E1318]/35 leading-relaxed rounded-xl border border-dashed border-black/10 p-3">
+        <p className="text-[11px] text-white/35 leading-relaxed rounded-xl border border-dashed border-white/10 p-3">
           No apps installed yet. Paste a plugin manifest URL above — you&apos;ll see exactly what it may access
           before anything runs.
         </p>
@@ -235,7 +235,7 @@ export function InstalledApps() {
               key={row.id}
               className={cn(
                 'rounded-xl border p-2.5 transition-colors',
-                row.enabled ? 'border-black/10 bg-black/[0.03]' : 'border-black/5 bg-transparent opacity-60',
+                row.enabled ? 'border-white/10 bg-white/[0.03]' : 'border-white/5 bg-transparent opacity-60',
               )}
             >
               <div className="flex items-center gap-2">
@@ -246,12 +246,12 @@ export function InstalledApps() {
                   aria-label={`Open ${row.name}`}
                 >
                   <div className="flex items-center gap-1.5">
-                    <span className="text-[12px] font-semibold text-[#0E1318] truncate group-hover:text-[#00C4CC] transition-colors">
+                    <span className="text-[12px] font-semibold text-white truncate group-hover:text-[#4F9D8F] transition-colors">
                       {row.name}
                     </span>
-                    <span className="text-[9px] font-mono text-[#0E1318]/30 shrink-0">v{row.version}</span>
+                    <span className="text-[9px] font-mono text-white/30 shrink-0">v{row.version}</span>
                   </div>
-                  <div className="text-[10px] text-[#0E1318]/40 truncate">{row.description ?? row.pluginId}</div>
+                  <div className="text-[10px] text-white/40 truncate">{row.description ?? row.pluginId}</div>
                 </button>
                 <button
                   onClick={() => void setEnabled(row, !row.enabled)}
@@ -259,7 +259,7 @@ export function InstalledApps() {
                   aria-label={row.enabled ? `Disable ${row.name}` : `Enable ${row.name}`}
                   className={cn(
                     'w-6 h-6 rounded-md flex items-center justify-center transition-colors',
-                    row.enabled ? 'text-emerald-400 hover:bg-emerald-400/10' : 'text-[#0E1318]/30 hover:bg-black/10',
+                    row.enabled ? 'text-emerald-400 hover:bg-emerald-400/10' : 'text-white/30 hover:bg-white/10',
                   )}
                 >
                   <Power size={12} />
@@ -300,40 +300,40 @@ function ConsentModal({ row, onClose }: { row: InstallSummaryRow; onClose: () =>
   }
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4" role="dialog" aria-modal="true" aria-label={`Permissions for ${row.name}`}>
-      <div className="w-full max-w-md rounded-2xl border border-black/12 bg-[#14141A] shadow-2xl">
-        <div className="flex items-start gap-3 p-4 border-b border-black/8">
-          <div className="w-9 h-9 rounded-xl bg-[#7D2AE8]/20 flex items-center justify-center shrink-0">
-            <ShieldCheck size={17} className="text-[#7D2AE8]" />
+      <div className="w-full max-w-md rounded-2xl border border-white/12 bg-[#14141A] shadow-2xl">
+        <div className="flex items-start gap-3 p-4 border-b border-white/8">
+          <div className="w-9 h-9 rounded-xl bg-[#2E7D6F]/20 flex items-center justify-center shrink-0">
+            <ShieldCheck size={17} className="text-[#2E7D6F]" />
           </div>
           <div className="flex-1 min-w-0">
-            <h2 className="text-[14px] font-bold text-[#0E1318]">
-              {row.name} <span className="font-mono text-[10px] text-[#0E1318]/40">v{row.version}</span>
+            <h2 className="text-[14px] font-bold text-white">
+              {row.name} <span className="font-mono text-[10px] text-white/40">v{row.version}</span>
             </h2>
-            <p className="text-[11px] text-[#0E1318]/50">
+            <p className="text-[11px] text-white/50">
               by {row.author ?? 'unknown author'} · wants to join this Canvix
             </p>
           </div>
-          <button onClick={onClose} aria-label="Close" className="text-[#0E1318]/40 hover:text-[#0E1318]">
+          <button onClick={onClose} aria-label="Close" className="text-white/40 hover:text-white">
             <X size={15} />
           </button>
         </div>
 
         <div className="p-4">
-          <p className="text-[12px] text-[#0E1318]/70 leading-relaxed mb-3">
+          <p className="text-[12px] text-white/70 leading-relaxed mb-3">
             This app is third-party code. It runs in a sandbox and can only do the things listed below —
-            <span className="text-[#0E1318]/90 font-semibold"> nothing else, ever</span>. Review carefully.
+            <span className="text-white/90 font-semibold"> nothing else, ever</span>. Review carefully.
           </p>
           <ul className="space-y-2">
             {row.permissions.map((p) => (
-              <li key={p.permission} className="flex gap-2.5 rounded-xl bg-black/[0.04] border border-black/8 p-2.5">
-                <span className="text-[10px] font-mono text-[#00C4CC] bg-[#00C4CC]/10 rounded px-1.5 py-0.5 h-fit shrink-0">
+              <li key={p.permission} className="flex gap-2.5 rounded-xl bg-white/[0.04] border border-white/8 p-2.5">
+                <span className="text-[10px] font-mono text-[#4F9D8F] bg-[#4F9D8F]/10 rounded px-1.5 py-0.5 h-fit shrink-0">
                   {p.permission}
                 </span>
-                <span className="text-[11px] text-[#0E1318]/70 leading-relaxed">{p.description}</span>
+                <span className="text-[11px] text-white/70 leading-relaxed">{p.description}</span>
               </li>
             ))}
             {row.permissions.length === 0 && (
-              <li className="text-[11px] text-[#0E1318]/45 italic">No permissions requested — this plugin is read-only.</li>
+              <li className="text-[11px] text-white/45 italic">No permissions requested — this plugin is read-only.</li>
             )}
           </ul>
         </div>
@@ -343,7 +343,7 @@ function ConsentModal({ row, onClose }: { row: InstallSummaryRow; onClose: () =>
             href="https://github.com/mir-ashiq/canvix/blob/main/docs/PLUGINS.md"
             target="_blank"
             rel="noreferrer"
-            className="text-[10px] text-[#0E1318]/35 hover:text-[#0E1318]/60 flex items-center gap-1"
+            className="text-[10px] text-white/35 hover:text-white/60 flex items-center gap-1"
           >
             <ExternalLink size={10} /> How plugins work
           </a>
@@ -351,14 +351,14 @@ function ConsentModal({ row, onClose }: { row: InstallSummaryRow; onClose: () =>
           <button
             onClick={() => void remove()}
             disabled={removing}
-            className="h-9 px-3.5 rounded-lg border border-black/12 text-[12px] text-[#0E1318]/70 hover:text-[#0E1318] hover:border-black/25 transition-colors flex items-center gap-1.5 disabled:opacity-40"
+            className="h-9 px-3.5 rounded-lg border border-white/12 text-[12px] text-white/70 hover:text-white hover:border-white/25 transition-colors flex items-center gap-1.5 disabled:opacity-40"
           >
             {removing ? <Loader2 size={12} className="animate-spin" /> : <Trash2 size={12} />}
             Remove it
           </button>
           <button
             onClick={onClose}
-            className="h-9 px-4 rounded-lg bg-[#7D2AE8] hover:bg-[#6A22C9] text-white text-[12px] font-semibold transition-colors"
+            className="h-9 px-4 rounded-lg bg-[#2E7D6F] hover:bg-[#4F9D8F] text-white text-[12px] font-semibold transition-colors"
           >
             Keep installed
           </button>

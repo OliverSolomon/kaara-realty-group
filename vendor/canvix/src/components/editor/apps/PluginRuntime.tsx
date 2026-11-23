@@ -153,24 +153,24 @@ export function PluginRuntime({ install, onClose }: { install: PluginInstallView
   return (
     <div className="flex flex-col h-full min-h-0">
       <AppHeader icon={ShieldCheck} title={install.name} onClose={onClose}>
-        <span className="text-[10px] text-[#0E1318]/35 font-mono">
+        <span className="text-[10px] text-white/35 font-mono">
           v{install.version}
           {install.author ? ` · ${install.author}` : ''}
         </span>
       </AppHeader>
 
-      <div className="relative flex-1 min-h-0 rounded-xl border border-black/10 bg-black/[0.02] overflow-hidden">
+      <div className="relative flex-1 min-h-0 rounded-xl border border-white/10 bg-white/[0.02] overflow-hidden">
         {!ready && !failed && (
           <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 bg-[#0F0F13]">
-            <Loader2 size={18} className="text-[#00C4CC] animate-spin" />
-            <p className="text-[11px] text-[#0E1318]/45">Starting {install.name} in its sandbox…</p>
+            <Loader2 size={18} className="text-[#4F9D8F] animate-spin" />
+            <p className="text-[11px] text-white/45">Starting {install.name} in its sandbox…</p>
           </div>
         )}
         {failed && (
           <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 bg-[#0F0F13] px-6 text-center">
             <AlertTriangle size={18} className="text-amber-400" />
-            <p className="text-[12px] text-[#0E1318]/70 font-semibold">This app could not start</p>
-            <p className="text-[11px] text-[#0E1318]/45 leading-relaxed">
+            <p className="text-[12px] text-white/70 font-semibold">This app could not start</p>
+            <p className="text-[11px] text-white/45 leading-relaxed">
               The plugin&apos;s panel is unavailable — it may have been uninstalled or disabled. Removing the app
               never affects your design.
             </p>
@@ -189,7 +189,7 @@ export function PluginRuntime({ install, onClose }: { install: PluginInstallView
         />
       </div>
 
-      <p className="mt-2 text-[10px] text-[#0E1318]/30 leading-relaxed flex items-center gap-1.5">
+      <p className="mt-2 text-[10px] text-white/30 leading-relaxed flex items-center gap-1.5">
         <ShieldCheck size={11} className="shrink-0" />
         Sandboxed — this app runs isolated and can only act inside the permissions you granted.
       </p>

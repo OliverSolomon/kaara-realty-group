@@ -214,8 +214,8 @@ export function AudioPanel() {
         {/* ── 1. offline pack ── */}
         <section aria-label="Sound library">
           <div className="flex items-center justify-between">
-            <h4 className="text-xs font-semibold uppercase tracking-wide text-[#0E1318]/50">Sound library</h4>
-            <span className="text-[10px] text-[#0E1318]/40">16 CC0 sounds · works offline</span>
+            <h4 className="text-xs font-semibold uppercase tracking-wide text-white/50">Sound library</h4>
+            <span className="text-[10px] text-white/40">16 CC0 sounds · works offline</span>
           </div>
           <div className="mt-2 flex flex-wrap gap-1">
             {(['all', 'transitions', 'impacts', 'ui', 'musical'] as const).map((c) => (
@@ -224,7 +224,7 @@ export function AudioPanel() {
                 onClick={() => setCat(c)}
                 className={cn(
                   'rounded-full px-2.5 py-1 text-[11px] font-medium transition-colors',
-                  cat === c ? 'bg-[#7D2AE8] text-white' : 'bg-black/5 text-[#0E1318]/60 hover:bg-black/10',
+                  cat === c ? 'bg-[#2E7D6F] text-white' : 'bg-white/5 text-white/60 hover:bg-white/10',
                 )}
                 aria-pressed={cat === c}
               >
@@ -236,13 +236,13 @@ export function AudioPanel() {
             {pack.map((s) => (
               <div
                 key={s.id}
-                className="group flex items-center gap-2 rounded-xl border border-black/10 bg-black/[0.03] p-2 hover:border-[#7D2AE8]/60"
+                className="group flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] p-2 hover:border-[#2E7D6F]/60"
               >
                 <button
                   onClick={() => playSfx(s.id)}
                   title={`Play ${s.label}`}
                   aria-label={`Play ${s.label}`}
-                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/5 text-white/70 transition-colors hover:bg-[#7D2AE8]/40 hover:text-white"
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/5 text-white/70 transition-colors hover:bg-[#2E7D6F]/40 hover:text-white"
                 >
                   <Volume2 size={14} />
                 </button>
@@ -252,10 +252,10 @@ export function AudioPanel() {
                   title={`${s.hint} — add to the page`}
                   className="flex min-w-0 flex-1 flex-col items-start text-left disabled:opacity-50"
                 >
-                  <span className="w-full truncate text-[12px] font-medium text-[#0E1318]/85">{s.label}</span>
-                  <span className="w-full truncate text-[10px] text-[#0E1318]/40">{s.seconds}s · {s.hint}</span>
+                  <span className="w-full truncate text-[12px] font-medium text-white/85">{s.label}</span>
+                  <span className="w-full truncate text-[10px] text-white/40">{s.seconds}s · {s.hint}</span>
                 </button>
-                {insertingSfx === s.id && <Loader2 size={13} className="shrink-0 animate-spin text-[#0E1318]/50" />}
+                {insertingSfx === s.id && <Loader2 size={13} className="shrink-0 animate-spin text-white/50" />}
               </div>
             ))}
           </div>
@@ -264,20 +264,20 @@ export function AudioPanel() {
         {/* ── 2. Freesound search ── */}
         <section aria-label="Freesound search">
           <div className="flex items-center justify-between">
-            <h4 className="text-xs font-semibold uppercase tracking-wide text-[#0E1318]/50">Freesound</h4>
-            <span className="text-[10px] text-[#0E1318]/40">CC0 by default</span>
+            <h4 className="text-xs font-semibold uppercase tracking-wide text-white/50">Freesound</h4>
+            <span className="text-[10px] text-white/40">CC0 by default</span>
           </div>
-          <div className="mt-2 flex items-center gap-2 rounded-xl border border-black/10 bg-black/[0.03] px-3 py-2">
-            <Search size={14} className="shrink-0 text-[#0E1318]/40" />
+          <div className="mt-2 flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2">
+            <Search size={14} className="shrink-0 text-white/40" />
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder={available ? 'Search sounds — rain, whoosh, click…' : 'Search sounds (needs the Freesound key)'}
-              className="min-w-0 flex-1 bg-transparent text-[13px] text-[#0E1318]/85 outline-none placeholder:text-[#0E1318]/35"
+              className="min-w-0 flex-1 bg-transparent text-[13px] text-white/85 outline-none placeholder:text-white/35"
               aria-label="Search Freesound"
               data-testid="sound-search-input"
             />
-            {busy && <Loader2 size={14} className="shrink-0 animate-spin text-[#0E1318]/40" />}
+            {busy && <Loader2 size={14} className="shrink-0 animate-spin text-white/40" />}
           </div>
 
           {noProvider && (
@@ -299,7 +299,7 @@ export function AudioPanel() {
           )}
 
           {results !== null && results.length === 0 && !error && (
-            <p className="mt-2 text-[11px] text-[#0E1318]/40">No sounds matched — try a broader term.</p>
+            <p className="mt-2 text-[11px] text-white/40">No sounds matched — try a broader term.</p>
           )}
 
           {results && results.length > 0 && (
@@ -307,7 +307,7 @@ export function AudioPanel() {
               {results.map((tile) => (
                 <div
                   key={tile.id}
-                  className="flex items-center gap-2 rounded-xl border border-black/10 bg-black/[0.03] p-2 hover:border-[#7D2AE8]/60"
+                  className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] p-2 hover:border-[#2E7D6F]/60"
                 >
                   <button
                     onClick={() => {
@@ -316,7 +316,7 @@ export function AudioPanel() {
                     }}
                     title={`Play ${tile.name}`}
                     aria-label={`Play ${tile.name}`}
-                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/5 text-white/70 transition-colors hover:bg-[#7D2AE8]/40 hover:text-white"
+                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/5 text-white/70 transition-colors hover:bg-[#2E7D6F]/40 hover:text-white"
                   >
                     <Volume2 size={14} />
                   </button>
@@ -325,15 +325,15 @@ export function AudioPanel() {
                     disabled={busyTile === tile.id}
                     className="flex min-w-0 flex-1 flex-col items-start text-left disabled:opacity-50"
                   >
-                    <span className="w-full truncate text-[12px] font-medium text-[#0E1318]/85">{tile.name}</span>
-                    <span className="w-full truncate text-[10px] text-[#0E1318]/40">
+                    <span className="w-full truncate text-[12px] font-medium text-white/85">{tile.name}</span>
+                    <span className="w-full truncate text-[10px] text-white/40">
                       {tile.duration.toFixed(1)}s · {tile.credit.provider} · {tile.credit.author} — {tile.credit.license}
                     </span>
                   </button>
                   {busyTile === tile.id ? (
-                    <Loader2 size={13} className="shrink-0 animate-spin text-[#0E1318]/50" />
+                    <Loader2 size={13} className="shrink-0 animate-spin text-white/50" />
                   ) : (
-                    <Plus size={14} className="shrink-0 text-[#0E1318]/30" />
+                    <Plus size={14} className="shrink-0 text-white/30" />
                   )}
                 </div>
               ))}
@@ -343,8 +343,8 @@ export function AudioPanel() {
 
         {/* ── 3. voiceover ── */}
         <section aria-label="Voiceover">
-          <h4 className="text-xs font-semibold uppercase tracking-wide text-[#0E1318]/50">Voiceover</h4>
-          <p className="mt-1 text-[11px] leading-relaxed text-[#0E1318]/40">
+          <h4 className="text-xs font-semibold uppercase tracking-wide text-white/50">Voiceover</h4>
+          <p className="mt-1 text-[11px] leading-relaxed text-white/40">
             Record page narration with your mic — it lands as a waveform card, autoplayed in Preview and Present.
           </p>
           <button
@@ -353,7 +353,7 @@ export function AudioPanel() {
               'mt-2 flex w-full items-center justify-center gap-2 rounded-xl border px-3 py-2.5 text-[13px] font-semibold transition-colors',
               recording
                 ? 'border-red-400/40 bg-red-500/20 text-red-200 hover:bg-red-500/30'
-                : 'border-white/10 bg-white/[0.03] text-white/80 hover:border-[#7D2AE8]/60 hover:bg-[#7D2AE8]/15',
+                : 'border-white/10 bg-white/[0.03] text-white/80 hover:border-[#2E7D6F]/60 hover:bg-[#2E7D6F]/15',
             )}
             data-testid="voiceover-button"
             aria-pressed={recording}
@@ -367,8 +367,8 @@ export function AudioPanel() {
 
         {/* ── 4. uploads hint ── */}
         <section aria-label="Upload audio">
-          <h4 className="text-xs font-semibold uppercase tracking-wide text-[#0E1318]/50">Your audio files</h4>
-          <p className="mt-1 flex items-start gap-1.5 text-[11px] leading-relaxed text-[#0E1318]/40">
+          <h4 className="text-xs font-semibold uppercase tracking-wide text-white/50">Your audio files</h4>
+          <p className="mt-1 flex items-start gap-1.5 text-[11px] leading-relaxed text-white/40">
             <AudioLines size={13} className="mt-0.5 shrink-0" />
             <span>
               Music and audio files upload from the Uploads panel (MP3, WAV, OGG…) — waveform, BPM and beat

@@ -149,3 +149,51 @@ export async function createLeadFromClick(form: FormData) {
   if (rows[0]) redirect(`/admin/leads/${rows[0].id}`);
   redirect("/admin/whatsapp");
 }
+
+function clickId(form: FormData) {
+  const id = String(form.get("eventId") || "");
+  if (!/^\d+$/.test(id)) throw new Error("Invalid click");
+  return id;
+}
+
+export async function addClickTag(form: FormData) {
+  const admin = await requireAdmin("whatsapp");
+  const id = clickId(form);
+  const tag = (clip(form.get("tag"), 30) ?? "").replace(/\s+/g, " ").trim();
+  if (!tag) return;
+  // Reuses the spelling of an existing tag, so "hot" and "Hot" stay one filter.
+  await db().query(
+    `WITH existing AS (
+       SELECT t FROM lead_events e, unnest(e.click_tags) t
+       WHERE e.type = 'whatsapp_click' AND lower(t) = lower($2) LIMIT 1
+     )
+     UPDATE lead_events SET click_tags = array_append(click_tags, COALESCE((SELECT t FROM existing), $2))
+     WHERE id = $1::bigint AND type = 'whatsapp_click' AND cardinality(click_tags) < 8
+       AND NOT EXISTS (SELECT 1 FROM unnest(click_tags) t WHERE lower(t) = lower($2))`,
+    [id, tag]
+  );
+  await audit(admin.email, "click.tagged", id, { tag });
+  revalidatePath("/admin/whatsapp");
+}
+
+export async function removeClickTag(form: FormData) {
+  const admin = await requireAdmin("whatsapp");
+  const id = clickId(form);
+  const tag = String(form.get("tag") || "").slice(0, 30);
+  await db().query("UPDATE lead_events SET click_tags = array_remove(click_tags, $2) WHERE id = $1::bigint AND type = 'whatsapp_click'", [id, tag]);
+  await audit(admin.email, "click.untagged", id, { tag });
+  revalidatePath("/admin/whatsapp");
+}
+
+export async function setClickArchived(form: FormData) {
+  const admin = await requireAdmin("whatsapp");
+  const id = clickId(form);
+  const archived = form.get("archived") === "1";
+  await db().query(
+    "UPDATE lead_events SET archived_at = CASE WHEN $2 THEN now() ELSE NULL END WHERE id = $1::bigint AND type = 'whatsapp_click'",
+    [id, archived]
+  );
+  await audit(admin.email, archived ? "click.archived" : "click.restored", id);
+  revalidatePath("/admin");
+  revalidatePath("/admin/whatsapp");
+}

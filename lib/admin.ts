@@ -41,6 +41,8 @@ export interface TimelineItem {
 }
 
 export interface ClickRow {
+  click_tags: string[];
+  archived_at: Date | null;
   id: string;
   ref: string;
   path: string | null;
@@ -84,7 +86,7 @@ export async function getStats() {
       count(*) FILTER (WHERE created_at > now() - interval '7 days')::int AS week,
       count(*) FILTER (WHERE status = 'won')::int AS won,
       (SELECT count(*)::int FROM lead_events
-        WHERE type = 'whatsapp_click' AND lead_id IS NULL
+        WHERE type = 'whatsapp_click' AND lead_id IS NULL AND archived_at IS NULL
           AND created_at > now() - interval '7 days') AS clicks
     FROM leads`);
   return rows[0];
@@ -141,14 +143,31 @@ export async function getTimeline(id: string) {
   return rows;
 }
 
-export async function listClicks() {
+export async function listClicks(view: "active" | "archived" = "active", tag: string | null = null, search = "") {
+  const term = search.trim() ? `%${search.trim().replace(/[\\%_]/g, "\\$&")}%` : null;
   const { rows } = await db().query<ClickRow>(
     `SELECT e.id::text, e.ref, e.path, e.placement, e.listing_title, e.listing_slug,
-            e.referrer, e.utm_source, e.utm_campaign, e.lead_id, l.name AS lead_name, e.created_at
+            e.referrer, e.utm_source, e.utm_campaign, e.lead_id, l.name AS lead_name, e.created_at,
+            e.click_tags, e.archived_at
        FROM lead_events e LEFT JOIN leads l ON l.id = e.lead_id
       WHERE e.type = 'whatsapp_click'
+        AND (CASE WHEN $1 = 'archived' THEN e.archived_at IS NOT NULL ELSE e.archived_at IS NULL END)
+        AND ($2::text IS NULL OR e.click_tags @> ARRAY[$2::text])
+        AND ($3::text IS NULL OR e.ref ILIKE $3 OR e.listing_title ILIKE $3 OR e.listing_slug ILIKE $3
+             OR EXISTS (SELECT 1 FROM unnest(e.click_tags) t WHERE t ILIKE $3))
       ORDER BY e.created_at DESC
-      LIMIT 200`
+      LIMIT 200`,
+    [view, tag, term]
+  );
+  return rows;
+}
+
+export async function listClickTags() {
+  const { rows } = await db().query<{ tag: string; count: number }>(
+    `SELECT t AS tag, count(*)::int AS count
+       FROM lead_events e, unnest(e.click_tags) t
+      WHERE e.type = 'whatsapp_click'
+      GROUP BY t ORDER BY count(*) DESC, t LIMIT 40`
   );
   return rows;
 }

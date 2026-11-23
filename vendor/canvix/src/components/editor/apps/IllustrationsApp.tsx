@@ -29,12 +29,12 @@ export function IllustrationsApp({ onClose }: AppPanelProps) {
   return (
     <div>
       <AppHeader icon={ImageIcon} title="Illustrations" onClose={onClose} />
-      <div className="flex items-center gap-2 h-9 rounded-lg bg-black/[0.06] border border-black/10 px-2.5 mb-3">
-        <Search size={12} className="text-[#0E1318]/40 shrink-0" />
+      <div className="flex items-center gap-2 h-9 rounded-lg bg-white/[0.06] border border-white/10 px-2.5 mb-3">
+        <Search size={12} className="text-white/40 shrink-0" />
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="bg-transparent outline-none text-[12px] text-[#0E1318] w-full placeholder:text-[#0E1318]/35"
+          className="bg-transparent outline-none text-[12px] text-white w-full placeholder:text-white/35"
           placeholder="Search illustrations"
           aria-label="Search illustrations"
         />
@@ -48,7 +48,7 @@ export function IllustrationsApp({ onClose }: AppPanelProps) {
             onClick={() => setPack(p.id)}
             className={cn(
               'shrink-0 whitespace-nowrap rounded-full px-3 py-1 text-xs font-medium border transition-colors',
-              pack === p.id ? 'bg-[#7D2AE8] text-white border-transparent' : 'border-black/12 text-[#0E1318]/60 hover:border-black/30 hover:text-[#0E1318]'
+              pack === p.id ? 'bg-[#2E7D6F] text-white border-transparent' : 'border-white/12 text-white/60 hover:border-white/30 hover:text-white'
             )}
           >
             {p.label}
@@ -62,23 +62,23 @@ export function IllustrationsApp({ onClose }: AppPanelProps) {
             key={i.id}
             onClick={() => addIllustration(i.svg)}
             className={cn(
-              'flex flex-col items-center gap-1.5 rounded-xl border border-black/10 bg-black/[0.03] p-2.5',
-              'hover:border-[#7D2AE8] hover:bg-[#7D2AE8]/10 transition-all'
+              'flex flex-col items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.03] p-2.5',
+              'hover:border-[#2E7D6F] hover:bg-[#2E7D6F]/10 transition-all'
             )}
             aria-label={`Add illustration ${i.name}`}
             title={`${i.name} · ${i.pack} pack`}
           >
             <div
-              className="w-full aspect-square rounded-lg bg-[#EBECF0] flex items-center justify-center [&>svg]:max-w-full [&>svg]:max-h-full"
+              className="w-full aspect-square rounded-lg bg-[#0B0819] flex items-center justify-center [&>svg]:max-w-full [&>svg]:max-h-full"
               dangerouslySetInnerHTML={{ __html: i.svg }}
               aria-hidden="true"
             />
-            <span className="text-[10px] text-[#0E1318]/55 truncate w-full text-center">{i.name}</span>
+            <span className="text-[10px] text-white/55 truncate w-full text-center">{i.name}</span>
           </button>
         ))}
       </div>
-      {!list.length && <p className="text-center text-[12px] text-[#0E1318]/40 py-6">No illustrations match “{query}”</p>}
-      <p className="mt-3 text-[10px] text-[#0E1318]/30 text-center">48 original pieces · works offline</p>
+      {!list.length && <p className="text-center text-[12px] text-white/40 py-6">No illustrations match “{query}”</p>}
+      <p className="mt-3 text-[10px] text-white/30 text-center">48 original pieces · works offline</p>
     </div>
   )
 }

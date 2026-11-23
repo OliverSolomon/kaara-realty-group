@@ -40,17 +40,17 @@ import { AIThemeApp } from './AIThemeApp'
 
 export const CANVIX_APPS: CanvixApp[] = [
   // AI apps first (canva 2026: “Canva AI” is the flagship surface)
-  { id: 'assistant', name: 'Canvix AI', desc: 'Chat copilot — copy, palettes, images, translate', icon: Bot, color: '#7D2AE8', content: AssistantApp },
+  { id: 'assistant', name: 'Canvix AI', desc: 'Chat copilot — copy, palettes, images, translate', icon: Bot, color: '#2E7D6F', content: AssistantApp },
   { id: 'magic-write', name: 'Magic Write', desc: 'AI copy — headlines, taglines & captions', icon: Wand2, color: '#9B6BFF', content: MagicWriteApp },
-  { id: 'ai-image', name: 'AI image generator', desc: 'Turn a prompt into a design-ready image', icon: ImageIcon, color: '#00C4CC', content: AIImageApp },
+  { id: 'ai-image', name: 'AI image generator', desc: 'Turn a prompt into a design-ready image', icon: ImageIcon, color: '#4F9D8F', content: AIImageApp },
   // v0.19 (Wave 4 — AI Power-Up):
-  { id: 'ai-plan', name: 'AI design plan', desc: 'Describe it — review the plan — apply editable pages', icon: LayoutTemplate, color: '#7D2AE8', content: AIPlanApp },
-  { id: 'ai-theme', name: 'AI theme', desc: 'Palette + fonts for the whole design, applied safely', icon: SwatchBook, color: '#FF5C8A', content: AIThemeApp },
-  { id: 'charts', name: 'Charts', desc: 'Bar, line & donut charts as editable shapes', icon: BarChart3, color: '#7D2AE8', content: ChartsApp },
+  { id: 'ai-plan', name: 'AI design plan', desc: 'Describe it — review the plan — apply editable pages', icon: LayoutTemplate, color: '#2E7D6F', content: AIPlanApp },
+  { id: 'ai-theme', name: 'AI theme', desc: 'Palette + fonts for the whole design, applied safely', icon: SwatchBook, color: '#D8C07A', content: AIThemeApp },
+  { id: 'charts', name: 'Charts', desc: 'Bar, line & donut charts as editable shapes', icon: BarChart3, color: '#2E7D6F', content: ChartsApp },
   { id: 'qr', name: 'QR generator', desc: 'Turn any link or text into a QR code', icon: QrCode, color: '#3B82F6', content: QRApp },
-  { id: 'icons', name: 'Icons', desc: '562 offline icons + the Iconify universe online', icon: Shapes, color: '#00C4CC', content: IconsApp },
+  { id: 'icons', name: 'Icons', desc: '562 offline icons + the Iconify universe online', icon: Shapes, color: '#4F9D8F', content: IconsApp },
   { id: 'illustrations', name: 'Illustrations', desc: 'Original flat-art pieces in six packs', icon: ImageIcon, color: '#34C77B', content: IllustrationsApp },
-  { id: 'palette', name: 'Colour palette', desc: 'Generate harmonious palettes on canvas', icon: Palette, color: '#FF5C8A', content: PaletteApp },
+  { id: 'palette', name: 'Colour palette', desc: 'Generate harmonious palettes on canvas', icon: Palette, color: '#D8C07A', content: PaletteApp },
   { id: 'lorem', name: 'Placeholder text', desc: 'Lorem ipsum & real-feel filler copy', icon: Type, color: '#FFD166', content: LoremApp },
   { id: 'stickers', name: 'Stickers', desc: '160+ stickers — 11 vector packs + emoji', icon: Smile, color: '#F97316', content: StickersApp },
 ]
@@ -59,9 +59,9 @@ export const CANVIX_APPS: CanvixApp[] = [
 export function AppHeader({ icon: Icon, title, onClose, children }: { icon: LucideIcon; title: string; onClose: () => void; children?: React.ReactNode }) {
   return (
     <div className="flex items-center gap-2 mb-3.5">
-      <Icon size={15} className="text-[#00C4CC] shrink-0" />
-      <span className="text-[13px] font-bold text-[#0E1318]">{title}</span>
-      <button className="ml-auto text-[11px] text-[#0E1318]/50 hover:text-[#0E1318]" onClick={onClose}>
+      <Icon size={15} className="text-[#4F9D8F] shrink-0" />
+      <span className="text-[13px] font-bold text-white">{title}</span>
+      <button className="ml-auto text-[11px] text-white/50 hover:text-white" onClick={onClose}>
         Back to apps
       </button>
       {children}
