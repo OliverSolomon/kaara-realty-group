@@ -58,6 +58,14 @@ export const post = defineType({
       ],
     }),
     defineField({
+      name: 'pdf',
+      title: 'PDF Report',
+      description:
+        'Optional. Upload a PDF to show it in the article with a download button. It can stand alone or sit alongside written content.',
+      type: 'file',
+      options: { accept: 'application/pdf' },
+    }),
+    defineField({
       name: 'publishedAt',
       title: 'Published',
       type: 'datetime',

@@ -7,13 +7,18 @@ import nodemailer from "nodemailer";
 import sanitizeHtml from "sanitize-html";
 import { decryptSecret } from "@/lib/crypto";
 import { getPool } from "@/lib/db";
+import { accessTokenFromRefresh } from "@/lib/mail/oauth";
+
+export type Credential = { pass: string } | { accessToken: string };
 
 export interface MailAccount {
   id: string;
   label: string;
   email: string;
   username: string;
+  /** The mailbox password, or for Google and Microsoft the refresh token. */
   password_enc: string;
+  auth_type: "password" | "google" | "microsoft";
   imap_host: string;
   imap_port: number;
   imap_secure: boolean;
@@ -47,6 +52,11 @@ const KNOWN: Record<string, { imap: [string, number, boolean]; smtp: [string, nu
   "gmail.com": { imap: ["imap.gmail.com", 993, true], smtp: ["smtp.gmail.com", 465, true] },
   "outlook.com": { imap: ["outlook.office365.com", 993, true], smtp: ["smtp.office365.com", 587, false] },
   "hotmail.com": { imap: ["outlook.office365.com", 993, true], smtp: ["smtp.office365.com", 587, false] },
+  "googlemail.com": { imap: ["imap.gmail.com", 993, true], smtp: ["smtp.gmail.com", 465, true] },
+  "live.com": { imap: ["outlook.office365.com", 993, true], smtp: ["smtp.office365.com", 587, false] },
+  "msn.com": { imap: ["outlook.office365.com", 993, true], smtp: ["smtp.office365.com", 587, false] },
+  "icloud.com": { imap: ["imap.mail.me.com", 993, true], smtp: ["smtp.mail.me.com", 587, false] },
+  "me.com": { imap: ["imap.mail.me.com", 993, true], smtp: ["smtp.mail.me.com", 587, false] },
   "yahoo.com": { imap: ["imap.mail.yahoo.com", 993, true], smtp: ["smtp.mail.yahoo.com", 465, true] },
   "zoho.com": { imap: ["imap.zoho.com", 993, true], smtp: ["smtp.zoho.com", 465, true] },
 };
@@ -91,12 +101,27 @@ export function explain(error: unknown) {
   return "Could not reach the mailbox.";
 }
 
-function imapClient(config: ServerConfig, password: string) {
+/** The stored password, or a fresh access token for Google and Microsoft mailboxes. */
+export async function credentialFor(account: MailAccount): Promise<Credential> {
+  const secret = decryptSecret(account.password_enc);
+  if (account.auth_type === "password") return { pass: secret };
+  try {
+    return { accessToken: await accessTokenFromRefresh(account.auth_type, secret) };
+  } catch {
+    const name = account.auth_type === "google" ? "Google" : "Microsoft";
+    throw new Error(`The ${name} sign-in for ${account.email} has expired. Connect this mailbox again.`);
+  }
+}
+
+const authOf = (user: string, credential: Credential) =>
+  "pass" in credential ? { user, pass: credential.pass } : { user, accessToken: credential.accessToken };
+
+function imapClient(config: ServerConfig, credential: Credential) {
   const client = new ImapFlow({
     host: config.imap_host,
     port: config.imap_port,
     secure: config.imap_secure,
-    auth: { user: config.username, pass: password },
+    auth: authOf(config.username, credential),
     logger: false,
     socketTimeout: 25_000,
     greetingTimeout: 15_000,
@@ -106,20 +131,22 @@ function imapClient(config: ServerConfig, password: string) {
   return client;
 }
 
-export function smtpTransport(config: ServerConfig, password: string) {
+export function smtpTransport(config: ServerConfig, credential: Credential) {
   return nodemailer.createTransport({
     host: config.smtp_host,
     port: config.smtp_port,
     secure: config.smtp_secure,
     requireTLS: !config.smtp_secure,
-    auth: { user: config.username, pass: password },
+    auth: "pass" in credential
+      ? { user: config.username, pass: credential.pass }
+      : { type: "OAuth2", user: config.username, accessToken: credential.accessToken },
     connectionTimeout: 15_000,
     greetingTimeout: 15_000,
   });
 }
 
-export async function testConnection(config: ServerConfig, password: string) {
-  const client = imapClient(config, password);
+export async function testConnection(config: ServerConfig, credential: Credential) {
+  const client = imapClient(config, credential);
   try {
     await client.connect();
   } catch (error) {
@@ -128,15 +155,15 @@ export async function testConnection(config: ServerConfig, password: string) {
     await client.logout().catch(() => client.close());
   }
   try {
-    await smtpTransport(config, password).verify();
+    await smtpTransport(config, credential).verify();
   } catch (error) {
     throw new Error(`Reading mail works, but sending does not. ${explain(error)}`);
   }
 }
 
 export async function withImap<T>(account: MailAccount, work: (client: ImapFlow) => Promise<T>) {
-  const password = decryptSecret(account.password_enc);
-  let client = imapClient(account, password);
+  const credential = await credentialFor(account);
+  let client = imapClient(account, credential);
   try {
     await client.connect();
   } catch (first) {
@@ -145,7 +172,7 @@ export async function withImap<T>(account: MailAccount, work: (client: ImapFlow)
     console.error("IMAP connection failed, retrying:", first instanceof Error ? first.message : first);
     client.close();
     await new Promise((resolve) => setTimeout(resolve, 900));
-    client = imapClient(account, password);
+    client = imapClient(account, credential);
     try {
       await client.connect();
     } catch (error) {

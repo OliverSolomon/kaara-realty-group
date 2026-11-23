@@ -321,6 +321,8 @@ export const INSIGHT_QUERY = defineQuery(`*[_type == "post" && slug.current == $
   _updatedAt,
   readingMinutes,
   "coverUrl": coalesce(coverImage.asset->url, coverImage.externalUrl),
+  "pdfUrl": pdf.asset->url,
+  "pdfName": pdf.asset->originalFilename,
   furtherReading[]{ title, publisher, url, year },
   // Embedded blocks are resolved here so the renderer never has to fetch:
   // images get their CDN url, property cards get live listing details, and

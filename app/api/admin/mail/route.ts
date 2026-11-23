@@ -1,12 +1,14 @@
 import { simpleParser } from "mailparser";
 import MailComposer from "nodemailer/lib/mail-composer";
 import { adminFromRequest, audit } from "@/lib/auth/admin";
-import { decryptSecret, encryptSecret } from "@/lib/crypto";
+import { encryptSecret } from "@/lib/crypto";
 import { getPool } from "@/lib/db";
+import { oauthConfigured } from "@/lib/mail/oauth";
 import {
   assertPublicHost,
   classify,
   cleanOutgoing,
+  credentialFor,
   detectServers,
   explain,
   loadAccount,
@@ -38,7 +40,7 @@ interface MessageRow {
 
 type Body = Record<string, unknown>;
 const EMAIL_RE = /^[^\s@,;]+@[^\s@,;]+\.[^\s@,;]+$/;
-const ACCOUNT_COLUMNS = "id, label, email";
+const ACCOUNT_COLUMNS = "id, label, email, auth_type";
 const ok = (data: unknown = {}) => Response.json(data);
 const bad = (error: string, status = 400) => Response.json({ error }, { status });
 const text = (value: unknown, max = 300) => (typeof value === "string" ? value.slice(0, max) : "");
@@ -211,7 +213,7 @@ async function send(account: MailAccount, body: Body, actor: string) {
   const batches = individually
     ? to.map((address, index) => ({ to: [address], cc: index === 0 ? cc : [], bcc: index === 0 ? bcc : [], html: personalise(html, address) }))
     : [{ to, cc, bcc, html }];
-  const transport = smtpTransport(account, decryptSecret(account.password_enc));
+  const transport = smtpTransport(account, await credentialFor(account));
   const inReplyTo = text(body.inReplyTo, 500) || undefined;
   const references = list(body.references).map((item) => item.slice(0, 500));
 
@@ -294,6 +296,7 @@ export async function POST(request: Request) {
         ]);
         return ok({
           me: admin.email,
+          providers: { google: oauthConfigured("google"), microsoft: oauthConfigured("microsoft") },
           accounts: accounts.rows,
           settings: settings.rows[0] ?? { signature_html: "", undo_seconds: 10 },
           snippets: snippets.rows,
@@ -320,11 +323,12 @@ export async function POST(request: Request) {
           smtp_secure: smtpPort === 465,
           username: text(body.username, 200).trim() || email,
         };
-        await testConnection(config, password);
+        await testConnection(config, { pass: password });
         const { rows } = await db().query(
           `INSERT INTO mail_accounts (label, email, username, password_enc, imap_host, imap_port, imap_secure, smtp_host, smtp_port, smtp_secure, connected_by)
            VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
            ON CONFLICT (email) DO UPDATE SET label=EXCLUDED.label, username=EXCLUDED.username, password_enc=EXCLUDED.password_enc,
+             auth_type='password',
              imap_host=EXCLUDED.imap_host, imap_port=EXCLUDED.imap_port, imap_secure=EXCLUDED.imap_secure,
              smtp_host=EXCLUDED.smtp_host, smtp_port=EXCLUDED.smtp_port, smtp_secure=EXCLUDED.smtp_secure, connected_by=EXCLUDED.connected_by
            RETURNING ${ACCOUNT_COLUMNS}`,

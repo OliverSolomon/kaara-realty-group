@@ -161,10 +161,29 @@ export default async function InsightPage({ params }: { params: Params }) {
                   <div id="article-body">
                     <ArticleBody value={content} />
                   </div>
-                ) : (
+                ) : !insight.pdfUrl ? (
                   <p className="text-base leading-relaxed text-white/70">
                     This report is being prepared. Check back shortly.
                   </p>
+                ) : null}
+
+                {insight.pdfUrl && (
+                  <section aria-label="PDF report" className={hasBody ? "mt-12" : ""}>
+                    <div className="flex flex-wrap items-center justify-between gap-3 border border-white/10 bg-[#171232] p-4">
+                      <p className="min-w-0 truncate text-sm text-white/75">{insight.pdfName || "PDF report"}</p>
+                      <a
+                        href={`${insight.pdfUrl}?dl=${encodeURIComponent(insight.pdfName || "kaara-report.pdf")}`}
+                        className="press inline-flex min-h-11 items-center border border-[#4f9d8f] bg-[#2e7d6f] px-5 text-[10px] font-bold uppercase tracking-[0.2em] text-[#f4faf8]"
+                      >
+                        Download PDF
+                      </a>
+                    </div>
+                    <iframe
+                      title={`PDF: ${insight.title}`}
+                      src={`${insight.pdfUrl}#view=FitH`}
+                      className="hidden h-[80vh] w-full border border-t-0 border-white/10 bg-white md:block"
+                    />
+                  </section>
                 )}
 
                 <Sources

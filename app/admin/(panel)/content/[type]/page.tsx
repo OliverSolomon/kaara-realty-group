@@ -24,7 +24,7 @@ export default async function ContentListPage({
 
   return (
     <>
-      <Link href="/admin/content" className="inline-flex min-h-11 items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#4f9d8f]">
+      <Link href="/admin/content" className="inline-flex min-h-11 items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#4f9d8f] lg:hidden">
         <PiArrowLeft size={13} aria-hidden="true" />
         Content
       </Link>

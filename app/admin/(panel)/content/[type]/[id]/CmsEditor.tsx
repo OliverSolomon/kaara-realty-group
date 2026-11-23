@@ -4,8 +4,12 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { PiArrowDown, PiArrowLeft, PiArrowUp, PiFile, PiImage, PiLockSimple, PiPlus, PiTrash, PiX } from "react-icons/pi";
+import dynamic from "next/dynamic";
+import { PiArrowDown, PiArrowLeft, PiArrowUp, PiFile, PiImage, PiPlus, PiShareNetwork, PiTrash, PiX } from "react-icons/pi";
+import { uploadAsset } from "@/lib/cms/upload";
 import { fieldVisible, type CmsDocumentType, type CmsField } from "@/lib/cms/types";
+
+const WordEditorDialog = dynamic(() => import("./WordEditorDialog"), { ssr: false });
 
 type Value = any;
 const FIELD = "w-full border border-white/15 bg-transparent px-3 py-2.5 text-sm text-[#efebe3] outline-none placeholder:text-white/30 focus:border-[#4f9d8f]";
@@ -72,6 +76,7 @@ function Shell({ field, id, children }: { field: CmsField; id: string; children:
 
 function AssetInput({ field, value, onChange, id }: { field: CmsField; value: Value; onChange: (value: Value) => void; id: string }) {
   const [busy, setBusy] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [error, setError] = useState("");
   const kind = field.type === "file" ? "file" : "image";
   const ref = value?.asset?._ref as string | undefined;
@@ -81,13 +86,8 @@ function AssetInput({ field, value, onChange, id }: { field: CmsField; value: Va
     if (!file) return;
     setBusy(true);
     setError("");
-    const form = new FormData();
-    form.set("file", file);
-    form.set("kind", kind);
     try {
-      const response = await fetch("/api/admin/upload", { method: "POST", body: form });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error);
+      const data = await uploadAsset(file, kind, setProgress);
       onChange({ ...(value ?? {}), _type: kind, asset: { _type: "reference", _ref: data.assetId } });
     } catch (failure) {
       setError(failure instanceof Error && failure.message ? failure.message : "The upload failed.");
@@ -107,8 +107,8 @@ function AssetInput({ field, value, onChange, id }: { field: CmsField; value: Va
           ) : kind === "image" ? <PiImage size={22} className="text-white/30" /> : <PiFile size={22} className={ref ? "text-[#7fd0c1]" : "text-white/30"} />}
         </div>
         <label className="press inline-flex min-h-10 cursor-pointer items-center border border-white/20 px-3 text-xs">
-          {busy ? "Uploading" : ref ? "Replace" : "Upload"}
-          <input id={id} type="file" accept={kind === "image" ? "image/jpeg,image/png,image/webp,image/gif" : "application/pdf,image/*"} disabled={busy} className="sr-only" onChange={(event) => { void upload(event.target.files?.[0]); event.target.value = ""; }} />
+          {busy ? `Uploading ${progress}%` : ref ? "Replace" : "Upload"}
+          <input id={id} type="file" accept={kind === "image" ? "image/jpeg,image/png,image/webp,image/gif" : "application/pdf,.docx,image/*"} disabled={busy} className="sr-only" onChange={(event) => { void upload(event.target.files?.[0]); event.target.value = ""; }} />
         </label>
         {ref && <button type="button" onClick={() => { const next = { ...value }; delete next.asset; delete next.hotspot; delete next.crop; onChange(Object.keys(next).filter((item) => !item.startsWith("_")).length ? next : undefined); }} className="min-h-10 px-2 text-xs text-[#f0a08a]">Remove</button>}
       </div>
@@ -170,51 +170,27 @@ function ReferenceInput({ field, value, onChange, id }: { field: CmsField; value
 }
 
 const blockText = (block: Value) => (block.children ?? []).map((child: Value) => child.text ?? "").join("");
-const isPlainBlock = (block: Value) =>
-  block._type === "block" &&
-  !block.listItem &&
-  !(block.markDefs ?? []).length &&
-  (block.children ?? []).every((child: Value) => child._type === "span" && !(child.marks ?? []).length);
 
-/** Plain paragraphs are editable. Rich blocks stay untouched, so citations and links are never lost. */
+/** Rich text opens in the full Word editor. Citations, callouts and images travel through it safely. */
 function PortableTextInput({ field, value, onChange }: { field: CmsField; value: Value; onChange: (value: Value) => void }) {
   const blocks: Value[] = Array.isArray(value) ? value : [];
-  const styles = field.styles?.length ? field.styles : [{ title: "Normal", value: "normal" }];
-  const update = (next: Value[]) => onChange(next.length ? next : undefined);
-  const move = (index: number, delta: number) => {
-    const next = [...blocks];
-    const [item] = next.splice(index, 1);
-    next.splice(index + delta, 0, item);
-    update(next);
-  };
+  const [editing, setEditing] = useState(false);
+  const [file, setFile] = useState<File | null>(null);
+  const words = blocks.reduce((total, block) => total + (block._type === "block" ? blockText(block).trim().split(/\s+/).filter(Boolean).length : 0), 0);
+  const rich = blocks.filter((block) => block._type !== "block").length;
+  const preview = blocks.filter((block) => block._type === "block" && blockText(block).trim()).slice(0, 2).map(blockText).join(" ");
   return (
-    <div className="grid gap-2">
-      {blocks.map((block, index) => (
-        <div key={block._key ?? index} className="border border-white/10 p-2">
-          {isPlainBlock(block) ? (
-            <>
-              <select aria-label="Paragraph style" value={block.style ?? "normal"} onChange={(event) => update(blocks.map((item, position) => (position === index ? { ...item, style: event.target.value } : item)))} className="mb-2 min-h-9 border border-white/15 px-2 text-xs">
-                {styles.map((style) => <option key={style.value} value={style.value}>{style.title}</option>)}
-              </select>
-              <textarea aria-label={`Paragraph ${index + 1}`} rows={Math.min(8, Math.ceil(blockText(block).length / 70) + 1)} value={blockText(block)} onChange={(event) => update(blocks.map((item, position) => position === index ? { ...item, markDefs: [], children: [{ _type: "span", _key: item.children?.[0]?._key ?? key(), text: event.target.value, marks: [] }] } : item))} className={`${FIELD} resize-y`} />
-            </>
-          ) : (
-            <p className="flex items-start gap-2 text-sm leading-relaxed text-white/60">
-              <PiLockSimple size={14} className="mt-1 shrink-0 text-[#d8c07a]" aria-label="Rich block, edit in Studio" />
-              <span className="line-clamp-3">{block._type === "block" ? blockText(block) : `${String(block._type)} block`}</span>
-            </p>
-          )}
-          <div className="mt-2 flex gap-1">
-            <button type="button" aria-label="Move up" disabled={index === 0} onClick={() => move(index, -1)} className={SMALL}><PiArrowUp size={13} /></button>
-            <button type="button" aria-label="Move down" disabled={index === blocks.length - 1} onClick={() => move(index, 1)} className={SMALL}><PiArrowDown size={13} /></button>
-            <button type="button" aria-label="Remove block" onClick={() => { if (isPlainBlock(block) || window.confirm("Remove this formatted block?")) update(blocks.filter((_, position) => position !== index)); }} className={SMALL}><PiTrash size={13} /></button>
-          </div>
-        </div>
-      ))}
-      <div className="flex flex-wrap items-center gap-3">
-        <button type="button" onClick={() => update([...blocks, { _type: "block", _key: key(), style: "normal", markDefs: [], children: [{ _type: "span", _key: key(), text: "", marks: [] }] }])} className={ADD}><PiPlus size={13} />Add paragraph</button>
-        {blocks.some((block) => !isPlainBlock(block)) && <a href="/studio" target="_blank" rel="noopener noreferrer" className="text-xs text-white/50 underline underline-offset-4">Edit links, lists and rich blocks in Studio</a>}
+    <div className="border border-white/15 p-3">
+      {preview ? <p className="line-clamp-3 text-sm leading-relaxed text-white/65">{preview}</p> : <p className="text-sm text-white/40">Nothing written yet.</p>}
+      <p className="mt-2 text-xs text-white/40">{words} words{rich ? ` · ${rich} rich block${rich === 1 ? "" : "s"}` : ""}</p>
+      <div className="mt-3 flex flex-wrap gap-2">
+        <button type="button" onClick={() => { setFile(null); setEditing(true); }} className="press min-h-11 border border-[#4f9d8f] bg-[#2e7d6f] px-4 text-[10px] font-bold uppercase tracking-[0.14em] text-[#f4faf8]">Open Word editor</button>
+        <label className="press inline-flex min-h-11 cursor-pointer items-center border border-white/20 px-4 text-[10px] font-bold uppercase tracking-[0.14em]">
+          Upload Word file
+          <input type="file" accept=".docx,.doc,.odt,.rtf,.md,.txt,application/vnd.openxmlformats-officedocument.wordprocessingml.document" className="sr-only" onChange={(event) => { const picked = event.target.files?.[0]; event.target.value = ""; if (!picked) return; if (blocks.length && !window.confirm("Replace the current text with this file?")) return; setFile(picked); setEditing(true); }} />
+        </label>
       </div>
+      {editing && <WordEditorDialog title={field.title} value={blocks} file={file} onApply={(next) => onChange(next.length ? next : undefined)} onClose={() => setEditing(false)} />}
     </div>
   );
 }
@@ -464,8 +440,8 @@ export default function CmsEditor({ schema, initial, rev, hasPublished, hasDraft
   }
 
   return (
-    <div className="mx-auto max-w-3xl pb-24">
-      <Link href={backHref} className="inline-flex min-h-11 items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#4f9d8f]">
+    <div className="mx-auto max-w-3xl">
+      <Link href={backHref} className="inline-flex min-h-11 items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[#4f9d8f] lg:hidden">
         <PiArrowLeft size={13} aria-hidden="true" />
         Back
       </Link>
@@ -478,11 +454,17 @@ export default function CmsEditor({ schema, initial, rev, hasPublished, hasDraft
       <div className="mt-5 grid gap-5 border border-white/10 bg-[#171232] p-4 sm:p-6">
         <Fields fields={schema.fields} value={doc} document={doc} prefix="cms" onChange={(next) => { setDoc({ ...next, _id: id, _type: schema.name, ...(doc._rev ? { _rev: doc._rev } : {}) }); setDirty(true); setMessage(null); }} />
       </div>
-      <div className="fixed bottom-0 left-0 right-0 z-20 border-t border-white/10 bg-[#100b28]/95 px-4 py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] backdrop-blur-md lg:left-56">
+      <div className="sticky bottom-0 z-20 -mx-4 mt-5 border-t border-white/10 bg-[#100b28]/95 px-4 py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] backdrop-blur-md">
         <div className="mx-auto flex max-w-3xl flex-wrap items-center gap-2">
           {message && <p role={message.ok ? "status" : "alert"} className={`w-full text-sm ${message.ok ? "text-[#7fd0c1]" : "text-[#f0a08a]"}`}>{message.text}</p>}
           {!singleton && created && <button type="button" disabled={Boolean(busy)} onClick={() => remove("delete")} className="press min-h-11 border border-[#f0a08a]/40 px-3 text-[10px] font-bold uppercase tracking-[0.14em] text-[#f0a08a] disabled:opacity-50">Delete</button>}
           {draft && published && <button type="button" disabled={Boolean(busy)} onClick={() => remove("discard")} className="press min-h-11 border border-white/20 px-3 text-[10px] font-bold uppercase tracking-[0.14em] disabled:opacity-50">Discard</button>}
+          {schema.name === "post" && published && !dirty && !draft && (
+            <Link href={`/admin/posts?insight=${encodeURIComponent(id)}`} className="press inline-flex min-h-11 items-center gap-2 border border-[#4f9d8f] px-3 text-[10px] font-bold uppercase tracking-[0.14em] text-[#7fd0c1]">
+              <PiShareNetwork size={14} aria-hidden="true" />
+              Share to social
+            </Link>
+          )}
           <div className="ml-auto flex gap-2">
             <button type="button" disabled={Boolean(busy) || !dirty} onClick={() => run("save")} className="press min-h-11 border border-white/20 px-4 text-[10px] font-bold uppercase tracking-[0.14em] disabled:opacity-40">{busy === "save" ? "Saving" : "Save draft"}</button>
             <button type="button" disabled={Boolean(busy) || (!dirty && !draft && published)} onClick={() => run("publish")} className="press min-h-11 border border-[#4f9d8f] bg-[#2e7d6f] px-5 text-[10px] font-bold uppercase tracking-[0.14em] text-[#f4faf8] disabled:opacity-40">{busy === "publish" ? "Publishing" : "Publish"}</button>

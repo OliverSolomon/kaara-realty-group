@@ -11,6 +11,7 @@
     "cms:schema": "node scripts/build-cms-schema.mjs"
   },
   "dependencies": {
+    "@gamine/wordcraft-react": "^0.3.6",
     "@neon/auth": "^0.8.2",
     "@portabletext/react": "^6.0.3",
     "@radix-ui/react-slot": "^1.2.4",
@@ -38,7 +39,8 @@
     "server-only": "^0.0.1",
     "sharp": "0.34.5",
     "styled-components": "^6.4.1",
-    "tailwind-merge": "^3.5.0"
+    "tailwind-merge": "^3.5.0",
+    "yjs": "^13.6.33"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

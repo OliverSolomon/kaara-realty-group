@@ -63,6 +63,12 @@
      ]
     },
     {
+     "name": "pdf",
+     "title": "PDF Report",
+     "type": "file",
+     "description": "Optional. Upload a PDF to show it in the article with a download button. It can stand alone or sit alongside written content."
+    },
+    {
      "name": "publishedAt",
      "title": "Published",
      "type": "datetime"

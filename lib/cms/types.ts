@@ -39,56 +39,80 @@ export const SINGLETONS = new Set([
 /** System counters and retired types stay out of the editor. */
 export const HIDDEN_TYPES = new Set(["propertyViews", "event"]);
 
-export interface CmsNavItem {
+export interface CmsNode {
+  id: string;
   label: string;
-  href: string;
-  type: string;
+  type?: string;
   listing?: "buy" | "sell" | "stay";
+  href?: string;
+  children?: (CmsNode | "divider")[];
 }
 
-const single = (label: string, type: string): CmsNavItem => ({ label, type, href: `/admin/content/${type}/${type}` });
-const list = (label: string, type: string, listing?: CmsNavItem["listing"]): CmsNavItem => ({
+const page = (label: string, type: string): CmsNode => ({ id: type, label, type, href: `/admin/content/${type}/${type}` });
+const list = (id: string, label: string, type: string, listing?: CmsNode["listing"]): CmsNode => ({
+  id,
   label,
   type,
   listing,
   href: listing ? `/admin/content/${type}?listing=${listing}` : `/admin/content/${type}`,
 });
 
-/** The same order as the Studio menu, so an editor who knows one knows the other. */
-export const CMS_NAV: { title: string; items: CmsNavItem[] }[] = [
+/** Word for word the Studio menu, so an editor who knows one knows the other. */
+export const CMS_STRUCTURE: (CmsNode | "divider")[] = [
   {
-    title: "Home page",
-    items: [
-      single("1 · Hero video", "heroSection"),
-      single("2 · Secondary video", "secondarySection"),
-      single("3 · The next move is yours", "propertiesSection"),
-      single("4 · Experience video", "experienceSection"),
-      single("5 · Closing video", "closingSection"),
+    id: "pages",
+    label: "Pages",
+    children: [
+      {
+        id: "home",
+        label: "Home Page",
+        children: [
+          page("1 · Hero Video (background)", "heroSection"),
+          page("2 · Secondary Video", "secondarySection"),
+          page("3 · The Next Move Is Yours (featured + filters)", "propertiesSection"),
+          page("4 · Experience Video", "experienceSection"),
+          page("5 · Closing Video", "closingSection"),
+        ],
+      },
+      page("Buy Page", "buyPage"),
+      page("Sell Page", "sellPage"),
+      page("Stay Page", "stayPage"),
+      {
+        id: "world",
+        label: "World of Kaara",
+        children: [page("Page Content", "aboutPage"), list("world-developers", "Developer Partners (names & logos)", "developer")],
+      },
     ],
   },
+  list("insights", "Market Insights", "post"),
+  "divider",
   {
-    title: "Pages",
-    items: [single("Buy page", "buyPage"), single("Sell page", "sellPage"), single("Stay page", "stayPage"), single("World of Kaara", "aboutPage")],
-  },
-  { title: "Editorial", items: [list("Market Insights", "post")] },
-  {
-    title: "Listings",
-    items: [
-      list("Buy listings", "property", "buy"),
-      list("Sell resale units", "property", "sell"),
-      list("Stay short stays", "property", "stay"),
-      list("All listings", "property"),
+    id: "listings",
+    label: "Listings",
+    children: [
+      list("buy", "Buy - Active Listings", "property", "buy"),
+      list("sell", "Sell - Resale Units", "property", "sell"),
+      list("stay", "Stay - Short Stay Units", "property", "stay"),
+      "divider",
+      list("all-listings", "All Listings", "property"),
     ],
   },
-  { title: "People", items: [list("Developer partners", "developer"), list("Testimonials", "testimonial")] },
-  { title: "Locations", items: [list("Districts", "district"), list("Counties", "county")] },
+  list("developers", "Developer Partners", "developer"),
+  list("testimonials", "Testimonials", "testimonial"),
   {
-    title: "Settings",
-    items: [
-      single("General", "generalSettings"),
-      single("Brand assets", "brandSettings"),
-      single("Contact details", "contactSettings"),
-      single("Social links", "socialSettings"),
+    id: "locations",
+    label: "Locations",
+    children: [list("districts", "Districts", "district"), list("counties", "Counties", "county")],
+  },
+  "divider",
+  {
+    id: "settings",
+    label: "Settings",
+    children: [
+      page("General (site name, SEO, currency)", "generalSettings"),
+      page("Brand Assets (logos, favicon)", "brandSettings"),
+      page("Contact Details (phone, WhatsApp, address)", "contactSettings"),
+      page("Social Links", "socialSettings"),
     ],
   },
 ];

@@ -28,7 +28,16 @@ import {
 import type { MailKind } from "@/lib/mail/sort";
 import { fitFrame, messageDocument } from "@/lib/mail/view";
 
-interface Account { id: string; label: string; email: string }
+interface Account { id: string; label: string; email: string; auth_type?: string }
+interface Providers { google: boolean; microsoft: boolean }
+const OAUTH_ERRORS: Record<string, string> = {
+  provider: "That sign-in option is not set up yet.",
+  state: "The sign-in expired. Please try again.",
+  denied: "The sign-in was cancelled.",
+  email: "The provider did not share an email address.",
+  refresh: "The provider did not grant lasting access. Remove the app from your account and try again.",
+  connect: "Signed in, but the mailbox could not be reached. Make sure IMAP is enabled for this account.",
+};
 interface Box { path: string; name: string; special: string; unread?: number }
 interface Addr { name: string; address: string }
 interface Row { uid: number; subject: string; from: Addr; to: Addr[]; date: string | null; seen: boolean; flagged: boolean; answered: boolean; hasAttachment: boolean; kind: MailKind }
@@ -101,6 +110,7 @@ export default function MailApp() {
   const [loading, setLoading] = useState(true);
   const [me, setMe] = useState("");
   const [accounts, setAccounts] = useState<Account[]>([]);
+  const [providers, setProviders] = useState<Providers>({ google: false, microsoft: false });
   const [accountId, setAccountId] = useState("");
   const [boxes, setBoxes] = useState<Box[]>([]);
   const [mailbox, setMailbox] = useState("INBOX");
@@ -139,9 +149,14 @@ export default function MailApp() {
   }, [rows]);
 
   useEffect(() => {
-    api<{ me: string; accounts: Account[]; settings: Settings; snippets: Snippet[] }>("bootstrap")
+    const returned = new URLSearchParams(window.location.search);
+    const oauthError = returned.get("mailError");
+    api<{ me: string; providers: Providers; accounts: Account[]; settings: Settings; snippets: Snippet[] }>("bootstrap")
       .then((data) => {
         setMe(data.me);
+        setProviders(data.providers);
+        if (oauthError) setError(OAUTH_ERRORS[oauthError] ?? "The sign-in failed.");
+        if (oauthError || returned.has("mailConnected")) window.history.replaceState(null, "", "/admin/mail");
         setAccounts(data.accounts);
         setSettings(data.settings);
         setSnippets(data.snippets);
@@ -360,10 +375,10 @@ export default function MailApp() {
     return (
       <div className="mx-auto max-w-md">
         <h1 className="font-serif text-3xl">Mail</h1>
-        <p className="mt-2 text-sm leading-relaxed text-white/60">Connect the team mailbox. The password is tested, then stored encrypted.</p>
+        <p className="mt-2 text-sm leading-relaxed text-white/60">Connect as many mailboxes as you need. Sign-ins are tested, then stored encrypted.</p>
         {error && <p role="alert" className="mt-4 border border-[#f0a08a]/40 bg-[#f0a08a]/10 p-3 text-sm text-[#f0a08a]">{error}</p>}
         <div className="mt-5 border border-white/10 bg-[#171232] p-5">
-          <AccountForm onAdded={(added) => { setAccounts([added]); setAccountId(added.id); }} />
+          <AccountForm providers={providers} onAdded={(added) => { setAccounts([added]); setAccountId(added.id); }} />
         </div>
       </div>
     );
@@ -527,6 +542,7 @@ export default function MailApp() {
           settings={settings}
           snippets={snippets}
           accounts={accounts}
+          providers={providers}
           onSettings={setSettings}
           onSnippets={setSnippets}
           onAccounts={(next) => { setAccounts(next); if (!next.some((item) => item.id === accountId)) setAccountId(next[0]?.id ?? ""); }}
@@ -659,10 +675,21 @@ function Composer({ initial, fromEmail, snippets, onClose, onSend }: {
   );
 }
 
-function AccountForm({ onAdded }: { onAdded: (account: Account) => void }) {
+const MAIL_PROVIDERS = [
+  { key: "kaara", label: "Kaara mail", placeholder: "you@kaararealtygroup.com", hint: "Use your webmail password." },
+  { key: "gmail", label: "Gmail app password", placeholder: "you@gmail.com", hint: "Google Account > Security > 2-Step Verification > App passwords." },
+  { key: "yahoo", label: "Yahoo", placeholder: "you@yahoo.com", hint: "Yahoo needs an app password." },
+  { key: "icloud", label: "iCloud", placeholder: "you@icloud.com", hint: "Create an app-specific password at account.apple.com." },
+  { key: "zoho", label: "Zoho", placeholder: "you@zoho.com", hint: "Enable IMAP in Zoho Mail settings." },
+  { key: "other", label: "Other", placeholder: "you@yourdomain.com", hint: "Your server settings are detected from the address." },
+];
+
+function AccountForm({ providers, onAdded }: { providers: Providers; onAdded: (account: Account) => void }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [advanced, setAdvanced] = useState(false);
+  const [choice, setChoice] = useState("kaara");
+  const provider = MAIL_PROVIDERS.find((item) => item.key === choice) ?? MAIL_PROVIDERS[0];
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -683,7 +710,25 @@ function AccountForm({ onAdded }: { onAdded: (account: Account) => void }) {
 
   return (
     <form onSubmit={submit} className="grid gap-3">
-      <input name="email" type="email" required autoComplete="off" aria-label="Email address" placeholder="info@kaararealtygroup.com" className={FIELD} />
+      <div className="grid gap-2 sm:grid-cols-2">
+        {providers.google ? (
+          <a href="/api/admin/mail/oauth/google/start" className={`${SECONDARY} inline-flex items-center justify-center`}>Continue with Google</a>
+        ) : (
+          <button type="button" disabled title="Needs Google sign-in credentials" className={SECONDARY}>Google sign-in not set up</button>
+        )}
+        {providers.microsoft ? (
+          <a href="/api/admin/mail/oauth/microsoft/start" className={`${SECONDARY} inline-flex items-center justify-center`}>Continue with Microsoft</a>
+        ) : (
+          <button type="button" disabled title="Needs Microsoft sign-in credentials" className={SECONDARY}>Microsoft sign-in not set up</button>
+        )}
+      </div>
+      <div className="flex flex-wrap gap-1.5" role="group" aria-label="Mail provider">
+        {MAIL_PROVIDERS.map((item) => (
+          <button key={item.key} type="button" aria-pressed={choice === item.key} onClick={() => setChoice(item.key)} className={`min-h-9 border px-2.5 text-xs ${choice === item.key ? "border-[#4f9d8f] bg-[#2e7d6f]/25" : "border-white/15 text-white/55"}`}>{item.label}</button>
+        ))}
+      </div>
+      <p className="text-xs leading-relaxed text-white/45">{provider.hint}</p>
+      <input name="email" type="email" required autoComplete="off" aria-label="Email address" placeholder={provider.placeholder} className={FIELD} />
       <input name="password" type="password" required autoComplete="new-password" aria-label="Mailbox password" placeholder="Mailbox password" className={FIELD} />
       <input name="label" aria-label="Sender name" placeholder="Sender name, such as Kaara Realty Group" className={FIELD} />
       <button type="button" onClick={() => setAdvanced(!advanced)} className="justify-self-start text-xs text-white/55 underline underline-offset-4">Server settings</button>
@@ -702,10 +747,11 @@ function AccountForm({ onAdded }: { onAdded: (account: Account) => void }) {
   );
 }
 
-function SettingsPanel({ settings, snippets, accounts, onSettings, onSnippets, onAccounts, onClose }: {
+function SettingsPanel({ settings, snippets, accounts, providers, onSettings, onSnippets, onAccounts, onClose }: {
   settings: Settings;
   snippets: Snippet[];
   accounts: Account[];
+  providers: Providers;
   onSettings: (value: Settings) => void;
   onSnippets: (value: Snippet[]) => void;
   onAccounts: (value: Account[]) => void;
@@ -781,7 +827,7 @@ function SettingsPanel({ settings, snippets, accounts, onSettings, onSnippets, o
             </li>
           ))}
         </ul>
-        <div className="mt-3"><AccountForm onAdded={(added) => onAccounts([...accounts.filter((item) => item.id !== added.id), added])} /></div>
+        <div className="mt-3"><AccountForm providers={providers} onAdded={(added) => onAccounts([...accounts.filter((item) => item.id !== added.id), added])} /></div>
       </div>
     </div>
   );

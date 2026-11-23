@@ -70,13 +70,25 @@ const fromPost = (post: PostRow): Draft => ({
   results: post.results ?? {},
 });
 
-export default function PostsApp({ initialPosts, connections }: { initialPosts: PostRow[]; connections: Connection[] }) {
+export interface PostSeed {
+  title: string;
+  body: string;
+  linkUrl: string;
+  media: string[];
+}
+
+export default function PostsApp({ initialPosts, connections, seed }: { initialPosts: PostRow[]; connections: Connection[]; seed?: PostSeed | null }) {
   const [posts, setPosts] = useState(initialPosts);
   const [month, setMonth] = useState(() => {
     const now = new Date();
     return new Date(now.getFullYear(), now.getMonth(), 1);
   });
-  const [draft, setDraft] = useState<Draft | null>(null);
+  // The article itself is already on the website, so a shared insight targets the linked social accounts.
+  const [draft, setDraft] = useState<Draft | null>(() =>
+    seed
+      ? { ...blank(), title: seed.title, body: seed.body, linkUrl: seed.linkUrl, media: seed.media, channels: connections.map((item) => item.channel) }
+      : null
+  );
   const [view, setView] = useState<"calendar" | "list">("calendar");
   const [showChannels, setShowChannels] = useState(false);
 
