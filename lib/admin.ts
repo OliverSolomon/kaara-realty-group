@@ -14,6 +14,9 @@ export interface LeadRow {
   latest_message: string | null;
   listing_title: string | null;
   listing_slug: string | null;
+  listing_type: string | null;
+  whatsapp_name: string | null;
+  social_profiles: Record<string, string>;
   landing_path: string | null;
   referrer: string | null;
   utm_source: string | null;
@@ -53,8 +56,8 @@ export interface ClickRow {
 }
 
 const LEAD_COLUMNS = `id, ref, status, name, phone, phone_digits, email, latest_kind, latest_message,
-  listing_title, listing_slug, landing_path, referrer, utm_source, utm_medium, utm_campaign,
-  marketing_consent, first_contacted_at, created_at, last_activity_at`;
+  listing_title, listing_slug, listing_type, whatsapp_name, social_profiles,
+  landing_path, referrer, utm_source, utm_medium, utm_campaign, marketing_consent, first_contacted_at, created_at, last_activity_at`;
 
 function db() {
   const pool = getPool();
@@ -69,7 +72,13 @@ export async function getStats() {
     week: number;
     won: number;
     clicks: number;
+    stays: number;
+    stay_clicks: number;
   }>(`SELECT
+      count(*) FILTER (WHERE listing_type = 'stay' AND status NOT IN ('won', 'lost'))::int AS stays,
+      (SELECT count(*)::int FROM lead_events
+        WHERE type = 'whatsapp_click' AND listing_type = 'stay'
+          AND created_at > now() - interval '7 days') AS stay_clicks,
       count(*) FILTER (WHERE status = 'new')::int AS fresh,
       count(*) FILTER (WHERE status = 'new' AND last_activity_at < now() - interval '5 minutes')::int AS overdue,
       count(*) FILTER (WHERE created_at > now() - interval '7 days')::int AS week,
@@ -81,16 +90,33 @@ export async function getStats() {
   return rows[0];
 }
 
-export async function listLeads(status: LeadStatus | null, search: string) {
+export async function getMessages(leadId: string) {
+  const { rows } = await db().query<{
+    id: string;
+    direction: "in" | "out";
+    body: string | null;
+    message_type: string;
+    sent_by: string | null;
+    created_at: Date;
+  }>(
+    `SELECT id::text, direction, body, message_type, sent_by, created_at
+     FROM whatsapp_messages WHERE lead_id = $1 ORDER BY created_at ASC LIMIT 200`,
+    [leadId]
+  );
+  return rows;
+}
+
+export async function listLeads(status: LeadStatus | null, search: string, interest: string | null = null) {
   const term = search.trim() ? `%${search.trim().replace(/[\\%_]/g, "\\$&")}%` : null;
   const { rows } = await db().query<LeadRow>(
     `SELECT ${LEAD_COLUMNS} FROM leads
      WHERE ($1::text IS NULL OR status = $1)
        AND ($2::text IS NULL OR name ILIKE $2 OR phone ILIKE $2 OR email ILIKE $2
             OR ref ILIKE $2 OR listing_title ILIKE $2)
+       AND ($3::text IS NULL OR listing_type = $3)
      ORDER BY (status = 'new') DESC, last_activity_at DESC
      LIMIT 200`,
-    [status, term]
+    [status, term, interest]
   );
   return rows;
 }

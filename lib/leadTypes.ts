@@ -20,6 +20,33 @@ export const KIND_LABELS: Record<string, string> = {
   whatsapp: "WhatsApp chat",
 };
 
+export const SOCIAL_NETWORKS = [
+  { key: "instagram", label: "Instagram", base: "https://www.instagram.com/" },
+  { key: "facebook", label: "Facebook", base: "https://www.facebook.com/" },
+  { key: "linkedin", label: "LinkedIn", base: "https://www.linkedin.com/in/" },
+  { key: "x", label: "X", base: "https://x.com/" },
+  { key: "tiktok", label: "TikTok", base: "https://www.tiktok.com/@" },
+] as const;
+
+/** Accepts a handle or a link to that network. Anything else is dropped. */
+export function socialUrl(key: string, value: string | null | undefined) {
+  const network = SOCIAL_NETWORKS.find((item) => item.key === key);
+  const text = value?.trim();
+  if (!network || !text) return null;
+  if (/^https?:\/\//i.test(text)) {
+    try {
+      const url = new URL(text);
+      const expected = new URL(network.base).hostname.replace(/^www\./, "");
+      const host = url.hostname.replace(/^www\./, "");
+      return url.protocol === "https:" && (host === expected || host.endsWith(`.${expected}`)) ? url.toString() : null;
+    } catch {
+      return null;
+    }
+  }
+  const handle = text.replace(/^@+/, "");
+  return /^[A-Za-z0-9._-]{1,80}$/.test(handle) ? `${network.base}${handle}` : null;
+}
+
 export interface Attribution {
   landingPath?: string;
   referrer?: string;

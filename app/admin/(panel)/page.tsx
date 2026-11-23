@@ -8,30 +8,32 @@ import { sourceLabel, timeAgo } from "./format";
 export default async function AdminInboxPage({
   searchParams,
 }: {
-  searchParams: Promise<{ status?: string; q?: string }>;
+  searchParams: Promise<{ status?: string; q?: string; interest?: string }>;
 }) {
   const params = await searchParams;
   const status = LEAD_STATUSES.includes(params.status as LeadStatus) ? (params.status as LeadStatus) : null;
   const q = (params.q || "").slice(0, 100);
-  const [stats, leads] = await Promise.all([getStats(), listLeads(status, q)]);
+  const interest = params.interest === "stay" ? "stay" : null;
+  const [stats, leads] = await Promise.all([getStats(), listLeads(status, q, interest)]);
   // eslint-disable-next-line react-hooks/purity -- this server page renders per request.
   const now = Date.now();
 
   const tiles = [
     { label: "New", value: stats.fresh },
     { label: "Waiting over 5 min", value: stats.overdue, alert: stats.overdue > 0 },
+    { label: "Open staycation leads", value: stats.stays },
+    { label: "Staycation WhatsApp clicks, 7 days", value: stats.stay_clicks },
     { label: "Leads this week", value: stats.week },
     { label: "Unmatched WhatsApp, 7 days", value: stats.clicks },
-    { label: "Won", value: stats.won },
   ];
 
   return (
     <>
       <h1 className="font-serif text-3xl">Lead inbox</h1>
 
-      <dl className="mt-6 grid grid-cols-2 gap-px border border-white/10 bg-white/10 lg:grid-cols-5">
+      <dl className="mt-6 grid grid-cols-2 gap-px border border-white/10 bg-white/10 lg:grid-cols-3 2xl:grid-cols-6">
         {tiles.map((tile) => (
-          <div key={tile.label} className="bg-[#171232] p-4 last:col-span-2 lg:p-5 lg:last:col-span-1">
+          <div key={tile.label} className="bg-[#171232] p-4 lg:p-5">
             <dt className="text-[10px] font-bold uppercase leading-relaxed tracking-[0.14em] text-white/50">{tile.label}</dt>
             <dd className={`mt-2 font-serif text-3xl tabular-nums ${tile.alert ? "text-[#f0a08a]" : ""}`}>{tile.value}</dd>
           </div>
@@ -49,13 +51,31 @@ export default async function AdminInboxPage({
           className="min-h-12 w-full min-w-0 bg-transparent text-sm outline-none placeholder:text-white/35"
         />
         {status && <input type="hidden" name="status" value={status} />}
+        {interest && <input type="hidden" name="interest" value={interest} />}
       </form>
 
       <nav aria-label="Filter by status" className="no-scrollbar -mx-4 mt-3 flex gap-2 overflow-x-auto px-4 lg:mx-0 lg:px-0">
+        <Link
+          href={(() => {
+            const query = new URLSearchParams();
+            if (status) query.set("status", status);
+            if (q) query.set("q", q);
+            if (!interest) query.set("interest", "stay");
+            const suffix = query.toString();
+            return suffix ? `/admin?${suffix}` : "/admin";
+          })()}
+          aria-pressed={Boolean(interest)}
+          className={`flex min-h-11 shrink-0 items-center border px-4 text-[10px] font-bold uppercase tracking-[0.16em] ${
+            interest ? "border-[#7fd0c1] bg-[#2e7d6f]/30" : "border-[#4f9d8f]/60 text-[#7fd0c1]"
+          }`}
+        >
+          Staycations
+        </Link>
         {[null, ...LEAD_STATUSES].map((item) => {
           const query = new URLSearchParams();
           if (item) query.set("status", item);
           if (q) query.set("q", q);
+          if (interest) query.set("interest", interest);
           const suffix = query.toString();
           return (
             <Link
@@ -89,6 +109,9 @@ export default async function AdminInboxPage({
                     <span className="block truncate text-xs text-white/50">{lead.phone || lead.email}</span>
                   </span>
                   <span className="min-w-0 truncate text-sm text-white/70 lg:col-span-3">
+                    {lead.listing_type === "stay" && (
+                      <span className="mr-2 border border-[#4f9d8f]/60 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.12em] text-[#7fd0c1]">Stay</span>
+                    )}
                     {KIND_LABELS[lead.latest_kind] ?? lead.latest_kind}
                     {lead.listing_title ? `: ${lead.listing_title}` : ""}
                   </span>

@@ -1,0 +1,2508 @@
+{
+ "documents": {
+  "post": {
+   "name": "post",
+   "title": "Market Insight",
+   "fields": [
+    {
+     "name": "title",
+     "title": "Title",
+     "type": "string",
+     "required": true
+    },
+    {
+     "name": "slug",
+     "title": "Slug",
+     "type": "slug",
+     "required": true,
+     "source": "title",
+     "maxLength": 96
+    },
+    {
+     "name": "category",
+     "title": "Category",
+     "type": "string",
+     "initialValue": "market-report",
+     "list": [
+      {
+       "title": "Market Report",
+       "value": "market-report"
+      },
+      {
+       "title": "Investor Guide",
+       "value": "investor-guide"
+      },
+      {
+       "title": "Neighbourhood Study",
+       "value": "neighbourhood-study"
+      },
+      {
+       "title": "Company Note",
+       "value": "company-note"
+      }
+     ]
+    },
+    {
+     "name": "excerpt",
+     "title": "Excerpt",
+     "type": "text",
+     "description": "One or two sentences shown on the index page",
+     "max": 220,
+     "rows": 3
+    },
+    {
+     "name": "coverImage",
+     "title": "Cover Image",
+     "type": "image",
+     "fields": [
+      {
+       "name": "externalUrl",
+       "title": "External Image URL",
+       "type": "url"
+      }
+     ]
+    },
+    {
+     "name": "publishedAt",
+     "title": "Published",
+     "type": "datetime"
+    },
+    {
+     "name": "readingMinutes",
+     "title": "Reading Time in Minutes",
+     "type": "number",
+     "description": "Leave blank and the site calculates it from the article length. Only fill this in to override."
+    },
+    {
+     "name": "tldr",
+     "title": "TL;DR",
+     "type": "text",
+     "description": "The whole report in two or three sentences, for readers who want the conclusion before deciding to read on. Shown in a highlighted box directly under the headline.",
+     "max": 400,
+     "rows": 3
+    },
+    {
+     "name": "keyTakeaways",
+     "title": "Key Takeaways",
+     "type": "array",
+     "description": "Three to five scannable bullet points. These appear in a summary panel above the article and are what most readers will actually absorb.",
+     "max": 6,
+     "of": [
+      {
+       "name": "string",
+       "title": "string",
+       "type": "string"
+      }
+     ]
+    },
+    {
+     "name": "content",
+     "title": "Content",
+     "type": "portableText",
+     "description": "Use \"Section heading (H2)\" for each major section — the website builds the table of contents from these automatically.",
+     "styles": [
+      {
+       "title": "Body text",
+       "value": "normal"
+      },
+      {
+       "title": "Section heading (H2)",
+       "value": "h2"
+      },
+      {
+       "title": "Sub-heading (H3)",
+       "value": "h3"
+      },
+      {
+       "title": "Minor heading (H4)",
+       "value": "h4"
+      },
+      {
+       "title": "Standfirst / intro",
+       "value": "lead"
+      },
+      {
+       "title": "Quote",
+       "value": "blockquote"
+      }
+     ]
+    },
+    {
+     "name": "furtherReading",
+     "title": "Further Reading",
+     "type": "array",
+     "description": "Extra sources listed at the foot of the report. Anything cited inline while writing is added to Sources automatically — this is only for material not cited directly.",
+     "of": [
+      {
+       "name": "source",
+       "title": "source",
+       "type": "object",
+       "fields": [
+        {
+         "name": "title",
+         "title": "Title",
+         "type": "string",
+         "required": true
+        },
+        {
+         "name": "publisher",
+         "title": "Publisher / Author",
+         "type": "string"
+        },
+        {
+         "name": "url",
+         "title": "Link",
+         "type": "url"
+        },
+        {
+         "name": "year",
+         "title": "Year / Date",
+         "type": "string"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "property": {
+   "name": "property",
+   "title": "Property",
+   "fields": [
+    {
+     "name": "title",
+     "title": "Property Title",
+     "type": "string",
+     "description": "The main name displayed for the property (e.g., The Amethyst)",
+     "required": true
+    },
+    {
+     "name": "slug",
+     "title": "Slug",
+     "type": "slug",
+     "description": "The unique URL for this property",
+     "required": true,
+     "source": "title",
+     "maxLength": 96
+    },
+    {
+     "name": "listingType",
+     "title": "Listing Type",
+     "type": "string",
+     "description": "Which section of the site this listing belongs to. Buy = new and active listings. Sell = owner resale units. Stay = luxury short stays.",
+     "required": true,
+     "initialValue": "buy",
+     "list": [
+      {
+       "title": "Buy (active listing)",
+       "value": "buy"
+      },
+      {
+       "title": "Sell (owner resale)",
+       "value": "sell"
+      },
+      {
+       "title": "Stay (short stay)",
+       "value": "stay"
+      }
+     ],
+     "layout": "radio"
+    },
+    {
+     "name": "developer",
+     "title": "Developer",
+     "type": "reference",
+     "description": "The developer partner behind this project",
+     "to": [
+      "developer"
+     ]
+    },
+    {
+     "name": "buildingName",
+     "title": "Building Name",
+     "type": "string",
+     "description": "The specific name of the building or residence complex"
+    },
+    {
+     "name": "county",
+     "title": "County",
+     "type": "reference",
+     "description": "Optional. Select the county (e.g., Nairobi). If you only want to type a location by hand, use the Location field below instead.",
+     "to": [
+      "county"
+     ]
+    },
+    {
+     "name": "district",
+     "title": "District",
+     "type": "reference",
+     "description": "Optional. Select the district. Only districts within the selected county will be shown.",
+     "to": [
+      "district"
+     ]
+    },
+    {
+     "name": "location",
+     "title": "Location",
+     "type": "string",
+     "description": "Type the location as you want it to read on the card, e.g. \"Westlands, Nairobi\" or \"Nyali, Mombasa\". This is all you need for a quick listing — County and District above are optional extras used by search."
+    },
+    {
+     "name": "shortDescription",
+     "title": "Short Description",
+     "type": "text",
+     "description": "A brief summary of the property for quick viewing",
+     "rows": 3
+    },
+    {
+     "name": "longDescription",
+     "title": "In-depth Description",
+     "type": "portableText",
+     "description": "Detailed information about the property, its features, and neighborhood",
+     "styles": [
+      {
+       "title": "Normal",
+       "value": "normal"
+      }
+     ]
+    },
+    {
+     "name": "details",
+     "title": "Property Summary Details",
+     "type": "string",
+     "description": "Key specs shown on the card (e.g., 3 BR | 4 BA, 1 HALF BA)"
+    },
+    {
+     "name": "price",
+     "title": "Price",
+     "type": "object",
+     "description": "The asking price and currency",
+     "fields": [
+      {
+       "name": "amount",
+       "title": "Amount",
+       "type": "string",
+       "description": "The numeric price (e.g., 520,000,000)"
+      },
+      {
+       "name": "currency",
+       "title": "Currency",
+       "type": "string",
+       "initialValue": "KSh",
+       "list": [
+        {
+         "title": "KSh (Kenyan Shilling)",
+         "value": "KSh"
+        },
+        {
+         "title": "USD (US Dollar)",
+         "value": "USD"
+        },
+        {
+         "title": "EUR (Euro)",
+         "value": "EUR"
+        },
+        {
+         "title": "GBP (British Pound)",
+         "value": "GBP"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "propertyType",
+     "title": "Property Type",
+     "type": "array",
+     "description": "Select all that apply (e.g., Commercial and Apartment for mixed use)",
+     "list": [
+      {
+       "title": "Penthouse",
+       "value": "penthouse"
+      },
+      {
+       "title": "Apartment",
+       "value": "apartment"
+      },
+      {
+       "title": "Villa",
+       "value": "villa"
+      },
+      {
+       "title": "Townhouse",
+       "value": "townhouse"
+      },
+      {
+       "title": "Warehouse",
+       "value": "warehouse"
+      },
+      {
+       "title": "Commercial",
+       "value": "commercial"
+      },
+      {
+       "title": "Land",
+       "value": "land"
+      },
+      {
+       "title": "Ranch",
+       "value": "ranch"
+      },
+      {
+       "title": "Farm",
+       "value": "farm"
+      }
+     ],
+     "of": [
+      {
+       "name": "string",
+       "title": "string",
+       "type": "string"
+      }
+     ]
+    },
+    {
+     "name": "verificationDocuments",
+     "title": "Verification Documents",
+     "type": "array",
+     "description": "Official documents confirming the property status (PDF or Images)",
+     "of": [
+      {
+       "name": "file",
+       "title": "file",
+       "type": "file"
+      },
+      {
+       "name": "image",
+       "title": "image",
+       "type": "image"
+      }
+     ]
+    },
+    {
+     "name": "media",
+     "title": "Property Media",
+     "type": "array",
+     "description": "Add multiple images (files or URLs) or video URLs for the property gallery",
+     "of": [
+      {
+       "name": "image",
+       "title": "image",
+       "type": "image",
+       "fields": [
+        {
+         "name": "alt",
+         "title": "Alternative Text",
+         "type": "string",
+         "description": "Describes the image for accessibility"
+        }
+       ]
+      },
+      {
+       "name": "externalImage",
+       "title": "External Image URL",
+       "type": "object",
+       "fields": [
+        {
+         "name": "url",
+         "title": "Image URL",
+         "type": "url",
+         "description": "Link to an external image"
+        },
+        {
+         "name": "alt",
+         "title": "Alternative Text",
+         "type": "string"
+        }
+       ]
+      },
+      {
+       "name": "externalVideo",
+       "title": "External Video",
+       "type": "object",
+       "fields": [
+        {
+         "name": "url",
+         "title": "Video URL",
+         "type": "url",
+         "description": "YouTube, Vimeo, or other video link"
+        },
+        {
+         "name": "caption",
+         "title": "Caption",
+         "type": "string"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "image",
+     "title": "Main Property Image",
+     "type": "image",
+     "description": "The primary image used for thumbnails and listings",
+     "fields": [
+      {
+       "name": "externalUrl",
+       "title": "External Image URL",
+       "type": "url",
+       "description": "Optionally provide a URL instead of uploading an image"
+      }
+     ]
+    },
+    {
+     "name": "googleMapsUrl",
+     "title": "Google Maps URL",
+     "type": "url",
+     "description": "Paste the Google Maps location link here. This will be used for mapping."
+    },
+    {
+     "name": "amenities",
+     "title": "Amenities",
+     "type": "array",
+     "description": "Tick everything the property offers. Use the filter to find an item quickly.",
+     "list": [
+      {
+       "title": "24/7 Manned Security",
+       "value": "security-manned"
+      },
+      {
+       "title": "CCTV Surveillance",
+       "value": "security-cctv"
+      },
+      {
+       "title": "Electric Fence",
+       "value": "security-electric-fence"
+      },
+      {
+       "title": "Gated Community",
+       "value": "security-gated-community"
+      },
+      {
+       "title": "Controlled Access / Boom Gate",
+       "value": "security-controlled-access"
+      },
+      {
+       "title": "Perimeter Wall",
+       "value": "security-perimeter-wall"
+      },
+      {
+       "title": "Biometric / Card Access",
+       "value": "security-biometric"
+      },
+      {
+       "title": "Video Intercom",
+       "value": "security-intercom"
+      },
+      {
+       "title": "Alarm & Panic Button",
+       "value": "security-alarm"
+      },
+      {
+       "title": "Fire Alarm & Sprinklers",
+       "value": "security-fire-system"
+      },
+      {
+       "title": "Fire Extinguishers",
+       "value": "security-fire-extinguishers"
+      },
+      {
+       "title": "Smoke Detectors",
+       "value": "security-smoke-detectors"
+      },
+      {
+       "title": "Emergency Exits",
+       "value": "security-emergency-exits"
+      },
+      {
+       "title": "Borehole",
+       "value": "utility-borehole"
+      },
+      {
+       "title": "Water Storage Tanks",
+       "value": "utility-water-tanks"
+      },
+      {
+       "title": "Borehole Water Treatment",
+       "value": "utility-water-treatment"
+      },
+      {
+       "title": "Rainwater Harvesting",
+       "value": "utility-rainwater"
+      },
+      {
+       "title": "Backup Generator",
+       "value": "utility-generator"
+      },
+      {
+       "title": "Solar Power / Inverter",
+       "value": "utility-solar-power"
+      },
+      {
+       "title": "Solar Water Heating",
+       "value": "utility-solar-water"
+      },
+      {
+       "title": "Three-Phase Power",
+       "value": "utility-three-phase"
+      },
+      {
+       "title": "Piped Gas",
+       "value": "utility-piped-gas"
+      },
+      {
+       "title": "Fibre Internet Ready",
+       "value": "utility-fibre"
+      },
+      {
+       "title": "Estate-Wide Wi-Fi",
+       "value": "utility-wifi"
+      },
+      {
+       "title": "DSTV / Satellite Ready",
+       "value": "utility-satellite"
+      },
+      {
+       "title": "Prepaid Utility Meters",
+       "value": "utility-prepaid-meters"
+      },
+      {
+       "title": "Mains Sewer Connection",
+       "value": "utility-sewer"
+      },
+      {
+       "title": "Septic Tank / Biodigester",
+       "value": "utility-septic"
+      },
+      {
+       "title": "Covered Parking",
+       "value": "access-covered-parking"
+      },
+      {
+       "title": "Basement Parking",
+       "value": "access-basement-parking"
+      },
+      {
+       "title": "Ample Parking",
+       "value": "access-ample-parking"
+      },
+      {
+       "title": "Visitor Parking",
+       "value": "access-visitor-parking"
+      },
+      {
+       "title": "EV Charging Point",
+       "value": "access-ev-charging"
+      },
+      {
+       "title": "Car Wash Bay",
+       "value": "access-car-wash"
+      },
+      {
+       "title": "Passenger Lift",
+       "value": "access-lift"
+      },
+      {
+       "title": "Service Lift",
+       "value": "access-service-lift"
+      },
+      {
+       "title": "Wheelchair Access",
+       "value": "access-wheelchair"
+      },
+      {
+       "title": "Paved Driveway",
+       "value": "access-paved-driveway"
+      },
+      {
+       "title": "Tarmac Access Road",
+       "value": "access-tarmac-road"
+      },
+      {
+       "title": "Street Lighting",
+       "value": "access-street-lighting"
+      },
+      {
+       "title": "Swimming Pool",
+       "value": "leisure-pool"
+      },
+      {
+       "title": "Heated Pool",
+       "value": "leisure-heated-pool"
+      },
+      {
+       "title": "Rooftop / Infinity Pool",
+       "value": "leisure-rooftop-pool"
+      },
+      {
+       "title": "Kids' Pool",
+       "value": "leisure-kids-pool"
+      },
+      {
+       "title": "Gym",
+       "value": "leisure-gym"
+      },
+      {
+       "title": "Yoga / Aerobics Studio",
+       "value": "leisure-yoga"
+      },
+      {
+       "title": "Sauna Room",
+       "value": "leisure-sauna"
+      },
+      {
+       "title": "Steam Room",
+       "value": "leisure-steam"
+      },
+      {
+       "title": "Jacuzzi",
+       "value": "leisure-jacuzzi"
+      },
+      {
+       "title": "Spa",
+       "value": "leisure-spa"
+      },
+      {
+       "title": "Cinema Room",
+       "value": "leisure-cinema"
+      },
+      {
+       "title": "Games Room",
+       "value": "leisure-games-room"
+      },
+      {
+       "title": "Tennis Court",
+       "value": "leisure-tennis"
+      },
+      {
+       "title": "Padel Court",
+       "value": "leisure-padel"
+      },
+      {
+       "title": "Squash Court",
+       "value": "leisure-squash"
+      },
+      {
+       "title": "Basketball Court",
+       "value": "leisure-basketball"
+      },
+      {
+       "title": "Football Pitch",
+       "value": "leisure-football"
+      },
+      {
+       "title": "Jogging / Cycling Track",
+       "value": "leisure-jogging-track"
+      },
+      {
+       "title": "Golf Course Access",
+       "value": "leisure-golf"
+      },
+      {
+       "title": "Sky Lounge / Bar",
+       "value": "leisure-lounge"
+      },
+      {
+       "title": "Kids Play Area",
+       "value": "community-play-area"
+      },
+      {
+       "title": "Daycare / Creche",
+       "value": "community-daycare"
+      },
+      {
+       "title": "School Within Estate",
+       "value": "community-school"
+      },
+      {
+       "title": "Clubhouse",
+       "value": "community-clubhouse"
+      },
+      {
+       "title": "Restaurant",
+       "value": "community-restaurant"
+      },
+      {
+       "title": "Café",
+       "value": "community-cafe"
+      },
+      {
+       "title": "Mini Mart",
+       "value": "community-store"
+      },
+      {
+       "title": "Shopping Centre On Site",
+       "value": "community-mall"
+      },
+      {
+       "title": "Pharmacy / Clinic On Site",
+       "value": "community-clinic"
+      },
+      {
+       "title": "Co-working / Business Centre",
+       "value": "community-business-centre"
+      },
+      {
+       "title": "Event & Function Room",
+       "value": "community-event-room"
+      },
+      {
+       "title": "Communal Gardens",
+       "value": "community-gardens"
+      },
+      {
+       "title": "Barbecue Area",
+       "value": "community-bbq"
+      },
+      {
+       "title": "Rooftop Terrace",
+       "value": "community-rooftop"
+      },
+      {
+       "title": "Prayer Room",
+       "value": "community-prayer-room"
+      },
+      {
+       "title": "Pet Friendly",
+       "value": "community-pet-friendly"
+      },
+      {
+       "title": "All Bedrooms En-Suite",
+       "value": "interior-all-ensuite"
+      },
+      {
+       "title": "Master En-Suite",
+       "value": "interior-master-ensuite"
+      },
+      {
+       "title": "Walk-In Closet",
+       "value": "interior-walk-in-closet"
+      },
+      {
+       "title": "Built-In Wardrobes",
+       "value": "interior-wardrobes"
+      },
+      {
+       "title": "Open-Plan Living",
+       "value": "interior-open-plan"
+      },
+      {
+       "title": "Fitted Kitchen",
+       "value": "interior-fitted-kitchen"
+      },
+      {
+       "title": "Kitchen Island",
+       "value": "interior-kitchen-island"
+      },
+      {
+       "title": "Pantry",
+       "value": "interior-pantry"
+      },
+      {
+       "title": "Stone Worktops",
+       "value": "interior-stone-worktops"
+      },
+      {
+       "title": "Built-In Appliances",
+       "value": "interior-appliances"
+      },
+      {
+       "title": "Laundry Room",
+       "value": "interior-laundry"
+      },
+      {
+       "title": "Study / Home Office",
+       "value": "interior-study"
+      },
+      {
+       "title": "Family Room / TV Lounge",
+       "value": "interior-family-room"
+      },
+      {
+       "title": "Balcony",
+       "value": "interior-balcony"
+      },
+      {
+       "title": "Air Conditioning",
+       "value": "interior-air-conditioning"
+      },
+      {
+       "title": "Underfloor Heating",
+       "value": "interior-underfloor-heating"
+      },
+      {
+       "title": "Fireplace",
+       "value": "interior-fireplace"
+      },
+      {
+       "title": "High Ceilings",
+       "value": "interior-high-ceilings"
+      },
+      {
+       "title": "Floor-to-Ceiling Windows",
+       "value": "interior-large-windows"
+      },
+      {
+       "title": "Hardwood Floors",
+       "value": "interior-hardwood-floors"
+      },
+      {
+       "title": "Smart Home System",
+       "value": "interior-smart-home"
+      },
+      {
+       "title": "Instant Shower / Water Heater",
+       "value": "interior-water-heater"
+      },
+      {
+       "title": "Fully Furnished",
+       "value": "interior-furnished"
+      },
+      {
+       "title": "Serviced Apartment",
+       "value": "interior-serviced"
+      },
+      {
+       "title": "Private Garden",
+       "value": "outdoor-private-garden"
+      },
+      {
+       "title": "Landscaped Grounds",
+       "value": "outdoor-landscaped"
+      },
+      {
+       "title": "Private Pool",
+       "value": "outdoor-private-pool"
+      },
+      {
+       "title": "Outdoor Kitchen",
+       "value": "outdoor-kitchen"
+      },
+      {
+       "title": "Patio / Terrace",
+       "value": "outdoor-patio"
+      },
+      {
+       "title": "Gazebo",
+       "value": "outdoor-gazebo"
+      },
+      {
+       "title": "DSQ / Staff Quarters",
+       "value": "outdoor-dsq"
+      },
+      {
+       "title": "Guest House / Cottage",
+       "value": "outdoor-guest-house"
+      },
+      {
+       "title": "Kitchen Garden / Greenhouse",
+       "value": "outdoor-kitchen-garden"
+      },
+      {
+       "title": "Pump House",
+       "value": "outdoor-pump-house"
+      },
+      {
+       "title": "Guard House",
+       "value": "outdoor-guard-house"
+      },
+      {
+       "title": "Detached Garage",
+       "value": "outdoor-garage"
+      },
+      {
+       "title": "Store Room",
+       "value": "outdoor-store-room"
+      },
+      {
+       "title": "City View",
+       "value": "view-city"
+      },
+      {
+       "title": "Ocean / Lake View",
+       "value": "view-water"
+      },
+      {
+       "title": "Mountain / Valley View",
+       "value": "view-mountain"
+      },
+      {
+       "title": "Forest / Golf View",
+       "value": "view-green"
+      },
+      {
+       "title": "Beach Access",
+       "value": "outdoor-beach-access"
+      },
+      {
+       "title": "Concierge",
+       "value": "service-concierge"
+      },
+      {
+       "title": "Property Management",
+       "value": "service-management"
+      },
+      {
+       "title": "Housekeeping",
+       "value": "service-housekeeping"
+      },
+      {
+       "title": "On-Site Maintenance",
+       "value": "service-maintenance"
+      },
+      {
+       "title": "Garbage Collection",
+       "value": "service-garbage"
+      },
+      {
+       "title": "Water Bowser Standby",
+       "value": "service-water-bowser"
+      },
+      {
+       "title": "Shuttle Service",
+       "value": "service-shuttle"
+      },
+      {
+       "title": "Short-Let / Airbnb Allowed",
+       "value": "service-short-let"
+      },
+      {
+       "title": "Title Deed Ready",
+       "value": "service-title-deed"
+      },
+      {
+       "title": "Mortgage Approved",
+       "value": "service-mortgage"
+      }
+     ],
+     "of": [
+      {
+       "name": "string",
+       "title": "string",
+       "type": "string"
+      }
+     ]
+    },
+    {
+     "name": "otherAmenities",
+     "title": "Other Amenities",
+     "type": "array",
+     "description": "Anything not in the list above, written as it should appear. Press Enter after each.",
+     "layout": "tags",
+     "of": [
+      {
+       "name": "string",
+       "title": "string",
+       "type": "string"
+      }
+     ]
+    },
+    {
+     "name": "size",
+     "title": "Property Size",
+     "type": "string",
+     "description": "e.g., 2,500 sq. ft. or 0.5 Acres"
+    },
+    {
+     "name": "sizeSqm",
+     "title": "Size in Square Metres",
+     "type": "number",
+     "description": "Numeric only. The site converts this to square feet for international buyers, so enter 148 rather than \"148 sqm\"."
+    },
+    {
+     "name": "bedrooms",
+     "title": "Bedrooms",
+     "type": "number"
+    },
+    {
+     "name": "bathrooms",
+     "title": "Bathrooms",
+     "type": "number"
+    },
+    {
+     "name": "yearBuilt",
+     "title": "Year Built / Handover",
+     "type": "string",
+     "description": "e.g., 2025 or Under Construction"
+    },
+    {
+     "name": "virtualTourUrl",
+     "title": "Virtual Tour Link",
+     "type": "url",
+     "description": "Matterport, YouTube 360 or any hosted walkthrough"
+    },
+    {
+     "name": "ownerVetted",
+     "title": "Owner Vetted",
+     "type": "boolean",
+     "description": "Sell listings only. Confirms Kaara has verified ownership and title documents for this resale unit.",
+     "showFor": [
+      "sell"
+     ],
+     "initialValue": false
+    },
+    {
+     "name": "floorNumber",
+     "title": "Floor Number",
+     "type": "string",
+     "description": "Stay listings only. e.g., 14th floor",
+     "showFor": [
+      "stay"
+     ]
+    },
+    {
+     "name": "facingDirection",
+     "title": "Facing Direction",
+     "type": "string",
+     "description": "Stay listings only. The aspect the unit looks out on.",
+     "showFor": [
+      "stay"
+     ],
+     "list": [
+      {
+       "title": "North",
+       "value": "north"
+      },
+      {
+       "title": "North East",
+       "value": "north-east"
+      },
+      {
+       "title": "East",
+       "value": "east"
+      },
+      {
+       "title": "South East",
+       "value": "south-east"
+      },
+      {
+       "title": "South",
+       "value": "south"
+      },
+      {
+       "title": "South West",
+       "value": "south-west"
+      },
+      {
+       "title": "West",
+       "value": "west"
+      },
+      {
+       "title": "North West",
+       "value": "north-west"
+      }
+     ]
+    },
+    {
+     "name": "dailyRate",
+     "title": "Daily Rate",
+     "type": "object",
+     "description": "Stay listings only. The nightly rate for this unit.",
+     "showFor": [
+      "stay"
+     ],
+     "fields": [
+      {
+       "name": "amount",
+       "title": "Amount",
+       "type": "number"
+      },
+      {
+       "name": "currency",
+       "title": "Currency",
+       "type": "string",
+       "initialValue": "KES",
+       "list": [
+        {
+         "title": "KES (Kenyan Shilling)",
+         "value": "KES"
+        },
+        {
+         "title": "USD (US Dollar)",
+         "value": "USD"
+        },
+        {
+         "title": "GBP (British Pound)",
+         "value": "GBP"
+        },
+        {
+         "title": "EUR (Euro)",
+         "value": "EUR"
+        },
+        {
+         "title": "AED (UAE Dirham)",
+         "value": "AED"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "propertyViews": {
+   "name": "propertyViews",
+   "title": "Listing Views",
+   "fields": [
+    {
+     "name": "property",
+     "title": "Listing",
+     "type": "reference",
+     "to": [
+      "property"
+     ]
+    },
+    {
+     "name": "count",
+     "title": "Views",
+     "type": "number"
+    }
+   ]
+  },
+  "event": {
+   "name": "event",
+   "title": "Events",
+   "fields": [
+    {
+     "name": "title",
+     "title": "Event Title",
+     "type": "string",
+     "description": "The name of the event (e.g., Spotlight on Vertical Cities)",
+     "required": true
+    },
+    {
+     "name": "description",
+     "title": "Event Description",
+     "type": "text",
+     "description": "A short overview of what the event is about",
+     "rows": 3
+    },
+    {
+     "name": "location",
+     "title": "Event Location",
+     "type": "string",
+     "description": "Where the event is taking place (e.g., Upper Hill)"
+    },
+    {
+     "name": "date",
+     "title": "Event Date",
+     "type": "string",
+     "description": "When the event will happen (e.g., June 15th)"
+    },
+    {
+     "name": "image",
+     "title": "Event Image",
+     "type": "image",
+     "description": "Featured image for the event spotlight"
+    },
+    {
+     "name": "media",
+     "title": "Event Media",
+     "type": "array",
+     "description": "Additional media for the event (images or video URLs)",
+     "of": [
+      {
+       "name": "image",
+       "title": "image",
+       "type": "image",
+       "fields": [
+        {
+         "name": "alt",
+         "title": "Alternative Text",
+         "type": "string"
+        }
+       ]
+      },
+      {
+       "name": "externalVideo",
+       "title": "External Video",
+       "type": "object",
+       "fields": [
+        {
+         "name": "url",
+         "title": "Video URL (YouTube, Vimeo, etc.)",
+         "type": "url"
+        },
+        {
+         "name": "caption",
+         "title": "Caption",
+         "type": "string"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "county": {
+   "name": "county",
+   "title": "County",
+   "fields": [
+    {
+     "name": "name",
+     "title": "County Name",
+     "type": "string",
+     "required": true
+    }
+   ]
+  },
+  "district": {
+   "name": "district",
+   "title": "District",
+   "fields": [
+    {
+     "name": "name",
+     "title": "District Name",
+     "type": "string",
+     "required": true
+    },
+    {
+     "name": "county",
+     "title": "County",
+     "type": "reference",
+     "required": true,
+     "to": [
+      "county"
+     ]
+    },
+    {
+     "name": "slug",
+     "title": "Slug",
+     "type": "slug",
+     "required": true,
+     "source": "name",
+     "maxLength": 96
+    },
+    {
+     "name": "description",
+     "title": "Neighborhood Description",
+     "type": "portableText",
+     "styles": [
+      {
+       "title": "Normal",
+       "value": "normal"
+      }
+     ]
+    },
+    {
+     "name": "mainImage",
+     "title": "Main Neighborhood Image",
+     "type": "image"
+    },
+    {
+     "name": "photos",
+     "title": "Neighborhood Photos",
+     "type": "array",
+     "of": [
+      {
+       "name": "image",
+       "title": "image",
+       "type": "image"
+      }
+     ]
+    },
+    {
+     "name": "amenities",
+     "title": "Amenities",
+     "type": "array",
+     "description": "List names of amenities (e.g. Parks, Gyms)",
+     "of": [
+      {
+       "name": "string",
+       "title": "string",
+       "type": "string"
+      }
+     ]
+    },
+    {
+     "name": "schools",
+     "title": "Schools",
+     "type": "array",
+     "description": "List names of schools in the area",
+     "of": [
+      {
+       "name": "string",
+       "title": "string",
+       "type": "string"
+      }
+     ]
+    },
+    {
+     "name": "malls",
+     "title": "Malls & Shopping",
+     "type": "array",
+     "description": "List names of malls or shopping centers",
+     "of": [
+      {
+       "name": "string",
+       "title": "string",
+       "type": "string"
+      }
+     ]
+    },
+    {
+     "name": "boundary",
+     "title": "Neighborhood Boundary (Polygon)",
+     "type": "array",
+     "description": "Coordinates for the bounding area on the map",
+     "of": [
+      {
+       "name": "object",
+       "title": "object",
+       "type": "object",
+       "fields": [
+        {
+         "name": "lat",
+         "title": "Latitude",
+         "type": "number"
+        },
+        {
+         "name": "lng",
+         "title": "Longitude",
+         "type": "number"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "developer": {
+   "name": "developer",
+   "title": "Developer Partner",
+   "fields": [
+    {
+     "name": "name",
+     "title": "Developer Name",
+     "type": "string",
+     "required": true
+    },
+    {
+     "name": "logo",
+     "title": "Logo",
+     "type": "image",
+     "description": "Upload an SVG or a PNG with a transparent background, at least 400px wide. Leave empty and the website shows the initials instead.",
+     "fields": [
+      {
+       "name": "externalUrl",
+       "title": "OR paste a logo URL",
+       "type": "url",
+       "description": "Use this instead of uploading a file."
+      }
+     ]
+    },
+    {
+     "name": "logoStyle",
+     "title": "How The Logo Is Shown",
+     "type": "string",
+     "description": "The partner wall sits on a dark background. \"White\" turns every logo into a clean white mark so dark logos stay visible and the wall looks consistent. Choose \"Original colours\" for a logo that is already light, or \"On a white tile\" to keep a dark, full-colour logo exactly as supplied. A logo with a solid background (for example a JPG) should use \"On a white tile\".",
+     "initialValue": "white",
+     "list": [
+      {
+       "title": "White (recommended)",
+       "value": "white"
+      },
+      {
+       "title": "Original colours",
+       "value": "original"
+      },
+      {
+       "title": "On a white tile",
+       "value": "tile"
+      }
+     ],
+     "layout": "radio"
+    },
+    {
+     "name": "website",
+     "title": "Website",
+     "type": "url",
+     "description": "Optional. The logo links here."
+    },
+    {
+     "name": "summary",
+     "title": "Why We Partner With Them",
+     "type": "text",
+     "description": "Optional. One or two sentences for internal reference and future use.",
+     "rows": 3
+    },
+    {
+     "name": "projectsDelivered",
+     "title": "Projects Delivered",
+     "type": "number",
+     "description": "Leave empty rather than guessing. Only enter figures you can stand behind."
+    },
+    {
+     "name": "slug",
+     "title": "Slug",
+     "type": "slug",
+     "description": "Generated from the name. Not required.",
+     "source": "name",
+     "maxLength": 96
+    },
+    {
+     "name": "order",
+     "title": "Display Order",
+     "type": "number",
+     "description": "Used only when World of Kaara has no partners picked. Lower numbers show first.",
+     "initialValue": 0
+    }
+   ]
+  },
+  "testimonial": {
+   "name": "testimonial",
+   "title": "Testimonial",
+   "fields": [
+    {
+     "name": "quote",
+     "title": "Quote",
+     "type": "text",
+     "description": "Keep it to three lines or fewer. A landing page quote is a snippet, not the full review.",
+     "required": true,
+     "max": 240,
+     "rows": 4
+    },
+    {
+     "name": "name",
+     "title": "Client Name",
+     "type": "string",
+     "required": true
+    },
+    {
+     "name": "role",
+     "title": "Role or Context",
+     "type": "string",
+     "description": "e.g., Bought a two bedroom at Riara One, or Diaspora investor, London",
+     "required": true
+    },
+    {
+     "name": "portrait",
+     "title": "Portrait",
+     "type": "image"
+    },
+    {
+     "name": "order",
+     "title": "Display Order",
+     "type": "number",
+     "initialValue": 0
+    }
+   ]
+  },
+  "aboutPage": {
+   "name": "aboutPage",
+   "title": "World of Kaara",
+   "fields": [
+    {
+     "name": "eyebrow",
+     "title": "Small Label Above The Headline",
+     "type": "string",
+     "initialValue": "World of Kaara"
+    },
+    {
+     "name": "headline",
+     "title": "Headline",
+     "type": "string",
+     "description": "Two lines maximum on desktop"
+    },
+    {
+     "name": "standfirst",
+     "title": "Standfirst",
+     "type": "text",
+     "description": "The opening paragraph under the headline. Keep it under 30 words.",
+     "rows": 3
+    },
+    {
+     "name": "heroImage",
+     "title": "Hero Photograph",
+     "type": "image",
+     "description": "Full-width image at the top of the page, with the headline over it. Use a landscape photo at least 2400px wide. Use \"Edit\" on the image to set the crop and focal point; the website follows both.",
+     "fields": [
+      {
+       "name": "externalUrl",
+       "title": "OR paste an image URL",
+       "type": "url",
+       "description": "Use this instead of uploading."
+      },
+      {
+       "name": "alt",
+       "title": "Alternative text",
+       "type": "string",
+       "description": "Describes the image for screen readers and for search."
+      }
+     ]
+    },
+    {
+     "name": "storyHeading",
+     "title": "Heading",
+     "type": "string",
+     "initialValue": "Why we exist"
+    },
+    {
+     "name": "body",
+     "title": "The Story",
+     "type": "portableText",
+     "description": "The full narrative. Each paragraph is a block.",
+     "styles": [
+      {
+       "title": "Normal",
+       "value": "normal"
+      }
+     ]
+    },
+    {
+     "name": "storyImage",
+     "title": "Story Banner Photograph",
+     "type": "image",
+     "description": "Optional. Shown as a wide banner above \"Why we exist\". Use a landscape photo at least 2400px wide; the centre of the image is kept when it is cropped.",
+     "fields": [
+      {
+       "name": "externalUrl",
+       "title": "OR paste an image URL",
+       "type": "url",
+       "description": "Use this instead of uploading."
+      },
+      {
+       "name": "alt",
+       "title": "Alternative text",
+       "type": "string",
+       "description": "Describes the image for screen readers and for search."
+      }
+     ]
+    },
+    {
+     "name": "missionEyebrow",
+     "title": "Small Label",
+     "type": "string",
+     "initialValue": "Our mission"
+    },
+    {
+     "name": "mission",
+     "title": "Mission Statement",
+     "type": "string",
+     "description": "The single line that sits at the heart of everything"
+    },
+    {
+     "name": "missionImage",
+     "title": "Background Photograph",
+     "type": "image",
+     "description": "Optional. Sits behind the mission statement, dimmed.",
+     "fields": [
+      {
+       "name": "externalUrl",
+       "title": "OR paste an image URL",
+       "type": "url",
+       "description": "Use this instead of uploading."
+      },
+      {
+       "name": "alt",
+       "title": "Alternative text",
+       "type": "string",
+       "description": "Describes the image for screen readers and for search."
+      }
+     ]
+    },
+    {
+     "name": "commitmentsHeading",
+     "title": "Heading",
+     "type": "string",
+     "initialValue": "What we are working toward"
+    },
+    {
+     "name": "commitments",
+     "title": "Commitments",
+     "type": "array",
+     "description": "The specific, measurable things Kaara is working toward",
+     "of": [
+      {
+       "name": "commitment",
+       "title": "commitment",
+       "type": "object",
+       "fields": [
+        {
+         "name": "label",
+         "title": "Label",
+         "type": "string"
+        },
+        {
+         "name": "value",
+         "title": "Value",
+         "type": "string",
+         "description": "e.g., 2,000 units or 2029"
+        },
+        {
+         "name": "detail",
+         "title": "Detail",
+         "type": "text",
+         "rows": 2
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "galleryHeading",
+     "title": "Heading",
+     "type": "string",
+     "initialValue": "Inside the work"
+    },
+    {
+     "name": "galleryIntro",
+     "title": "Intro Paragraph",
+     "type": "text",
+     "rows": 2
+    },
+    {
+     "name": "gallery",
+     "title": "Photographs",
+     "type": "array",
+     "description": "Add as many as you like. They lay out in a grid. Leave this empty and the section does not appear.",
+     "layout": "grid",
+     "of": [
+      {
+       "name": "galleryImage",
+       "title": "galleryImage",
+       "type": "image",
+       "fields": [
+        {
+         "name": "externalUrl",
+         "title": "OR paste an image URL",
+         "type": "url",
+         "description": "Use this instead of uploading."
+        },
+        {
+         "name": "alt",
+         "title": "Alternative text",
+         "type": "string",
+         "description": "Describes the image for screen readers and for search."
+        },
+        {
+         "name": "caption",
+         "title": "Caption",
+         "type": "string"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "testimonialsHeading",
+     "title": "Testimonials Heading",
+     "type": "string",
+     "description": "The quotes themselves come from the Testimonials list.",
+     "initialValue": "From the people we have worked with"
+    },
+    {
+     "name": "partnersHeading",
+     "title": "Heading",
+     "type": "string",
+     "initialValue": "Developers we represent"
+    },
+    {
+     "name": "partnersIntro",
+     "title": "Short Introduction",
+     "type": "text",
+     "description": "Optional. One sentence under the heading.",
+     "rows": 2
+    },
+    {
+     "name": "partners",
+     "title": "Developers Shown",
+     "type": "array",
+     "description": "Add, remove and drag to reorder. To add a developer that is not listed yet, press \"Add item\", then \"Create new\", and fill in the name and logo. Leave this empty to show every developer partner.",
+     "of": [
+      {
+       "name": "reference",
+       "title": "reference",
+       "type": "reference",
+       "to": [
+        "developer"
+       ]
+      }
+     ]
+    },
+    {
+     "name": "ctaHeading",
+     "title": "Heading",
+     "type": "string",
+     "initialValue": "Start with a conversation, not a listing"
+    },
+    {
+     "name": "ctaBody",
+     "title": "Paragraph",
+     "type": "text",
+     "initialValue": "Book a virtual tour of a specific building, or an investment consultation if you are still working out where your money should go.",
+     "rows": 3
+    },
+    {
+     "name": "ctaLinkLabel",
+     "title": "Link Label",
+     "type": "string",
+     "initialValue": "Read our market insights"
+    },
+    {
+     "name": "ctaLinkHref",
+     "title": "Link Destination",
+     "type": "string",
+     "description": "A path on this site, e.g. /market-insights",
+     "initialValue": "/market-insights"
+    }
+   ]
+  },
+  "buyPage": {
+   "name": "buyPage",
+   "title": "Buy Page",
+   "fields": [
+    {
+     "name": "eyebrow",
+     "title": "Small Label",
+     "type": "string",
+     "description": "The short word above the headline.",
+     "initialValue": "Buy"
+    },
+    {
+     "name": "headline",
+     "title": "Headline",
+     "type": "string",
+     "initialValue": "Buy where the developer has already delivered."
+    },
+    {
+     "name": "intro",
+     "title": "Intro Paragraph",
+     "type": "text",
+     "initialValue": "Every listing here comes from a partner with a completed track record, published payment terms and support after handover.",
+     "rows": 3
+    },
+    {
+     "name": "heroImage",
+     "title": "Hero Photograph",
+     "type": "image",
+     "description": "Upload a photo, or paste a link in External Image URL. If you leave this empty the page uses the first listing photo.",
+     "fields": [
+      {
+       "name": "externalUrl",
+       "title": "External Image URL",
+       "type": "url"
+      }
+     ]
+    },
+    {
+     "name": "listingsHeading",
+     "title": "Heading Above The Units",
+     "type": "string",
+     "initialValue": "Active listings"
+    },
+    {
+     "name": "listingsEmptyTitle",
+     "title": "Message When Nothing Is Listed - Heading",
+     "type": "string",
+     "initialValue": "Nothing is live in this collection right now"
+    },
+    {
+     "name": "listingsEmptyBody",
+     "title": "Message When Nothing Is Listed - Body",
+     "type": "text",
+     "initialValue": "New releases are usually allocated before they reach the site. Tell us what you are looking for and we will send the next one that fits.",
+     "rows": 3
+    }
+   ]
+  },
+  "sellPage": {
+   "name": "sellPage",
+   "title": "Sell Page",
+   "fields": [
+    {
+     "name": "eyebrow",
+     "title": "Small Label",
+     "type": "string",
+     "description": "The short word above the headline.",
+     "initialValue": "Sell"
+    },
+    {
+     "name": "headline",
+     "title": "Headline",
+     "type": "string",
+     "initialValue": "Resale units, vetted before they are listed."
+    },
+    {
+     "name": "intro",
+     "title": "Intro Paragraph",
+     "type": "text",
+     "initialValue": "Ownership and title are confirmed first. Only then does a unit reach this page.",
+     "rows": 3
+    },
+    {
+     "name": "heroImage",
+     "title": "Hero Photograph",
+     "type": "image",
+     "description": "Upload a photo, or paste a link in External Image URL. If you leave this empty the page uses the first listing photo.",
+     "fields": [
+      {
+       "name": "externalUrl",
+       "title": "External Image URL",
+       "type": "url"
+      }
+     ]
+    },
+    {
+     "name": "listingsHeading",
+     "title": "Heading Above The Units",
+     "type": "string",
+     "initialValue": "Available resales"
+    },
+    {
+     "name": "listingsEmptyTitle",
+     "title": "Message When Nothing Is Listed - Heading",
+     "type": "string",
+     "initialValue": "No resale units are listed at the moment"
+    },
+    {
+     "name": "listingsEmptyBody",
+     "title": "Message When Nothing Is Listed - Body",
+     "type": "text",
+     "initialValue": "Resales move quickly and we only publish units that have cleared vetting. Tell us the building or district you want and we will contact you when one becomes available.",
+     "rows": 3
+    }
+   ]
+  },
+  "stayPage": {
+   "name": "stayPage",
+   "title": "Stay Page",
+   "fields": [
+    {
+     "name": "eyebrow",
+     "title": "Small Label",
+     "type": "string",
+     "description": "The short word above the headline.",
+     "initialValue": "Stay"
+    },
+    {
+     "name": "headline",
+     "title": "Headline",
+     "type": "string",
+     "initialValue": "Short stays in buildings we know well."
+    },
+    {
+     "name": "intro",
+     "title": "Intro Paragraph",
+     "type": "text",
+     "initialValue": "Floor, aspect and nightly rate are stated for every unit. What you see is what you check into.",
+     "rows": 3
+    },
+    {
+     "name": "heroImage",
+     "title": "Hero Photograph",
+     "type": "image",
+     "description": "Upload a photo, or paste a link in External Image URL. If you leave this empty the page uses the first listing photo.",
+     "fields": [
+      {
+       "name": "externalUrl",
+       "title": "External Image URL",
+       "type": "url"
+      }
+     ]
+    },
+    {
+     "name": "listingsHeading",
+     "title": "Heading Above The Units",
+     "type": "string",
+     "initialValue": "Available units"
+    },
+    {
+     "name": "listingsEmptyTitle",
+     "title": "Message When Nothing Is Listed - Heading",
+     "type": "string",
+     "initialValue": "No short stay units are listed yet"
+    },
+    {
+     "name": "listingsEmptyBody",
+     "title": "Message When Nothing Is Listed - Body",
+     "type": "text",
+     "initialValue": "Our short stay portfolio is being onboarded building by building. Send us your dates and we will tell you what we can hold for you.",
+     "rows": 3
+    }
+   ]
+  },
+  "socialSettings": {
+   "name": "socialSettings",
+   "title": "Social Media",
+   "fields": [
+    {
+     "name": "instagram",
+     "title": "Instagram URL",
+     "type": "url"
+    },
+    {
+     "name": "facebook",
+     "title": "Facebook URL",
+     "type": "url"
+    },
+    {
+     "name": "linkedin",
+     "title": "LinkedIn URL",
+     "type": "url"
+    },
+    {
+     "name": "twitter",
+     "title": "Twitter/X URL",
+     "type": "url"
+    },
+    {
+     "name": "whatsapp",
+     "title": "WhatsApp Number",
+     "type": "string",
+     "description": "Format: 254700000000"
+    }
+   ]
+  },
+  "contactSettings": {
+   "name": "contactSettings",
+   "title": "Contact Details",
+   "fields": [
+    {
+     "name": "enquiryRecipients",
+     "title": "Enquiry Emails Go To",
+     "type": "array",
+     "description": "Every website enquiry (buy, viewing, short stay, virtual tour) and newsletter sign-up is emailed here through Mailtrap. Add more than one address to copy colleagues in. If this is left empty, emails go to info@kaararealtygroup.com.",
+     "initialValue": [
+      "info@kaararealtygroup.com"
+     ],
+     "of": [
+      {
+       "name": "string",
+       "title": "string",
+       "type": "string"
+      }
+     ]
+    },
+    {
+     "name": "email",
+     "title": "Contact Email",
+     "type": "string",
+     "description": "The public address shown on the website. Enquiry forms use the list above."
+    },
+    {
+     "name": "phone",
+     "title": "Phone Number",
+     "type": "string"
+    },
+    {
+     "name": "address",
+     "title": "Office Address",
+     "type": "text",
+     "rows": 3
+    },
+    {
+     "name": "whatsapp",
+     "title": "WhatsApp Number",
+     "type": "string",
+     "description": "International format without spaces or a plus sign, e.g., 254712345678"
+    },
+    {
+     "name": "callingHours",
+     "title": "Calling Hours",
+     "type": "string",
+     "description": "Shown next to the preferred calling time field on enquiry forms"
+    },
+    {
+     "name": "mapUrl",
+     "title": "Google Maps Embed URL",
+     "type": "url"
+    },
+    {
+     "name": "registrationName",
+     "title": "Registered Company Name",
+     "type": "string"
+    },
+    {
+     "name": "registrationNumber",
+     "title": "Company Registration Number",
+     "type": "string",
+     "description": "Displayed in the footer alongside the verification QR code"
+    },
+    {
+     "name": "registrationQr",
+     "title": "Registration QR Code",
+     "type": "image",
+     "description": "QR image linking to the company registration record. Shown in the footer as a trust builder."
+    },
+    {
+     "name": "registrationUrl",
+     "title": "Registration Verification Link",
+     "type": "url",
+     "description": "Where the QR code points. Used as the link target under the code."
+    }
+   ]
+  },
+  "brandSettings": {
+   "name": "brandSettings",
+   "title": "Brand Assets",
+   "fields": [
+    {
+     "name": "logoPrimary",
+     "title": "Primary Logo",
+     "type": "image",
+     "description": "Standard logo used in the navbar"
+    },
+    {
+     "name": "logoWhite",
+     "title": "White Logo",
+     "type": "image",
+     "description": "Used on dark backgrounds"
+    },
+    {
+     "name": "favicon",
+     "title": "Favicon",
+     "type": "image",
+     "description": "The browser tab icon"
+    }
+   ]
+  },
+  "generalSettings": {
+   "name": "generalSettings",
+   "title": "General Settings",
+   "fields": [
+    {
+     "name": "siteName",
+     "title": "Site Name",
+     "type": "string"
+    },
+    {
+     "name": "description",
+     "title": "Site Description",
+     "type": "text",
+     "description": "Used for SEO and meta tags",
+     "rows": 4
+    },
+    {
+     "name": "footerText",
+     "title": "Footer Copyright Text",
+     "type": "string"
+    },
+    {
+     "name": "defaultCurrency",
+     "title": "Default Currency",
+     "type": "string",
+     "description": "The initial currency shown to users",
+     "initialValue": "KES",
+     "list": [
+      {
+       "title": "KES - Kenyan Shilling",
+       "value": "KES"
+      },
+      {
+       "title": "USD - US Dollar",
+       "value": "USD"
+      },
+      {
+       "title": "GBP - British Pound",
+       "value": "GBP"
+      },
+      {
+       "title": "EUR - Euro",
+       "value": "EUR"
+      },
+      {
+       "title": "AED - UAE Dirham",
+       "value": "AED"
+      }
+     ]
+    },
+    {
+     "name": "defaultLanguage",
+     "title": "Default Language",
+     "type": "string",
+     "initialValue": "en",
+     "list": [
+      {
+       "title": "English",
+       "value": "en"
+      },
+      {
+       "title": "Arabic",
+       "value": "ar"
+      },
+      {
+       "title": "Chinese",
+       "value": "zh"
+      }
+     ]
+    }
+   ]
+  },
+  "heroSection": {
+   "name": "heroSection",
+   "title": "Hero Section (Section 1)",
+   "fields": [
+    {
+     "name": "title",
+     "title": "Main Title",
+     "type": "string",
+     "initialValue": "WHERE DO YOU WANT TO GO?"
+    },
+    {
+     "name": "subtitle",
+     "title": "Subtitle",
+     "type": "string",
+     "initialValue": "Leaders in Luxury Vertical Living • Nairobi"
+    },
+    {
+     "name": "type",
+     "title": "Video Type",
+     "type": "string",
+     "initialValue": "file",
+     "list": [
+      {
+       "title": "File Upload (recommended)",
+       "value": "file"
+      },
+      {
+       "title": "External URL",
+       "value": "url"
+      }
+     ],
+     "layout": "radio"
+    },
+    {
+     "name": "videoUrl",
+     "title": "External Video URL",
+     "type": "url",
+     "description": "A direct link to an .mp4 or .webm file (for example a Cloudinary video URL). Cloudinary links are served at best quality automatically. Page links from Google Drive, YouTube or Vimeo are not video files and play at reduced quality or not at all.",
+     "showFor": []
+    },
+    {
+     "name": "videoFile",
+     "title": "Video File",
+     "type": "file",
+     "description": "Upload the original export, not a copy sent through WhatsApp, email or a phone share sheet (those are recompressed). Best results: MP4 (H.264), 1920×1080 or 2560×1440, 8 to 15 Mbps, 10 to 30 seconds, no audio needed. iPhone .mov files are often HEVC and will not play in Chrome or on Android; export them as MP4 first.",
+     "showFor": []
+    }
+   ]
+  },
+  "secondarySection": {
+   "name": "secondarySection",
+   "title": "Secondary Video (Section 2)",
+   "fields": [
+    {
+     "name": "title",
+     "title": "Title",
+     "type": "string",
+     "initialValue": "UNRIVALED EXCLUSIVITY"
+    },
+    {
+     "name": "subtitle",
+     "title": "Subtitle",
+     "type": "string"
+    },
+    {
+     "name": "type",
+     "title": "Video Type",
+     "type": "string",
+     "initialValue": "url",
+     "list": [
+      {
+       "title": "File Upload (recommended)",
+       "value": "file"
+      },
+      {
+       "title": "External URL",
+       "value": "url"
+      }
+     ],
+     "layout": "radio"
+    },
+    {
+     "name": "videoUrl",
+     "title": "External Video URL",
+     "type": "url",
+     "description": "A direct link to an .mp4 or .webm file (for example a Cloudinary video URL). Cloudinary links are served at best quality automatically. Page links from Google Drive, YouTube or Vimeo are not video files and play at reduced quality or not at all.",
+     "showFor": []
+    },
+    {
+     "name": "videoFile",
+     "title": "Video File",
+     "type": "file",
+     "description": "Upload the original export, not a copy sent through WhatsApp, email or a phone share sheet (those are recompressed). Best results: MP4 (H.264), 1920×1080 or 2560×1440, 8 to 15 Mbps, 10 to 30 seconds, no audio needed. iPhone .mov files are often HEVC and will not play in Chrome or on Android; export them as MP4 first.",
+     "showFor": []
+    }
+   ]
+  },
+  "propertiesSection": {
+   "name": "propertiesSection",
+   "title": "Featured Properties Section",
+   "fields": [
+    {
+     "name": "title",
+     "title": "Main Title",
+     "type": "string",
+     "initialValue": "The Next Move Is Yours"
+    },
+    {
+     "name": "subtitle",
+     "title": "Subtitle",
+     "type": "string",
+     "initialValue": "Local Experts, Global Reach"
+    },
+    {
+     "name": "filters",
+     "title": "Filter Chips",
+     "type": "array",
+     "description": "The row of categories under the heading. Give each chip a label and tell it what to match. Drag to reorder; the first chip is selected when the page loads. Leave empty to hide the row.",
+     "initialValue": [
+      {
+       "_type": "filter",
+       "label": "City Skylines",
+       "mode": "types",
+       "propertyTypes": [
+        "penthouse",
+        "apartment"
+       ]
+      },
+      {
+       "_type": "filter",
+       "label": "Warehouses",
+       "mode": "types",
+       "propertyTypes": [
+        "warehouse"
+       ]
+      },
+      {
+       "_type": "filter",
+       "label": "Villas",
+       "mode": "types",
+       "propertyTypes": [
+        "villa"
+       ]
+      },
+      {
+       "_type": "filter",
+       "label": "Just Listed",
+       "mode": "all"
+      },
+      {
+       "_type": "filter",
+       "label": "Under Ksh 20 Million",
+       "mode": "maxPrice",
+       "maxPrice": 20000000
+      }
+     ],
+     "of": [
+      {
+       "name": "filter",
+       "title": "filter",
+       "type": "object",
+       "fields": [
+        {
+         "name": "label",
+         "title": "Label",
+         "type": "string",
+         "description": "What the visitor reads, e.g. \"Warehouses\"",
+         "required": true
+        },
+        {
+         "name": "mode",
+         "title": "What it matches",
+         "type": "string",
+         "required": true,
+         "initialValue": "types",
+         "list": [
+          {
+           "title": "Property types",
+           "value": "types"
+          },
+          {
+           "title": "Everything (show all)",
+           "value": "all"
+          },
+          {
+           "title": "Under a price ceiling",
+           "value": "maxPrice"
+          }
+         ],
+         "layout": "radio"
+        },
+        {
+         "name": "propertyTypes",
+         "title": "Property Types",
+         "type": "array",
+         "description": "A listing matches if it carries any one of these types.",
+         "showFor": [],
+         "list": [
+          {
+           "title": "Penthouse",
+           "value": "penthouse"
+          },
+          {
+           "title": "Apartment",
+           "value": "apartment"
+          },
+          {
+           "title": "Villa",
+           "value": "villa"
+          },
+          {
+           "title": "Townhouse",
+           "value": "townhouse"
+          },
+          {
+           "title": "Warehouse",
+           "value": "warehouse"
+          },
+          {
+           "title": "Commercial",
+           "value": "commercial"
+          },
+          {
+           "title": "Land",
+           "value": "land"
+          },
+          {
+           "title": "Ranch",
+           "value": "ranch"
+          },
+          {
+           "title": "Farm",
+           "value": "farm"
+          }
+         ],
+         "of": [
+          {
+           "name": "string",
+           "title": "string",
+           "type": "string"
+          }
+         ]
+        },
+        {
+         "name": "maxPrice",
+         "title": "Price Ceiling",
+         "type": "number",
+         "description": "Numbers only, in Kenyan shillings. 20000000 shows everything under Ksh 20 million.",
+         "showFor": []
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "name": "featuredProperties",
+     "title": "Properties to Showcase",
+     "type": "array",
+     "description": "Select properties from your inventory. No need to re-upload photos; they are pulled from the property record. Whatever you pick here is exactly what the home page shows.",
+     "max": 8,
+     "of": [
+      {
+       "name": "reference",
+       "title": "reference",
+       "type": "reference",
+       "to": [
+        "property"
+       ]
+      }
+     ]
+    },
+    {
+     "name": "ctaLabel",
+     "title": "Button Label",
+     "type": "string",
+     "initialValue": "View All Listings"
+    }
+   ]
+  },
+  "experienceSection": {
+   "name": "experienceSection",
+   "title": "Experience Section (Section 3)",
+   "fields": [
+    {
+     "name": "title",
+     "title": "Title",
+     "type": "string",
+     "initialValue": "LIVE THE EXTRAORDINARY"
+    },
+    {
+     "name": "subtitle",
+     "title": "Subtitle",
+     "type": "string"
+    },
+    {
+     "name": "type",
+     "title": "Video Type",
+     "type": "string",
+     "initialValue": "url",
+     "list": [
+      {
+       "title": "File Upload (recommended)",
+       "value": "file"
+      },
+      {
+       "title": "External URL",
+       "value": "url"
+      }
+     ],
+     "layout": "radio"
+    },
+    {
+     "name": "videoUrl",
+     "title": "External Video URL",
+     "type": "url",
+     "description": "A direct link to an .mp4 or .webm file (for example a Cloudinary video URL). Cloudinary links are served at best quality automatically. Page links from Google Drive, YouTube or Vimeo are not video files and play at reduced quality or not at all.",
+     "showFor": []
+    },
+    {
+     "name": "videoFile",
+     "title": "Video File",
+     "type": "file",
+     "description": "Upload the original export, not a copy sent through WhatsApp, email or a phone share sheet (those are recompressed). Best results: MP4 (H.264), 1920×1080 or 2560×1440, 8 to 15 Mbps, 10 to 30 seconds, no audio needed. iPhone .mov files are often HEVC and will not play in Chrome or on Android; export them as MP4 first.",
+     "showFor": []
+    }
+   ]
+  },
+  "closingSection": {
+   "name": "closingSection",
+   "title": "Closing Video (Section 4)",
+   "fields": [
+    {
+     "name": "title",
+     "title": "Title",
+     "type": "string",
+     "initialValue": "88 NAIROBI CONDOMINIUM"
+    },
+    {
+     "name": "subtitle",
+     "title": "Subtitle",
+     "type": "string",
+     "initialValue": "The Apex of Upper Hill • Handover May 2026"
+    },
+    {
+     "name": "type",
+     "title": "Video Type",
+     "type": "string",
+     "initialValue": "url",
+     "list": [
+      {
+       "title": "File Upload (recommended)",
+       "value": "file"
+      },
+      {
+       "title": "External URL",
+       "value": "url"
+      }
+     ],
+     "layout": "radio"
+    },
+    {
+     "name": "videoUrl",
+     "title": "External Video URL",
+     "type": "url",
+     "description": "A direct link to an .mp4 or .webm file (for example a Cloudinary video URL). Cloudinary links are served at best quality automatically. Page links from Google Drive, YouTube or Vimeo are not video files and play at reduced quality or not at all.",
+     "showFor": []
+    },
+    {
+     "name": "videoFile",
+     "title": "Video File",
+     "type": "file",
+     "description": "Upload the original export, not a copy sent through WhatsApp, email or a phone share sheet (those are recompressed). Best results: MP4 (H.264), 1920×1080 or 2560×1440, 8 to 15 Mbps, 10 to 30 seconds, no audio needed. iPhone .mov files are often HEVC and will not play in Chrome or on Android; export them as MP4 first.",
+     "showFor": []
+    }
+   ]
+  }
+ }
+}

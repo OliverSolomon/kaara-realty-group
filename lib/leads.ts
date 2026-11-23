@@ -2,6 +2,7 @@ import "server-only";
 import { createHmac } from "node:crypto";
 import { getPool } from "@/lib/db";
 import type { Attribution } from "@/lib/leadTypes";
+import { listingInfo } from "@/lib/listing";
 
 export const BOT_PATTERN = /bot|crawl|spider|slurp|preview|headless|lighthouse|monitor|curl|wget/i;
 // Some published listing addresses contain spaces.
@@ -94,6 +95,8 @@ export async function recordLead(input: LeadInput): Promise<{ id: string; ref: s
   const email = input.email?.trim().toLowerCase() || null;
   const consent = Boolean(input.marketingConsent);
   const a = input.attribution ?? {};
+  const listing = await listingInfo(input.listingSlug);
+  const listingType = listing?.listingType ?? null;
   const client = await pool.connect().catch((error) => {
     console.error("Could not connect to save a lead:", error);
     return null;
@@ -123,6 +126,7 @@ export async function recordLead(input: LeadInput): Promise<{ id: string; ref: s
            latest_message = COALESCE($7, latest_message),
            listing_title = COALESCE($8, listing_title),
            listing_slug = COALESCE($9, listing_slug),
+           listing_type = COALESCE($11, listing_type),
            marketing_consent = marketing_consent OR $10,
            consent_at = CASE WHEN $10 AND NOT marketing_consent THEN now() ELSE consent_at END,
            status = CASE WHEN status = 'lost' THEN 'new' ELSE status END,
@@ -140,6 +144,7 @@ export async function recordLead(input: LeadInput): Promise<{ id: string; ref: s
           input.listingTitle ?? null,
           input.listingSlug ?? null,
           consent,
+          listingType,
         ]
       );
       lead = updated.rows[0];
@@ -148,10 +153,11 @@ export async function recordLead(input: LeadInput): Promise<{ id: string; ref: s
         `INSERT INTO leads (
            name, phone, phone_digits, email, latest_kind, latest_message,
            listing_title, listing_slug, landing_path, referrer,
-           utm_source, utm_medium, utm_campaign, marketing_consent, consent_at
-         ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14, CASE WHEN $14 THEN now() END)
+           utm_source, utm_medium, utm_campaign, marketing_consent, consent_at, listing_type
+         ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14, CASE WHEN $14 THEN now() END, $15)
          ON CONFLICT (phone_digits) WHERE phone_digits IS NOT NULL
-         DO UPDATE SET last_activity_at = now(), latest_kind = EXCLUDED.latest_kind
+         DO UPDATE SET last_activity_at = now(), latest_kind = EXCLUDED.latest_kind,
+           listing_type = COALESCE(EXCLUDED.listing_type, leads.listing_type)
          RETURNING id, ref`,
         [
           input.name ?? null,
@@ -168,6 +174,7 @@ export async function recordLead(input: LeadInput): Promise<{ id: string; ref: s
           a.utmMedium ?? null,
           a.utmCampaign ?? null,
           consent,
+          listingType,
         ]
       );
       lead = inserted.rows[0];
@@ -176,8 +183,8 @@ export async function recordLead(input: LeadInput): Promise<{ id: string; ref: s
     await client.query(
       `INSERT INTO lead_events (
          lead_id, type, path, listing_title, listing_slug,
-         referrer, utm_source, utm_medium, utm_campaign, meta
-       ) VALUES ($1, 'form_submitted', $2, $3, $4, $5, $6, $7, $8, $9)`,
+         referrer, utm_source, utm_medium, utm_campaign, meta, listing_type
+       ) VALUES ($1, 'form_submitted', $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
       [
         lead.id,
         input.path ?? null,
@@ -188,6 +195,7 @@ export async function recordLead(input: LeadInput): Promise<{ id: string; ref: s
         a.utmMedium ?? null,
         a.utmCampaign ?? null,
         JSON.stringify({ kind: input.kind, message: input.message ?? null, ...input.details }),
+        listingType,
       ]
     );
     await client.query("COMMIT");
@@ -212,23 +220,25 @@ export async function recordWhatsAppClick(input: {
   const pool = getPool();
   if (!pool) return;
   const a = input.attribution;
+  const listing = await listingInfo(input.listingSlug);
   await pool.query(
     `INSERT INTO lead_events (
        type, ref, path, placement, listing_title, listing_slug,
-       referrer, utm_source, utm_medium, utm_campaign, meta
-     ) VALUES ('whatsapp_click', $1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+       referrer, utm_source, utm_medium, utm_campaign, meta, listing_type
+     ) VALUES ('whatsapp_click', $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
      ON CONFLICT (ref) WHERE type = 'whatsapp_click' AND ref IS NOT NULL DO NOTHING`,
     [
       input.ref,
       input.path,
       input.placement,
-      input.listingTitle,
+      input.listingTitle ?? listing?.title ?? null,
       input.listingSlug,
       a.referrer ?? null,
       a.utmSource ?? null,
       a.utmMedium ?? null,
       a.utmCampaign ?? null,
       JSON.stringify({ landingPath: a.landingPath ?? null }),
+      listing?.listingType ?? null,
     ]
   );
 }

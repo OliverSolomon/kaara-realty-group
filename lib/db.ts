@@ -13,7 +13,8 @@ export function getPool(): Pool | null {
       connectionString,
       max: 5,
       idleTimeoutMillis: 5_000,
-      connectionTimeoutMillis: 6_000,
+      // Long enough for a sleeping Neon database to wake up.
+      connectionTimeoutMillis: 12_000,
     });
     pool.on("error", (error) => console.error("Database pool error:", error));
     attachDatabasePool(pool);
