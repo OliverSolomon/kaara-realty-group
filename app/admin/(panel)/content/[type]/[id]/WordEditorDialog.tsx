@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any -- Portable Text values follow the CMS schema at runtime. */
 
 import { useMemo, useRef, useState } from "react";
+import { confirmDialog } from "@/components/admin/Dialogs";
 import { WordcraftEditor, type WordcraftEditorRef } from "@gamine/wordcraft-react";
 import { PiCheck, PiX } from "react-icons/pi";
 import { htmlToPortable, portableToHtml } from "@/lib/cms/portable";
@@ -40,7 +41,7 @@ export default function WordEditorDialog({ title, value, file, onApply, onClose 
       const next = await htmlToPortable(html, value, storePastedImage);
       const kept = new Set(next.filter((block) => block._type !== "block").map((block) => block._key));
       const removed = value.filter((block) => block._type !== "block" && !kept.has(block._key)).length;
-      if (removed && !file && !window.confirm(`${removed} rich block${removed === 1 ? " was" : "s were"} removed, such as an image or callout. Save without ${removed === 1 ? "it" : "them"}?`)) return;
+      if (removed && !file && !(await confirmDialog({ title: `${removed} rich block${removed === 1 ? "" : "s"} removed`, body: `An image, callout or similar block was removed. Save without ${removed === 1 ? "it" : "them"}?`, confirmLabel: "Save anyway", danger: true }))) return;
       onApply(next);
       ref.current?.markSaved();
       if (close) onClose();
@@ -51,18 +52,18 @@ export default function WordEditorDialog({ title, value, file, onApply, onClose 
     }
   }
 
-  function cancel() {
-    if (ref.current?.isDirty() && !window.confirm("Discard your changes in this document?")) return;
+  async function cancel() {
+    if (ref.current?.isDirty() && !(await confirmDialog({ title: "Discard your changes?", body: "Your edits in this document will be lost.", confirmLabel: "Discard", cancelLabel: "Keep editing", danger: true }))) return;
     onClose();
   }
 
   return (
-    <div className="fixed inset-0 z-[80] flex flex-col bg-white" role="dialog" aria-modal="true" aria-label={`Edit ${title}`}>
+    <div className="fixed inset-0 z-[80] flex flex-col bg-[#100b28]" style={{ "--wc-bg": "#171232", "--wc-fg": "#efebe3", "--wc-dim": "rgba(239,235,227,.62)", "--wc-line": "rgba(239,235,227,.14)", "--wc-soft": "#1d1740", "--wc-accent": "#4f9d8f", "--wc-accent-soft": "#1f3f45", "--wc-accent-fg": "#f4faf8" } as React.CSSProperties} role="dialog" aria-modal="true" aria-label={`Edit ${title}`}>
       <header className="flex h-12 shrink-0 items-center justify-between gap-2 bg-[#100b28] px-3 text-[#efebe3]">
         <h2 className="truncate font-serif text-base">{title}</h2>
         <div className="flex shrink-0 items-center gap-2">
           {error && <p role="alert" className="hidden max-w-sm truncate text-xs text-[#f0a08a] md:block">{error}</p>}
-          <button type="button" onClick={cancel} className="press inline-flex min-h-9 items-center gap-1.5 border border-white/25 px-3 text-[10px] font-bold uppercase tracking-[0.14em]">
+          <button type="button" onClick={() => void cancel()} className="press inline-flex min-h-9 items-center gap-1.5 border border-white/25 px-3 text-[10px] font-bold uppercase tracking-[0.14em]">
             <PiX size={13} aria-hidden="true" />
             Cancel
           </button>
@@ -83,8 +84,8 @@ export default function WordEditorDialog({ title, value, file, onApply, onClose 
           checks
           onSave={async () => { await apply(false); }}
           onError={(failure) => setError(failure.message)}
-          loading={<p className="p-8 text-center text-sm text-gray-500">Starting the editor. The first time takes a moment.</p>}
-          fallback={(failure: Error) => <p className="p-6 text-sm text-red-700">The editor could not start: {failure.message}</p>}
+          loading={<p className="p-8 text-center text-sm text-white/60">Starting the editor. The first time takes a moment.</p>}
+          fallback={(failure: Error) => <p className="p-6 text-sm text-[#f0a08a]">The editor could not start: {failure.message}</p>}
         />
       </div>
     </div>

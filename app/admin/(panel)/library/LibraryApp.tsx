@@ -1,5 +1,7 @@
 "use client";
 
+import { confirmDialog } from "@/components/admin/Dialogs";
+
 import { useMemo, useState } from "react";
 import {
   PiArrowLeft,
@@ -158,7 +160,7 @@ export default function LibraryApp({ initial, properties, designs }: { initial: 
   }
 
   async function remove(asset: LibraryAsset) {
-    if (!window.confirm(`Permanently delete ${asset.name ?? "this file"}?`)) return;
+    if (!(await confirmDialog({ title: "Delete this file?", body: `${asset.name ?? "This file"} will be permanently deleted.`, confirmLabel: "Delete", danger: true }))) return;
     setError("");
     const response = await fetch("/api/admin/library", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ op: "delete", id: asset.id }) });
     const body = await response.json().catch(() => ({}));

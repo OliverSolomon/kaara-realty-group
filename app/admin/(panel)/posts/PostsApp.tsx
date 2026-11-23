@@ -1,5 +1,7 @@
 "use client";
 
+import { confirmDialog } from "@/components/admin/Dialogs";
+
 import { useMemo, useState } from "react";
 import { PiCaretLeft, PiCaretRight, PiCheck, PiImage, PiPlus, PiPlugs, PiWarningCircle, PiX } from "react-icons/pi";
 import {
@@ -262,7 +264,7 @@ function Composer({ initial, connections, onClose, onSaved, onDeleted }: {
   }
 
   async function publish() {
-    if (!window.confirm(`Publish now to ${draft.channels.map((channel) => CHANNEL_INFO[channel].label).join(", ")}?`)) return;
+    if (!(await confirmDialog({ title: "Publish now?", body: `This posts to ${draft.channels.map((channel) => CHANNEL_INFO[channel].label).join(", ")}.`, confirmLabel: "Publish" }))) return;
     setBusy(true);
     setError("");
     setNotice("");
@@ -412,7 +414,7 @@ function Composer({ initial, connections, onClose, onSaved, onDeleted }: {
 
         <footer className="flex flex-wrap items-center gap-2 border-t border-white/10 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
           {draft.id && !locked && (
-            <button type="button" disabled={busy} onClick={async () => { if (!window.confirm("Delete this post?")) return; const r = await deletePost(draft.id!); if (r.ok) onDeleted(draft.id!); else setError(r.error); }} className={`${BUTTON} border-[#f0a08a]/40 text-[#f0a08a]`}>Delete</button>
+            <button type="button" disabled={busy} onClick={async () => { if (!(await confirmDialog({ title: "Delete this post?", body: "This cannot be undone.", confirmLabel: "Delete", danger: true }))) return; const r = await deletePost(draft.id!); if (r.ok) onDeleted(draft.id!); else setError(r.error); }} className={`${BUTTON} border-[#f0a08a]/40 text-[#f0a08a]`}>Delete</button>
           )}
           <div className="ml-auto flex flex-wrap justify-end gap-2">
             {!locked && <button type="button" disabled={busy} onClick={() => save(false)} className={SECONDARY}>Save draft</button>}
@@ -460,7 +462,7 @@ function ChannelsPanel({ connections, onClose }: { connections: Connection[]; on
                   <p className="truncate text-xs text-white/45">{connection ? connection.account_name || connection.account_id : "Not connected"}</p>
                 </div>
                 <div className="flex shrink-0 gap-2">
-                  {connection && <button type="button" onClick={async () => { if (window.confirm(`Disconnect ${CHANNEL_INFO[channel].label}?`)) { await disconnectChannel(channel); window.location.reload(); } }} className="min-h-10 px-2 text-xs text-[#f0a08a]">Remove</button>}
+                  {connection && <button type="button" onClick={async () => { if (await confirmDialog({ title: `Disconnect ${CHANNEL_INFO[channel].label}?`, body: "You can connect it again later.", confirmLabel: "Disconnect", danger: true })) { await disconnectChannel(channel); window.location.reload(); } }} className="min-h-10 px-2 text-xs text-[#f0a08a]">Remove</button>}
                   <button type="button" onClick={() => setEditing(channel)} className="min-h-10 border border-white/20 px-3 text-xs">{connection ? "Replace" : "Connect"}</button>
                 </div>
               </li>

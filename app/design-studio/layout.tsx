@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { DialogHost } from "@/components/admin/Dialogs";
 import { Montserrat } from "next/font/google";
 import { requireAdmin } from "@/lib/auth/admin";
 import "./studio.css";
@@ -16,7 +17,7 @@ export default async function DesignStudioLayout({ children }: { children: React
   await requireAdmin();
   return (
     <html lang="en" className="dark">
-      <body className={`${montserrat.variable} font-sans antialiased`}>{children}</body>
+      <body className={`${montserrat.variable} font-sans antialiased`}>{children}<DialogHost /></body>
     </html>
   );
 }

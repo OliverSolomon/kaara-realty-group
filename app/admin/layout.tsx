@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { DialogHost } from "@/components/admin/Dialogs";
 import { Playfair_Display, Montserrat } from "next/font/google";
 import "../(site)/globals.css";
 
@@ -20,6 +21,7 @@ export default function AdminRootLayout({ children }: { children: React.ReactNod
     <html lang="en">
       <body className={`${playfair.variable} ${montserrat.variable} min-h-dvh bg-[#100b28] font-sans text-[#efebe3] antialiased`}>
         {children}
+        <DialogHost />
       </body>
     </html>
   );

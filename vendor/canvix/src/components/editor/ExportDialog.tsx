@@ -360,7 +360,7 @@ export function ExportDialog({ open, onOpenChange }: { open: boolean; onOpenChan
       <DialogContent className="max-h-[calc(100vh-4rem)] overflow-y-auto rounded-[28px] sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <FileImage size={18} className="text-[#7D2AE8]" /> Download your design
+            <FileImage size={18} className="text-[#2E7D6F]" /> Download your design
           </DialogTitle>
           <DialogDescription>No watermarks. Files are generated locally in your browser.</DialogDescription>
         </DialogHeader>
@@ -381,7 +381,7 @@ export function ExportDialog({ open, onOpenChange }: { open: boolean; onOpenChan
                     )}
                   >
                     <div className="font-bold text-sm flex items-center gap-1.5">
-                      <Ico size={13} className="text-[#7D2AE8]" /> {f.label}
+                      <Ico size={13} className="text-[#2E7D6F]" /> {f.label}
                     </div>
                     <div className="text-[11px] text-muted-foreground mt-0.5">{f.hint}</div>
                   </button>

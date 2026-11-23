@@ -15,6 +15,7 @@ import {
 import { getActiveListItem, getActiveStyle, isActiveAnnotation, isActiveDecorator } from "@portabletext/editor/selectors";
 import { useEffect, useRef, useState } from "react";
 import { PiImage, PiLink, PiListBullets, PiListNumbers, PiTextB, PiTextItalic, PiTextStrikethrough, PiTextUnderline } from "react-icons/pi";
+import { linkProblem, promptDialog } from "@/components/admin/Dialogs";
 import { uploadAsset } from "@/lib/cms/upload";
 
 const STYLES = [
@@ -116,15 +117,15 @@ function Toolbar({ touch }: { touch: () => void }) {
   const file = useRef<HTMLInputElement>(null);
   const [status, setStatus] = useState("");
 
-  function toggleLink() {
+  async function toggleLink() {
     touch();
     if (linked) {
       editor.send({ type: "annotation.remove", annotation: { name: "link" } });
     } else {
-      const href = window.prompt("Link address")?.trim();
-      if (!href) return;
-      if (!/^(https?:|mailto:|tel:)/i.test(href)) return setStatus("Links must start with https://, mailto: or tel:");
+      const href = await promptDialog({ title: "Add a link", label: "Link address", placeholder: "https://", inputType: "url", confirmLabel: "Add link", validate: linkProblem });
+      if (!href) return editor.send({ type: "focus" });
       setStatus("");
+      touch();
       editor.send({ type: "annotation.add", annotation: { name: "link", value: { linkType: "external", href } } });
     }
     editor.send({ type: "focus" });
@@ -132,7 +133,7 @@ function Toolbar({ touch }: { touch: () => void }) {
 
   async function addImage(picked?: File) {
     if (!picked) return;
-    const alt = window.prompt("Describe this image for people who cannot see it")?.trim();
+    const alt = await promptDialog({ title: "Describe this image", body: "This helps people who cannot see it, and helps search engines.", label: "Image description", confirmLabel: "Add image" });
     if (!alt) return setStatus("Image not added. It needs a description.");
     setStatus("Uploading image…");
     try {
@@ -162,7 +163,7 @@ function Toolbar({ touch }: { touch: () => void }) {
         ))}
         <button type="button" aria-label="Bulleted list" title="Bulleted list" aria-pressed={list === "bullet"} onMouseDown={(event) => event.preventDefault()} onClick={() => { touch(); editor.send({ type: "list item.toggle", listItem: "bullet" }); editor.send({ type: "focus" }); }} className={toolButton(list === "bullet")}><PiListBullets size={16} /></button>
         <button type="button" aria-label="Numbered list" title="Numbered list" aria-pressed={list === "number"} onMouseDown={(event) => event.preventDefault()} onClick={() => { touch(); editor.send({ type: "list item.toggle", listItem: "number" }); editor.send({ type: "focus" }); }} className={toolButton(list === "number")}><PiListNumbers size={16} /></button>
-        <button type="button" aria-label={linked ? "Remove link" : "Add link"} title={linked ? "Remove link" : "Add link"} aria-pressed={linked} onMouseDown={(event) => event.preventDefault()} onClick={toggleLink} className={toolButton(linked)}><PiLink size={16} /></button>
+        <button type="button" aria-label={linked ? "Remove link" : "Add link"} title={linked ? "Remove link" : "Add link"} aria-pressed={linked} onMouseDown={(event) => event.preventDefault()} onClick={() => void toggleLink()} className={toolButton(linked)}><PiLink size={16} /></button>
         <button type="button" aria-label="Add image" title="Add image" onClick={() => file.current?.click()} className={toolButton(false)}><PiImage size={16} /></button>
         <input ref={file} type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="sr-only" tabIndex={-1} onChange={(event) => { const picked = event.target.files?.[0]; event.target.value = ""; void addImage(picked); }} />
       </div>

@@ -1,5 +1,7 @@
 "use client";
 
+import { confirmDialog, linkProblem, promptDialog } from "@/components/admin/Dialogs";
+
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   PiArchive,
@@ -636,7 +638,7 @@ function Composer({ initial, fromEmail, snippets, onClose, onSend }: {
           <button type="button" aria-label="Italic" onMouseDown={(event) => { event.preventDefault(); format("italic"); }} className={ICON_BUTTON}><PiTextItalic size={16} /></button>
           <button type="button" aria-label="Underline" onMouseDown={(event) => { event.preventDefault(); format("underline"); }} className={ICON_BUTTON}><PiTextUnderline size={16} /></button>
           <button type="button" aria-label="Bulleted list" onMouseDown={(event) => { event.preventDefault(); format("insertUnorderedList"); }} className={ICON_BUTTON}><PiListBullets size={16} /></button>
-          <button type="button" aria-label="Add link" onMouseDown={(event) => { event.preventDefault(); const url = window.prompt("Link address"); if (url && /^(https?:|mailto:|tel:)/i.test(url)) format("createLink", url); }} className={ICON_BUTTON}><PiLinkSimple size={16} /></button>
+          <button type="button" aria-label="Add link" onMouseDown={(event) => { event.preventDefault(); const selection = window.getSelection(); const range = selection?.rangeCount ? selection.getRangeAt(0).cloneRange() : null; void promptDialog({ title: "Add a link", label: "Link address", placeholder: "https://", inputType: "url", confirmLabel: "Add link", validate: linkProblem }).then((url) => { editor.current?.focus(); if (range) { const now = window.getSelection(); now?.removeAllRanges(); now?.addRange(range); } if (url) format("createLink", url); }); }} className={ICON_BUTTON}><PiLinkSimple size={16} /></button>
           <label aria-label="Attach files" className={`${ICON_BUTTON} cursor-pointer`}>
             <PiPaperclip size={16} />
             <input type="file" multiple className="sr-only" onChange={(event) => { setFiles([...files, ...Array.from(event.target.files ?? [])].slice(0, 10)); event.target.value = ""; }} />
@@ -823,7 +825,7 @@ function SettingsPanel({ settings, snippets, accounts, providers, onSettings, on
           {accounts.map((item) => (
             <li key={item.id} className="flex items-center justify-between gap-2 py-2 text-sm">
               <span className="truncate">{item.email}</span>
-              <button type="button" onClick={async () => { if (!window.confirm(`Disconnect ${item.email}? Its mail stays on the server.`)) return; await api("removeAccount", { accountId: item.id }); onAccounts(accounts.filter((value) => value.id !== item.id)); }} className="min-h-9 px-2 text-xs text-[#f0a08a]">Remove</button>
+              <button type="button" onClick={async () => { if (!(await confirmDialog({ title: "Disconnect this mailbox?", body: `${item.email} will be removed here. Its mail stays on the server.`, confirmLabel: "Disconnect", danger: true }))) return; await api("removeAccount", { accountId: item.id }); onAccounts(accounts.filter((value) => value.id !== item.id)); }} className="min-h-9 px-2 text-xs text-[#f0a08a]">Remove</button>
             </li>
           ))}
         </ul>

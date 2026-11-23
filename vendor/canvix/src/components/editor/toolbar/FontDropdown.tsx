@@ -1,5 +1,6 @@
 // @ts-nocheck -- vendored from Canvix (MIT). See vendor/canvix/README.md.
 'use client'
+import { alertDialog } from '@/components/admin/Dialogs'
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Search, ChevronDown, SlidersHorizontal, Star, Upload, Trash2 } from 'lucide-react'
@@ -93,7 +94,7 @@ export function FontDropdown({ value, onChange }: FontDropdownProps) {
       setOpen(false)
     } catch (err) {
       console.error('font upload failed', err)
-      alert(err instanceof Error ? err.message : 'Font upload failed')
+      void alertDialog({ title: 'Font not uploaded', body: err instanceof Error ? err.message : 'Font upload failed' })
     }
   }
 

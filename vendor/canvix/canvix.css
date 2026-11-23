@@ -125,11 +125,11 @@
 
 :root {
   /* core brand */
-  --cv-teal: #02c0cc;
-  --cv-violet: #7630d7;          /* CTA purple — real rgb(118,48,215) from canva.com */
-  --cv-violet-hover: #8b5cf6;
+  --cv-teal: #4f9d8f;
+  --cv-violet: #2e7d6f;          /* CTA purple — real rgb(118,48,215) from canva.com */
+  --cv-violet-hover: #4f9d8f;
   --cv-violet-press: #6529c0;
-  --cv-magenta: #ff5c8a;
+  --cv-magenta: #d8c07a;
 
   /* dark chrome */
   --cv-app: #1f142e;             /* home app bg — real rgb(31,20,46) */
@@ -140,8 +140,8 @@
   --cv-surface-2: #232530;
   --cv-panel: #16181d;           /* editor side panel */
   --cv-panel-header: #101218;
-  --cv-workspace: #0f1015;       /* editor canvas workspace */
-  --cv-ink: #0f1015;
+  --cv-workspace: #0b0819;       /* editor canvas workspace */
+  --cv-ink: #0b0819;
 
   /* text */
   --cv-text: rgba(255, 255, 255, 0.9);
@@ -150,15 +150,15 @@
   --cv-border: rgba(255, 255, 255, 0.09);
 
   /* v0.3 interaction tokens — measured on canva.com 2026-09-03 */
-  --cv-selection: #7630d7;      /* element selection border — real rgb(118,48,215) */
-  --cv-guide: #9954ff;          /* alignment guide lines — real rgb(153,84,255) */
+  --cv-selection: #2e7d6f;      /* element selection border — real rgb(118,48,215) */
+  --cv-guide: #7fd0c1;          /* alignment guide lines — real rgb(153,84,255) */
   --cv-menu: #121319;           /* context menu / dropdown surface */
   --cv-menu-item: #1a1b22;      /* menu item hover */
-  --cv-slider-fill: #7630d7;    /* popover slider fill */
+  --cv-slider-fill: #2e7d6f;    /* popover slider fill */
 
   /* gradients */
   --cv-grad-bar: linear-gradient(95deg, #0aa8c8 0%, #5b2bd9 26%, #7c3aed 54%, #a855f7 80%, #c86bd9 100%);
-  --cv-grad-brand: linear-gradient(120deg, #02c0cc 0%, #7630d7 55%, #ff5c8a 100%);
+  --cv-grad-brand: linear-gradient(120deg, #4f9d8f 0%, #2e7d6f 55%, #d8c07a 100%);
 }
 
 /* ── v0.3 shared component classes ─────────────────────────── */
@@ -233,7 +233,7 @@
 .cv-pop {
   position: absolute;
   z-index: 60;
-  background: #1e1f26;
+  background: #1d1740;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 14px;
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
@@ -277,7 +277,7 @@
 .cv-tip {
   position: fixed;
   z-index: 90;
-  background: #0f1015;
+  background: #0b0819;
   color: #fff;
   font-size: 12px;
   font-weight: 500;
@@ -331,7 +331,7 @@
   bottom: 24px;
   transform: translateX(-50%);
   z-index: 95;
-  background: #26272f;
+  background: #1d1740;
   color: #fff;
   font-size: 13px;
   font-weight: 500;
@@ -351,7 +351,7 @@
 
 /* focus-visible ring for a11y (subtle canva-style) */
 :where(button, a, input, select, [tabindex]):focus-visible {
-  outline: 2px solid rgba(118, 48, 215, 0.85);
+  outline: 2px solid rgba(46, 125, 111, 0.85);
   outline-offset: 2px;
 }
 
@@ -364,7 +364,7 @@
 }
 
 .bg-brand-gradient-soft {
-  background: linear-gradient(120deg, rgba(2, 192, 204, 0.14), rgba(118, 48, 215, 0.14), rgba(255, 92, 138, 0.14));
+  background: linear-gradient(120deg, rgba(79, 157, 143, 0.14), rgba(46, 125, 111, 0.14), rgba(216, 192, 122, 0.14));
 }
 
 .text-brand-gradient {
@@ -418,7 +418,7 @@
 }
 
 .btn-brand-gradient {
-  background: linear-gradient(120deg, #02c0cc 0%, #7630d7 100%);
+  background: linear-gradient(120deg, #4f9d8f 0%, #2e7d6f 100%);
   color: #fff;
   transition: filter 0.15s ease, transform 0.1s ease;
 }
@@ -566,7 +566,7 @@ input[type="number"] {
   align-items: center;
   gap: 2px;
   padding: 4px 6px;
-  background: var(--cv-surface, #1f2226);
+  background: var(--cv-surface, #171232);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 10px;
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45);
@@ -600,7 +600,7 @@ input[type="number"] {
   align-items: center;
   gap: 4px;
   padding: 6px;
-  background: var(--cv-surface, #1f2226);
+  background: var(--cv-surface, #171232);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 8px;
   z-index: 46;
@@ -620,5 +620,5 @@ input[type="number"] {
 }
 
 .cv-rich-link-pop input:focus {
-  border-color: var(--cv-violet, #9954ff);
+  border-color: var(--cv-violet, #7fd0c1);
 }

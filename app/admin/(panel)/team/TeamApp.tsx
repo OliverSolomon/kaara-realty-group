@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { PiCopy, PiPlus, PiTrash } from "react-icons/pi";
+import { confirmDialog } from "@/components/admin/Dialogs";
 import { addStaff, changeStaffRole, removeStaff, setStaffActive } from "@/app/admin/team-actions";
 import { ROLES, roleLabel, type StaffRole } from "@/lib/auth/roles";
 
@@ -101,7 +102,7 @@ export default function TeamApp({ members, me, pending = [] }: { members: TeamMe
                     type="button"
                     disabled={pending_}
                     aria-label={`Remove ${member.email}`}
-                    onClick={() => { if (window.confirm(`Remove ${member.email} from the team?`)) run(() => removeStaff(member.email)); }}
+                    onClick={async () => { if (await confirmDialog({ title: "Remove from the team?", body: `${member.email} will lose access straight away.`, confirmLabel: "Remove", danger: true })) run(() => removeStaff(member.email)); }}
                     className="flex h-11 w-11 items-center justify-center text-[#f0a08a] disabled:opacity-60"
                   >
                     <PiTrash size={16} />

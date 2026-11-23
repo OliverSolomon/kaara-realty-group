@@ -5,6 +5,8 @@ import { PiMagnifyingGlass, PiPlus, PiTrash } from "react-icons/pi";
 import { createPage } from "@canvix/lib/types";
 import type { EstateListing } from "@/lib/design/estateTemplates";
 import TemplateGallery from "./TemplateGallery";
+import { FormatIcons } from "./TemplateIcons";
+import { alertDialog, confirmDialog } from "@/components/admin/Dialogs";
 
 export interface DesignCard {
   id: string;
@@ -16,15 +18,15 @@ export interface DesignCard {
 }
 
 const SIZES = [
-  { name: "Instagram post", width: 1080, height: 1080 },
-  { name: "Instagram portrait", width: 1080, height: 1350 },
-  { name: "Story or WhatsApp status", width: 1080, height: 1920 },
-  { name: "Facebook post", width: 1200, height: 630 },
-  { name: "LinkedIn post", width: 1200, height: 627 },
-  { name: "X post", width: 1600, height: 900 },
-  { name: "Property flyer (A4)", width: 2480, height: 3508 },
-  { name: "Presentation", width: 1920, height: 1080 },
-];
+  { name: "Instagram post", width: 1080, height: 1080, format: "post" },
+  { name: "Instagram portrait", width: 1080, height: 1350, format: "portrait" },
+  { name: "Story or WhatsApp status", width: 1080, height: 1920, format: "story" },
+  { name: "Facebook post", width: 1200, height: 630, format: "wide" },
+  { name: "LinkedIn post", width: 1200, height: 627, format: "banner" },
+  { name: "Video or X post", width: 1600, height: 900, format: "thumb" },
+  { name: "Property flyer (A4)", width: 2480, height: 3508, format: "flyer" },
+  { name: "Presentation", width: 1920, height: 1080, format: "slide" },
+] as const;
 
 const TABS = [
   { id: "templates", label: "Templates" },
@@ -63,9 +65,9 @@ export default function DesignHome({ initial, listings }: { initial: DesignCard[
   }
 
   async function remove(design: DesignCard) {
-    if (!window.confirm(`Permanently delete “${design.name}”?`)) return;
+    if (!(await confirmDialog({ title: "Delete this design?", body: `“${design.name}” will be permanently deleted.`, confirmLabel: "Delete", danger: true }))) return;
     const response = await fetch(`/api/admin/studio/designs/${design.id}`, { method: "DELETE" });
-    if (!response.ok) return setError("The design could not be deleted.");
+    if (!response.ok) return void alertDialog({ title: "Design not deleted", body: "The design could not be deleted. Try again." });
     setDesigns((items) => items.filter((item) => item.id !== design.id));
   }
 
@@ -105,7 +107,7 @@ export default function DesignHome({ initial, listings }: { initial: DesignCard[
                 <span className="block border border-[#4f9d8f]/70 bg-[#2e7d6f]/20" style={{ width: Math.round(56 * Math.min(1, size.width / size.height)), height: Math.round(56 * Math.min(1, size.height / size.width)) }} />
               </span>
               <span>
-                <span className="block text-sm">{busy === size.name ? "Creating…" : size.name}</span>
+                <span className="flex items-center gap-1.5 text-sm"><span className="text-[#7fd0c1]"><FormatIcons id={size.format} /></span>{busy === size.name ? "Creating…" : size.name}</span>
                 <span className="mt-0.5 block text-[11px] tabular-nums text-white/45">{size.width} × {size.height}</span>
               </span>
             </button>

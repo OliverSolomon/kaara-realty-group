@@ -1,5 +1,6 @@
 // @ts-nocheck -- vendored from Canvix (MIT). See vendor/canvix/README.md.
 'use client'
+import { promptDialog } from '@/components/admin/Dialogs'
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { BookMarked, Wand2, Check, Plus, Palette, ImagePlus, Trash2, Layers, Type, CloudOff, Cloud } from 'lucide-react'
@@ -272,9 +273,9 @@ export function BrandPanel() {
         </select>
         <button
           onClick={() => {
-            const name = prompt('Name the new brand kit', 'New brand kit')
-            if (!name) return
             void (async () => {
+              const name = await promptDialog({ title: 'New brand kit', label: 'Kit name', initial: 'New brand kit', confirmLabel: 'Create' })
+              if (!name) return
               const res = await fetch('/api/admin/studio/brand-kits', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },

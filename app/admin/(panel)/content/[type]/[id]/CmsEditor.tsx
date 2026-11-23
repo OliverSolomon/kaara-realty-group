@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { PiArrowDown, PiArrowLeft, PiArrowUp, PiEye, PiFile, PiImage, PiPencilSimple, PiPlus, PiShareNetwork, PiTrash, PiUsers, PiX } from "react-icons/pi";
+import { confirmDialog, useUnsavedLinkGuard } from "@/components/admin/Dialogs";
 import { uploadAsset } from "@/lib/cms/upload";
 import { fieldVisible, type CmsDocumentType, type CmsField } from "@/lib/cms/types";
 
@@ -196,7 +197,7 @@ function PortableTextInput({ field, value, onChange }: { field: CmsField; value:
         <button type="button" onClick={() => { setFile(null); setEditing(true); }} className="press min-h-11 border border-[#4f9d8f] bg-[#2e7d6f] px-4 text-[10px] font-bold uppercase tracking-[0.14em] text-[#f4faf8]">Open Word editor</button>
         <label className="press inline-flex min-h-11 cursor-pointer items-center border border-white/20 px-4 text-[10px] font-bold uppercase tracking-[0.14em]">
           Upload Word file
-          <input type="file" accept=".docx,.doc,.odt,.rtf,.md,.txt,application/vnd.openxmlformats-officedocument.wordprocessingml.document" className="sr-only" onChange={(event) => { const picked = event.target.files?.[0]; event.target.value = ""; if (!picked) return; if (blocks.length && !window.confirm("Replace the current text with this file?")) return; setFile(picked); setEditing(true); }} />
+          <input type="file" accept=".docx,.doc,.odt,.rtf,.md,.txt,application/vnd.openxmlformats-officedocument.wordprocessingml.document" className="sr-only" onChange={async (event) => { const picked = event.target.files?.[0]; event.target.value = ""; if (!picked) return; if (blocks.length && !(await confirmDialog({ title: "Replace the current text?", body: `The article text will be replaced with ${picked.name}.`, confirmLabel: "Replace", danger: true }))) return; setFile(picked); setEditing(true); }} />
         </label>
       </div>
       {editing && <WordEditorDialog title={field.title} value={blocks} file={file} onApply={(next) => onChange(next.length ? next : undefined)} onClose={() => setEditing(false)} />}
@@ -405,6 +406,7 @@ export default function CmsEditor({ schema, initial, rev, hasPublished, hasDraft
   const [view, setView] = useState<"edit" | "preview">("edit");
   const [sharing, setSharing] = useState(false);
   const hasBody = schema.fields.some((field) => field.type === "portableText");
+  useUnsavedLinkGuard(dirty);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -458,8 +460,10 @@ export default function CmsEditor({ schema, initial, rev, hasPublished, hasDraft
   }
 
   async function remove(op: "discard" | "delete") {
-    const prompt = op === "discard" ? "Discard this draft and go back to the published version?" : `Permanently delete “${String(doc.title ?? doc.name ?? "this item")}”? This cannot be undone.`;
-    if (!window.confirm(prompt)) return;
+    const ok = await confirmDialog(op === "discard"
+      ? { title: "Discard this draft?", body: "Your draft changes will be removed and the published version will stay.", confirmLabel: "Discard draft", danger: true }
+      : { title: "Delete permanently?", body: `“${String(doc.title ?? doc.name ?? "This item")}” will be deleted. This cannot be undone.`, confirmLabel: "Delete", danger: true });
+    if (!ok) return;
     setBusy(op);
     setMessage(null);
     try {
@@ -496,7 +500,7 @@ export default function CmsEditor({ schema, initial, rev, hasPublished, hasDraft
               {view === "edit" && (
                 <label className="flex items-center gap-2 text-xs text-white/60">
                   Editor
-                  <select aria-label="Choose editor" value={bodyEditor} onChange={(event) => { if (!dirty || window.confirm("Switch editor? Your unsaved text is kept.")) chooseEditor(event.target.value as BodyEditor); }} className="min-h-11 border border-white/15 px-2 text-xs">
+                  <select aria-label="Choose editor" value={bodyEditor} onChange={async (event) => { const next = event.target.value as BodyEditor; if (!dirty || await confirmDialog({ title: "Switch editor?", body: "Your unsaved text is kept.", confirmLabel: "Switch" })) chooseEditor(next); }} className="min-h-11 border border-white/15 px-2 text-xs">
                     <option value="sanity">Sanity editor (default)</option>
                     <option value="word">Word editor</option>
                   </select>

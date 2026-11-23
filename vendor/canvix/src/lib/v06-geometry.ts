@@ -111,7 +111,7 @@ export function hostOf(url: string): string {
 export function embedTintFor(kind: EmbedKind): string {
   if (kind === 'youtube') return '#FF0033'
   if (kind === 'map') return '#34A853'
-  return '#7630D7'
+  return '#2E7D6F'
 }
 
 /** embed card layout metrics */

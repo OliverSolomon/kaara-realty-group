@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { PiCheck, PiX } from "react-icons/pi";
+import { CampaignIcon, FormatIcons } from "./TemplateIcons";
 import { DesignPreview } from "@canvix/components/design-preview";
 import { ensureDocumentFonts } from "@canvix/lib/fonts/loader";
 import {
@@ -27,9 +28,9 @@ const GROUPS = [
   { type: "stay", label: "Stays and rentals" },
 ];
 const chip = (on: boolean) =>
-  `min-h-11 shrink-0 border px-4 text-xs transition-colors ${on ? "border-[#4f9d8f] bg-[#2e7d6f]/25 text-white" : "border-white/15 text-white/60 hover:text-white"}`;
+  `inline-flex min-h-11 shrink-0 items-center gap-2 border px-4 text-xs transition-colors ${on ? "border-[#4f9d8f] bg-[#2e7d6f]/25 text-white" : "border-white/15 text-white/60 hover:text-white"}`;
 const small = (on: boolean) =>
-  `min-h-10 border px-2.5 text-xs ${on ? "border-[#4f9d8f] bg-[#2e7d6f]/25 text-white" : "border-white/15 text-white/60 hover:text-white"}`;
+  `inline-flex min-h-10 items-center gap-1.5 border px-2.5 text-xs ${on ? "border-[#4f9d8f] bg-[#2e7d6f]/25 text-white" : "border-white/15 text-white/60 hover:text-white"}`;
 
 interface Card { spec: EstateSpec; listing: EstateListing; photo: number }
 
@@ -169,9 +170,9 @@ export default function TemplateGallery({ listings, query }: { listings: EstateL
   return (
     <section aria-label="Real estate templates">
       <div className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 lg:mx-0 lg:flex-wrap lg:px-0" role="group" aria-label="Campaign">
-        <button type="button" aria-pressed={campaign === "all"} onClick={() => pickCampaign("all")} className={chip(campaign === "all")}>All</button>
+        <button type="button" aria-pressed={campaign === "all"} onClick={() => pickCampaign("all")} className={chip(campaign === "all")}><CampaignIcon id="all" />All</button>
         {CAMPAIGNS.map((item) => (
-          <button key={item.id} type="button" aria-pressed={campaign === item.id} onClick={() => pickCampaign(item.id)} className={chip(campaign === item.id)}>{item.label}</button>
+          <button key={item.id} type="button" aria-pressed={campaign === item.id} onClick={() => pickCampaign(item.id)} className={chip(campaign === item.id)}><CampaignIcon id={item.id} />{item.label}</button>
         ))}
       </div>
 
@@ -181,8 +182,8 @@ export default function TemplateGallery({ listings, query }: { listings: EstateL
           <div className="no-scrollbar -mx-4 mt-1.5 flex gap-1.5 overflow-x-auto px-4 lg:mx-0 lg:flex-wrap lg:px-0" role="group" aria-label="Size">
             <button type="button" aria-pressed={format === "all"} onClick={() => { setFormat("all"); setShown(PAGE); }} className={`${small(format === "all")} shrink-0`}>All sizes</button>
             {FORMATS.map((item) => (
-              <button key={item.id} type="button" aria-pressed={format === item.id} title={`${item.width} × ${item.height}`} onClick={() => { setFormat(item.id); setShown(PAGE); }} className={`${small(format === item.id)} inline-flex shrink-0 items-center gap-2`}>
-                <span aria-hidden="true" className="block border border-current" style={{ width: Math.round(14 * Math.min(1, item.width / item.height)) + 1, height: Math.round(14 * Math.min(1, item.height / item.width)) + 1 }} />
+              <button key={item.id} type="button" aria-pressed={format === item.id} title={`${item.width} × ${item.height}`} onClick={() => { setFormat(item.id); setShown(PAGE); }} className={`${small(format === item.id)} shrink-0`}>
+                <FormatIcons id={item.id} />
                 {item.label}
               </button>
             ))}
@@ -214,8 +215,8 @@ export default function TemplateGallery({ listings, query }: { listings: EstateL
                   <span className="absolute inset-x-2 bottom-2 hidden bg-[#2e7d6f] py-2 text-center text-[10px] font-bold uppercase tracking-[0.14em] text-white group-hover:block">Use template</span>
                 </span>
                 <span className="block p-2.5">
-                  <span className="block truncate text-sm">{estateTemplateName(card.spec)}</span>
-                  <span className="mt-0.5 block truncate text-[11px] text-white/45">{FORMATS.find((item) => item.id === card.spec.format)!.label} · {card.listing.title}</span>
+                  <span className="flex items-center gap-1.5 text-sm"><span className="text-[#7fd0c1]"><CampaignIcon id={card.spec.campaign} size={14} /></span><span className="truncate">{estateTemplateName(card.spec)}</span></span>
+                  <span className="mt-1 flex items-center gap-1.5 text-[11px] text-white/45"><FormatIcons id={card.spec.format} size={13} /><span className="truncate">{FORMATS.find((item) => item.id === card.spec.format)!.label} · {card.listing.title}</span></span>
                 </span>
               </button>
             </li>
@@ -267,7 +268,7 @@ export default function TemplateGallery({ listings, query }: { listings: EstateL
                 <p className="text-xs text-white/55">Size</p>
                 <div className="mt-1 flex flex-wrap gap-1.5">
                   {FORMATS.map((item) => (
-                    <button key={item.id} type="button" aria-pressed={open.spec.format === item.id} onClick={() => changeOpenFormat(item.id)} className={small(open.spec.format === item.id)}>{item.label}</button>
+                    <button key={item.id} type="button" aria-pressed={open.spec.format === item.id} onClick={() => changeOpenFormat(item.id)} className={small(open.spec.format === item.id)}><FormatIcons id={item.id} size={14} />{item.label}</button>
                   ))}
                 </div>
               </div>
