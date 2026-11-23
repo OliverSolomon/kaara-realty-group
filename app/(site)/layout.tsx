@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Playfair_Display, Montserrat } from "next/font/google";
 import { SanityLive } from "@/sanity/lib/live";
 import JsonLd from "@/components/JsonLd";
@@ -19,6 +19,7 @@ import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
 import StylesheetGuard from "@/components/StylesheetGuard";
 import { CurrencyProvider } from "@/context/CurrencyContext";
 import { LanguageProvider } from "@/context/LanguageContext";
+import WhatsAppButton from "@/components/site/WhatsAppButton";
 
 const playfair = Playfair_Display({
   variable: "--font-playfair",
@@ -68,6 +69,11 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  themeColor: "#100b28",
+  viewportFit: "cover",
+};
+
 /* Entity graph for the whole site: the organisation, the local business
    (RealEstateAgent, which is what location queries resolve against) and the
    website itself, all cross-referenced by @id. */
@@ -79,7 +85,8 @@ export default async function RootLayout({
 }>) {
   // Contact and social details feed the entity graph, so the business address
   // and profiles stay editable in Studio rather than hardcoded here.
-  let siteSettings: unknown = undefined;
+  let siteSettings: { contact?: { whatsapp?: string }; socials?: { whatsapp?: string } } | undefined =
+    undefined;
   try {
     const { data } = await sanityFetch({ query: SITE_SETTINGS_QUERY });
     siteSettings = data;
@@ -104,6 +111,10 @@ export default async function RootLayout({
             {children}
           </CurrencyProvider>
         </LanguageProvider>
+        <WhatsAppButton
+          number={siteSettings?.contact?.whatsapp || siteSettings?.socials?.whatsapp}
+          siteUrl={SITE_URL}
+        />
         <SanityLive />
         {(await draftMode()).isEnabled && <VisualEditing />}
       </body>

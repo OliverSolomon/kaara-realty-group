@@ -25,6 +25,23 @@ html,
 body {
   scroll-behavior: smooth;
   background-color: #100b28;
+  overflow-x: clip;
+}
+
+/* iOS zooms the whole page when a focused field is under 16px. */
+@media (max-width: 1023px) {
+  input:not([type="range"]),
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
 
 /* Browser autofill paints inputs pale blue or white. Keep them on the dark theme. */

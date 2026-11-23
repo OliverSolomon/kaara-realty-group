@@ -242,7 +242,7 @@ export default function PropertyDetailClient({ property }: { property: Property 
                 )}
               </p>
 
-              <h1 className="mt-5 max-w-[20ch] font-serif text-4xl leading-[1.1] md:text-5xl">
+              <h1 className="mt-5 max-w-[20ch] break-words font-serif text-[2rem] leading-[1.12] sm:text-4xl md:text-5xl">
                 {property?.title}
               </h1>
 
@@ -265,11 +265,13 @@ export default function PropertyDetailClient({ property }: { property: Property 
             </div>
 
             <aside className="lg:col-span-5">
-              <div className="border border-white/10 p-8">
+              <div className="border border-white/10 p-5 sm:p-8">
                 <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-white/45">
                   {isStay ? "Nightly rate" : "Asking price"}
                 </p>
-                <p className="mt-3 font-serif text-4xl leading-none tabular-nums">{priceLabel}</p>
+                <p className="mt-3 break-words font-serif text-3xl leading-tight tabular-nums sm:text-4xl">
+                  {priceLabel}
+                </p>
 
                 <ContactActions
                   contact={settings?.contact}
@@ -348,7 +350,7 @@ export default function PropertyDetailClient({ property }: { property: Property 
         {/* Map */}
         {coords && (
           <section className="border-t border-white/10">
-            <div className="h-[440px] w-full">
+            <div className="h-[320px] w-full sm:h-[440px]">
               <PropertyMap
                 properties={[
                   {
@@ -377,7 +379,7 @@ export default function PropertyDetailClient({ property }: { property: Property 
             </p>
 
             <div className="mt-12 grid grid-cols-1 gap-px bg-white/10 lg:grid-cols-2">
-              <div className="bg-[#100b28] p-8 lg:p-10">
+              <div className="min-w-0 bg-[#100b28] p-5 sm:p-8 lg:p-10">
                 <h3 className="mb-8 text-[10px] font-bold uppercase tracking-[0.25em] text-white/45">
                   Currency
                 </h3>
@@ -393,7 +395,7 @@ export default function PropertyDetailClient({ property }: { property: Property 
                   }
                 />
               </div>
-              <div className="bg-[#100b28] p-8 lg:p-10">
+              <div className="min-w-0 bg-[#100b28] p-5 sm:p-8 lg:p-10">
                 <h3 className="mb-8 text-[10px] font-bold uppercase tracking-[0.25em] text-white/45">
                   Floor area
                 </h3>
@@ -402,7 +404,7 @@ export default function PropertyDetailClient({ property }: { property: Property 
               {/* A short stay is booked, not financed, so this only shows on
                   listings that are actually for sale. */}
               {!isStay && (
-                <div className="bg-[#100b28] p-8 lg:col-span-2 lg:p-10">
+                <div className="min-w-0 bg-[#100b28] p-5 sm:p-8 lg:col-span-2 lg:p-10">
                   <h3 className="mb-8 text-[10px] font-bold uppercase tracking-[0.25em] text-white/45">
                     Repayments
                   </h3>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { PiMagnifyingGlass, PiX } from "react-icons/pi";
+import { PiCaretDown, PiMagnifyingGlass, PiSlidersHorizontal, PiX } from "react-icons/pi";
 import ListingGrid from "@/components/site/ListingGrid";
 import type { Listing } from "@/components/site/ListingCard";
 import { PROPERTY_TYPE_LABELS, type ListingType } from "@/lib/site";
@@ -50,6 +50,9 @@ export default function PropertiesClient({ listings }: { listings: Listing[] }) 
   const [minBeds, setMinBeds] = useState<number | null>(null);
   const [maxPrice, setMaxPrice] = useState<number | null>(null);
   const [sort, setSort] = useState<SortKey>("newest");
+  // Phones keep the listings near the top: search stays out, the rest folds.
+  const [showFilters, setShowFilters] = useState(false);
+  const foldable = showFilters ? "" : "max-lg:hidden";
 
   const counts = useMemo(
     () => ({
@@ -149,16 +152,16 @@ export default function PropertiesClient({ listings }: { listings: Listing[] }) 
   return (
     <>
       {/* Section tabs */}
-      <div className="flex flex-wrap items-center gap-8">
+      <div className="no-scrollbar -mx-5 flex items-center gap-5 overflow-x-auto px-5 lg:mx-0 lg:flex-wrap lg:gap-8 lg:overflow-visible lg:px-0">
         {SECTIONS.map((item) => (
           <button
             key={item.value}
             type="button"
             onClick={() => setSection(item.value)}
-            className={`press text-[11px] font-bold uppercase tracking-[0.22em] transition-colors duration-200 ${
+            className={`press min-h-11 shrink-0 whitespace-nowrap border-b text-[10px] font-bold uppercase tracking-[0.14em] transition-colors duration-200 sm:text-[11px] sm:tracking-[0.22em] ${
               section === item.value
-                ? "border-b border-[#4f9d8f] pb-1.5 text-[#efebe3]"
-                : "text-white/50 hover:text-[#efebe3]"
+                ? "border-[#4f9d8f] text-[#efebe3]"
+                : "border-transparent text-white/50 hover:text-[#efebe3]"
             }`}
           >
             {t(item.key)}
@@ -168,9 +171,9 @@ export default function PropertiesClient({ listings }: { listings: Listing[] }) 
       </div>
 
       {/* Filter panel */}
-      <div className="mt-10 border border-white/10 bg-[#171232] p-6 lg:p-8">
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-          <div className="lg:col-span-6">
+      <div className="mt-6 border border-white/10 bg-[#171232] p-4 sm:p-6 lg:mt-10 lg:p-8">
+        <div className="grid grid-cols-2 gap-4 lg:grid-cols-12 lg:gap-6">
+          <div className="col-span-2 lg:col-span-6">
             <label
               htmlFor="listing-search"
               className="mb-2 block text-[10px] font-bold uppercase tracking-[0.25em] text-white/45"
@@ -199,7 +202,29 @@ export default function PropertiesClient({ listings }: { listings: Listing[] }) 
             </div>
           </div>
 
-          <div className="lg:col-span-3">
+          <button
+            type="button"
+            onClick={() => setShowFilters((open) => !open)}
+            aria-expanded={showFilters}
+            className="press col-span-2 flex min-h-12 items-center justify-between border border-white/15 px-4 text-[10px] font-bold uppercase tracking-[0.22em] text-[#efebe3] lg:hidden"
+          >
+            <span className="flex items-center gap-2.5">
+              <PiSlidersHorizontal size={16} aria-hidden="true" />
+              Filters
+              {types.length + (minBeds ? 1 : 0) + (maxPrice ? 1 : 0) > 0 && (
+                <span className="tabular-nums text-[#4f9d8f]">
+                  {types.length + (minBeds ? 1 : 0) + (maxPrice ? 1 : 0)}
+                </span>
+              )}
+            </span>
+            <PiCaretDown
+              size={13}
+              aria-hidden="true"
+              className={`transition-transform duration-200 ${showFilters ? "rotate-180" : ""}`}
+            />
+          </button>
+
+          <div className={`min-w-0 lg:col-span-3 ${foldable}`}>
             <label
               htmlFor="listing-beds"
               className="mb-2 block text-[10px] font-bold uppercase tracking-[0.25em] text-white/45"
@@ -223,7 +248,7 @@ export default function PropertiesClient({ listings }: { listings: Listing[] }) 
             </select>
           </div>
 
-          <div className="lg:col-span-3">
+          <div className={`min-w-0 lg:col-span-3 ${foldable}`}>
             <label
               htmlFor="listing-sort"
               className="mb-2 block text-[10px] font-bold uppercase tracking-[0.25em] text-white/45"
@@ -246,7 +271,7 @@ export default function PropertiesClient({ listings }: { listings: Listing[] }) 
         </div>
 
         {availableTypes.length > 0 && (
-          <div className="mt-8">
+          <div className={`mt-6 lg:mt-8 ${foldable}`}>
             <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.25em] text-white/45">
               {t("property_type")}
             </p>
@@ -274,7 +299,7 @@ export default function PropertiesClient({ listings }: { listings: Listing[] }) 
         )}
 
         {priceCeiling > 0 && (
-          <div className="mt-8">
+          <div className={`mt-6 lg:mt-8 ${foldable}`}>
             <div className="mb-3 flex flex-wrap items-baseline justify-between gap-3">
               <label
                 htmlFor="listing-price"
@@ -302,7 +327,7 @@ export default function PropertiesClient({ listings }: { listings: Listing[] }) 
           </div>
         )}
 
-        <div className="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-white/10 pt-6">
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-4 lg:mt-8 lg:gap-4 lg:pt-6">
           <p className="text-sm text-white/50 tabular-nums">
             {filtered.length} {filtered.length === 1 ? t("property") : t("properties")}
             {activeFilters > 0 && ` · ${activeFilters} ${t("filters_on")}`}
@@ -320,7 +345,7 @@ export default function PropertiesClient({ listings }: { listings: Listing[] }) 
       </div>
 
       <ListingGrid
-        className="mt-16"
+        className="mt-10 lg:mt-16"
         listings={filtered}
         emptyTitle={t("nothing_found")}
         emptyBody="Widen the search, or tell us what you are looking for and we will send the next listing that fits, usually before it reaches the site."

@@ -73,7 +73,7 @@ export default function Footer({ settings }: FooterProps) {
   ].filter((s) => Boolean(s.href));
 
   return (
-    <footer className="border-t border-white/10 bg-[#0b0819] px-5 pb-12 pt-20 text-[#efebe3] lg:px-10 lg:pt-28 print:hidden">
+    <footer className="border-t border-white/10 bg-[#0b0819] px-5 pb-28 pt-16 text-[#efebe3] lg:px-10 lg:pb-12 lg:pt-28 print:hidden">
       <div className="mx-auto max-w-[1500px]">
         <div className="grid grid-cols-1 gap-14 border-b border-white/10 pb-16 lg:grid-cols-12 lg:gap-10">
           {/* Wordmark and address */}

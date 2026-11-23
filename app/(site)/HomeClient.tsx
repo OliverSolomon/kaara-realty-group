@@ -188,7 +188,7 @@ export default function HomeClient({ data, settings }: HomeClientProps) {
   const vQuaternary = resolveVideo(data?.closingVideo, "https://res.cloudinary.com/dk92v0fkk/video/upload/w_1870,h_947,c_fill/v1724088268/staging/yv4bjz9n4wggkcgxvgqt.mp4#t=0.1");
 
   const SectionBottomNav = () => (
-    <div className="absolute bottom-0 w-full z-50 px-6 py-8 lg:px-12 lg:py-12 flex justify-between items-center text-[9px] lg:text-[10px] font-sans tracking-[0.3em] text-white font-bold uppercase">
+    <div className="absolute bottom-0 w-full z-50 px-12 py-12 hidden lg:flex justify-between items-center text-[10px] font-sans tracking-[0.3em] text-white font-bold uppercase">
       <div className="flex items-center space-x-8 lg:space-x-12">
         <button 
           onClick={() => setIsSearchOpen(true)}
@@ -223,18 +223,11 @@ export default function HomeClient({ data, settings }: HomeClientProps) {
         </div>
       </div>
 
-      {/* Fixed Play/Pause Toggle */}
-      <div className="fixed top-6 right-6 lg:top-8 lg:right-8 z-[120]">
-        <button onClick={togglePlay} className="text-white hover:text-gray-300 transition-all border border-white/40 rounded-full p-2 lg:p-2.5 flex items-center justify-center w-10 h-10 lg:w-12 lg:h-12 bg-[#100B28]/40 backdrop-blur-md shadow-lg group">
-          {isPlaying ? <Pause size={14} fill="currentColor" className="lg:size-4" /> : <Play size={14} fill="currentColor" className="ml-1 lg:size-4" />}
-        </button>
-      </div>
-
       {/* Search Overlay */}
       <SearchOverlay isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
 
       {/* Hero Section (Section 1) */}
-      <section className="relative h-screen w-full flex flex-col justify-center items-center text-center overflow-hidden">
+      <section className="relative h-svh w-full flex flex-col justify-center items-center text-center overflow-hidden">
         <video 
           key={vHero.src}
           ref={(el) => { videoRefs.current[0] = el; }}
@@ -250,11 +243,11 @@ export default function HomeClient({ data, settings }: HomeClientProps) {
         <div className="absolute inset-0 bg-[#100B28]/30 z-10" />
 
 
-        <div className="absolute top-28 lg:top-36 left-6 lg:left-16 z-20 text-left max-w-xl">
+        <div className="absolute top-28 lg:top-36 left-5 right-5 lg:right-auto lg:left-16 z-20 text-left max-w-xl">
           <h1 className="text-xl lg:text-[1.75rem] font-serif text-white tracking-[0.15em] uppercase leading-tight mb-2">
             {data?.heroVideo?.title || "WHERE DO YOU WANT TO GO?"}
           </h1>
-          <p className="text-[8px] lg:text-[0.6rem] font-sans tracking-[0.2em] text-white/70 font-light uppercase">
+          <p className="text-[10px] lg:text-[11px] font-sans tracking-[0.2em] text-white/70 font-light uppercase">
             {data?.heroVideo?.subtitle || "Leaders in Luxury Vertical Living • Nairobi"}
           </p>
         </div>
@@ -269,11 +262,22 @@ export default function HomeClient({ data, settings }: HomeClientProps) {
           </button>
         </div>
 
+        {/* Sits opposite the floating WhatsApp button on phones and clear of
+            the fixed header on every screen. */}
+        <button
+          type="button"
+          onClick={togglePlay}
+          aria-label={isPlaying ? "Pause background video" : "Play background video"}
+          className="press absolute bottom-[calc(1.25rem+env(safe-area-inset-bottom))] left-5 z-[60] flex h-11 w-11 items-center justify-center rounded-full border border-white/40 bg-[#100B28]/40 text-white shadow-lg backdrop-blur-md transition-colors hover:text-gray-300 lg:bottom-auto lg:left-auto lg:right-8 lg:top-24 lg:h-12 lg:w-12"
+        >
+          {isPlaying ? <Pause size={14} fill="currentColor" className="lg:size-4" /> : <Play size={14} fill="currentColor" className="ml-0.5 lg:size-4" />}
+        </button>
+
         <SectionBottomNav />
       </section>
 
       {/* Video Section 2 */}
-      <section className="relative h-screen w-full flex flex-col justify-center items-center text-center px-6 overflow-hidden">
+      <section className="relative h-svh w-full flex flex-col justify-center items-center text-center px-6 overflow-hidden">
         <video 
           key={vSecondary.src}
           ref={(el) => { videoRefs.current[1] = el; }}
@@ -283,12 +287,12 @@ export default function HomeClient({ data, settings }: HomeClientProps) {
         </video>
         <div className="absolute inset-0 bg-[#100B28]/40 z-10" />
         
-        <div className="absolute top-12 lg:top-24 left-6 lg:left-16 z-20 text-left">
+        <div className="absolute top-24 left-5 right-5 lg:right-auto lg:left-16 z-20 text-left">
            <h2 className="text-xl lg:text-[2.5rem] font-serif text-white tracking-[0.1em] lg:tracking-[0.2em] uppercase leading-tight">
              {data?.secondaryVideo?.title || "UNRIVALED EXCLUSIVITY"}
            </h2>
            {data?.secondaryVideo?.subtitle && (
-             <p className="text-[8px] lg:text-sm tracking-[0.2em] lg:tracking-[0.3em] text-white/80 uppercase font-light mt-4">{data.secondaryVideo.subtitle}</p>
+             <p className="text-[10px] lg:text-sm tracking-[0.2em] lg:tracking-[0.3em] text-white/80 uppercase font-light mt-4">{data.secondaryVideo.subtitle}</p>
            )}
         </div>
 
@@ -298,20 +302,20 @@ export default function HomeClient({ data, settings }: HomeClientProps) {
       {/* Property Showcase - copy, filter chips and the grid all come from Sanity */}
       <section className="pt-24 lg:pt-40 pb-24 lg:pb-32 px-4 lg:px-6 bg-[#100B28] text-white">
         <div className="max-w-[1400px] mx-auto flex flex-col items-center mb-16 lg:mb-24 text-center">
-          <p className="font-sans text-[8px] lg:text-[11px] tracking-[0.4em] text-white/60 uppercase mb-4 lg:mb-6 font-bold">{data?.propertiesSection?.subtitle || "Local Experts, Global Reach"}</p>
+          <p className="font-sans text-[10px] lg:text-[11px] tracking-[0.4em] text-white/60 uppercase mb-4 lg:mb-6 font-bold">{data?.propertiesSection?.subtitle || "Local Experts, Global Reach"}</p>
           <h2 className="text-2xl lg:text-[2.75rem] font-serif tracking-[0.1em] lg:tracking-[0.2em] uppercase text-white mb-8 lg:mb-12">{data?.propertiesSection?.title || "The Next Move Is Yours"}</h2>
 
           <div className="w-[1px] h-12 lg:h-20 bg-white/20 mb-8 lg:mb-12"></div>
 
           {filters.length > 0 && (
-            <div className="flex flex-wrap justify-center gap-6 lg:gap-16 text-[9px] lg:text-[11px] font-sans tracking-[0.2em] lg:tracking-[0.3em] uppercase text-white/50 font-bold mb-12 lg:mb-16">
+            <div className="flex flex-wrap justify-center gap-x-5 gap-y-1 lg:gap-16 text-[10px] lg:text-[11px] font-sans tracking-[0.2em] lg:tracking-[0.3em] uppercase text-white/50 font-bold mb-12 lg:mb-16">
               {filters.map((filter) => {
                 const key = filterKey(filter);
                 return (
                   <button
                     key={key}
                     onClick={() => setActiveFilter(key)}
-                    className={`transition-all duration-300 ${activeFilter === key ? 'text-white border-b-[1.5px] border-white pb-1.5' : 'hover:text-white'}`}
+                    className={`min-h-11 border-b-[1.5px] transition-all duration-300 ${activeFilter === key ? 'text-white border-white' : 'border-transparent hover:text-white'}`}
                   >
                     {filter.label}
                   </button>
@@ -327,7 +331,7 @@ export default function HomeClient({ data, settings }: HomeClientProps) {
               <Link
                 key={property._id}
                 href={`/properties/${property.slug}`}
-                className="group relative h-[500px] lg:h-[650px] w-full cursor-pointer overflow-hidden bg-[#100B28]"
+                className="group relative h-[440px] sm:h-[500px] lg:h-[650px] w-full cursor-pointer overflow-hidden bg-[#100B28]"
               >
                 <Image
                   src={property.imageUrl || "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80"}
@@ -339,7 +343,7 @@ export default function HomeClient({ data, settings }: HomeClientProps) {
                 <div className="absolute inset-0 bg-gradient-to-t from-[#100B28]/95 via-[#100B28]/20 to-transparent opacity-90 group-hover:opacity-100 transition-opacity duration-700" />
                 <div className="absolute bottom-0 left-0 right-0 p-8 lg:p-12 text-center flex flex-col items-center z-10 transition-transform duration-700">
                   <h3 className="font-serif text-2xl lg:text-3xl mb-3 lg:mb-4 text-white tracking-[0.05em] uppercase">{property.title}</h3>
-                  <p className="font-sans text-[8px] lg:text-[9px] tracking-[0.3em] lg:tracking-[0.4em] text-white/70 mb-2 lg:mb-3 uppercase font-bold">
+                  <p className="font-sans text-[10px] lg:text-[9px] tracking-[0.3em] lg:tracking-[0.4em] text-white/70 mb-2 lg:mb-3 uppercase font-bold">
                     {propertyPlace(property)}
                   </p>
                   <p className="font-serif text-[13px] lg:text-[15px] text-white italic">
@@ -352,7 +356,7 @@ export default function HomeClient({ data, settings }: HomeClientProps) {
             {/* Bento cell: the fourth property above, the way through to the
                 rest below. */}
             {bentoProperty && (
-              <div className="flex h-[500px] lg:h-[650px] w-full flex-col gap-[2px] lg:gap-1">
+              <div className="flex h-[440px] sm:h-[500px] lg:h-[650px] w-full flex-col gap-[2px] lg:gap-1">
                 <Link
                   href={`/properties/${bentoProperty.slug}`}
                   className="group relative flex-[3] w-full cursor-pointer overflow-hidden bg-[#100B28]"
@@ -367,7 +371,7 @@ export default function HomeClient({ data, settings }: HomeClientProps) {
                   <div className="absolute inset-0 bg-gradient-to-t from-[#100B28]/95 via-[#100B28]/20 to-transparent opacity-90 group-hover:opacity-100 transition-opacity duration-700" />
                   <div className="absolute bottom-0 left-0 right-0 p-6 lg:p-8 text-center flex flex-col items-center z-10">
                     <h3 className="font-serif text-xl lg:text-2xl mb-2 text-white tracking-[0.05em] uppercase">{bentoProperty.title}</h3>
-                    <p className="font-sans text-[8px] tracking-[0.3em] text-white/70 mb-1.5 uppercase font-bold">
+                    <p className="font-sans text-[10px] tracking-[0.3em] text-white/70 mb-1.5 uppercase font-bold">
                       {propertyPlace(bentoProperty)}
                     </p>
                     <p className="font-serif text-[13px] text-white italic">
@@ -413,7 +417,7 @@ export default function HomeClient({ data, settings }: HomeClientProps) {
       </section>
 
       {/* Video Section 3 */}
-      <section className="relative h-screen w-full flex flex-col justify-center items-center text-center px-6 overflow-hidden">
+      <section className="relative h-svh w-full flex flex-col justify-center items-center text-center px-6 overflow-hidden">
         <video 
           key={vTertiary.src}
           ref={(el) => { videoRefs.current[2] = el; }}
@@ -423,12 +427,12 @@ export default function HomeClient({ data, settings }: HomeClientProps) {
         </video>
         <div className="absolute inset-0 bg-[#100B28]/40 z-10" />
         
-        <div className="absolute top-12 lg:top-24 left-6 lg:left-16 z-20 text-left">
+        <div className="absolute top-24 left-5 right-5 lg:right-auto lg:left-16 z-20 text-left">
             <h2 className="text-xl lg:text-[2.5rem] font-serif text-white tracking-[0.1em] lg:tracking-[0.2em] uppercase leading-tight">
               {data?.experienceVideo?.title || "LIVE THE EXTRAORDINARY"}
             </h2>
             {data?.experienceVideo?.subtitle && (
-              <p className="text-[8px] lg:text-sm tracking-[0.2em] lg:tracking-[0.3em] text-white/80 uppercase font-light mt-4">{data.experienceVideo.subtitle}</p>
+              <p className="text-[10px] lg:text-sm tracking-[0.2em] lg:tracking-[0.3em] text-white/80 uppercase font-light mt-4">{data.experienceVideo.subtitle}</p>
             )}
         </div>
 
@@ -436,7 +440,7 @@ export default function HomeClient({ data, settings }: HomeClientProps) {
       </section>
 
       {/* Video Section 4 */}
-      <section className="relative h-screen w-full flex flex-col justify-center items-center text-center px-6 overflow-hidden">
+      <section className="relative h-svh w-full flex flex-col justify-center items-center text-center px-6 overflow-hidden">
         <video 
           key={vQuaternary.src}
           ref={(el) => { videoRefs.current[3] = el; }}
@@ -446,11 +450,11 @@ export default function HomeClient({ data, settings }: HomeClientProps) {
         </video>
         <div className="absolute inset-0 bg-[#100B28]/40 z-10" />
         
-        <div className="absolute top-12 lg:top-24 left-6 lg:left-16 z-20 text-left">
+        <div className="absolute top-24 left-5 right-5 lg:right-auto lg:left-16 z-20 text-left">
            <h2 className="text-xl lg:text-[2.5rem] font-serif text-white tracking-[0.1em] lg:tracking-[0.2em] mb-4 lg:mb-8 uppercase leading-tight">
              {data?.closingVideo?.title || "88 NAIROBI CONDOMINIUM"}
            </h2>
-           <p className="text-[8px] lg:text-sm tracking-[0.2em] lg:tracking-[0.3em] text-white/80 uppercase font-light">
+           <p className="text-[10px] lg:text-sm tracking-[0.2em] lg:tracking-[0.3em] text-white/80 uppercase font-light">
              {data?.closingVideo?.subtitle || "The Apex of Upper Hill • Handover May 2026"}
            </p>
         </div>

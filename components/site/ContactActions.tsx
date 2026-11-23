@@ -22,11 +22,12 @@ export default function ContactActions({
     : "Hello Kaara, I would like to speak to an advisor.";
 
   const base =
-    "press inline-flex items-center justify-center gap-3 px-7 py-3.5 text-[10px] font-bold uppercase tracking-[0.25em] transition-colors duration-200";
+    "press inline-flex min-h-12 w-full items-center justify-center gap-3 px-7 py-3.5 sm:w-auto text-[10px] font-bold uppercase tracking-[0.25em] transition-colors duration-200";
 
   return (
     <div className={`flex flex-wrap gap-3 ${className}`}>
       <a
+        data-whatsapp-cta
         href={whatsappLink(contact?.whatsapp, message)}
         target="_blank"
         rel="noopener noreferrer"

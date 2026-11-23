@@ -68,7 +68,7 @@ export default function Navbar({ settings, transparent = false }: NavbarProps) {
   return (
     <>
       <header
-        className={`fixed top-0 z-[1000] flex h-[72px] w-full items-center justify-between border-b px-5 transition-colors duration-300 lg:px-10 ${barBackground}`}
+        className={`fixed top-0 z-[1000] flex h-[72px] w-full items-center justify-between border-b px-4 transition-colors sm:px-5 duration-300 lg:px-10 ${barBackground}`}
       >
         {/* Left: menu trigger and primary navigation */}
         <div className="flex flex-1 items-center gap-8 xl:gap-12">
@@ -76,7 +76,8 @@ export default function Navbar({ settings, transparent = false }: NavbarProps) {
             type="button"
             onClick={() => setIsMenuOpen(true)}
             aria-label={t("menu")}
-            className="press -ml-2 p-2 text-[#efebe3] lg:hidden"
+            aria-expanded={isMenuOpen}
+            className="press -ml-2.5 flex h-11 w-11 items-center justify-center text-[#efebe3] lg:hidden"
           >
             <PiList size={22} />
           </button>
@@ -108,12 +109,12 @@ export default function Navbar({ settings, transparent = false }: NavbarProps) {
           href="/"
           onClick={closePanels}
           aria-label={siteName}
-          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap font-serif text-[13px] uppercase tracking-[0.28em] text-[#efebe3] lg:text-[15px]"
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap font-serif text-[12px] uppercase tracking-[0.2em] text-[#efebe3] sm:text-[13px] sm:tracking-[0.28em] lg:text-[15px]"
         >
           Kaara <span className="text-white/50">&amp; Co</span>
         </Link>
 
-        <div className="flex flex-1 items-center justify-end gap-5 lg:gap-7">
+        <div className="flex flex-1 items-center justify-end gap-0.5 sm:gap-3 lg:gap-7">
           <nav aria-label="Secondary" className="hidden items-center gap-6 xl:flex">
             {SECONDARY_NAV.map((item) => (
               <Link
@@ -134,7 +135,10 @@ export default function Navbar({ settings, transparent = false }: NavbarProps) {
             type="button"
             onClick={() => setIsSearchOpen(true)}
             aria-label={t("search")}
-            className="press p-1 text-[#efebe3]"
+            // The home hero has its own large search button on phones.
+            className={`press flex h-11 w-11 items-center justify-center text-[#efebe3] lg:h-auto lg:w-auto lg:p-1 ${
+              transparent && !scrolled ? "max-lg:hidden" : ""
+            }`}
           >
             <PiMagnifyingGlass size={19} />
           </button>
@@ -144,7 +148,7 @@ export default function Navbar({ settings, transparent = false }: NavbarProps) {
               type="button"
               onClick={() => setIsSettingsOpen((open) => !open)}
               aria-expanded={isSettingsOpen}
-              className="press flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.2em] text-[#efebe3]"
+              className="press flex h-11 items-center gap-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[#efebe3] sm:gap-1.5 sm:tracking-[0.2em] lg:h-auto"
             >
               {currency}
               <PiCaretDown
@@ -154,7 +158,7 @@ export default function Navbar({ settings, transparent = false }: NavbarProps) {
             </button>
 
             {isSettingsOpen && (
-              <div className="reveal absolute right-0 top-11 w-72 origin-top-right border border-white/10 bg-[#171232] p-6 shadow-2xl" data-visible="true">
+              <div className="reveal absolute right-0 top-12 max-h-[calc(100svh-88px)] w-[min(18rem,calc(100vw-2rem))] origin-top-right overflow-y-auto border border-white/10 bg-[#171232] p-5 shadow-2xl sm:p-6" data-visible="true">
                 <div>
                   <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.25em] text-white/45">
                     {t("currency")}

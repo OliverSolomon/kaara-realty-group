@@ -28,131 +28,190 @@ export default function SearchOverlay({ isOpen, onClose }: { isOpen: boolean; on
   const [activePropertyIdx, setActivePropertyIdx] = useState(0);
 
   useEffect(() => {
-    if (isOpen) {
-      client.fetch(SEARCH_QUERY).then(setData);
-    }
+    if (!isOpen) return;
+    client.fetch(SEARCH_QUERY).then(setData);
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
   }, [isOpen]);
 
   if (!isOpen) return null;
 
   const activeDistrict = data[activeDistrictIdx];
   const activeProperty = activeDistrict?.properties[activePropertyIdx];
+  const selectDistrict = (idx: number) => {
+    setActiveDistrictIdx(idx);
+    setActivePropertyIdx(0);
+  };
 
   return (
-    <div className="fixed inset-0 z-[3000] flex items-center justify-center p-4 lg:p-0">
-      {/* Simple Dark Backdrop */}
-      <div 
-        className="absolute inset-0 bg-black/60 animate-in fade-in duration-500" 
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label={t("search")}
+      className="fixed inset-0 z-[3000] flex items-center justify-center lg:p-4"
+    >
+      <div
+        className="absolute inset-0 bg-black/60 animate-in fade-in duration-500"
         onClick={onClose}
       />
 
-      <div className="relative w-full max-w-5xl bg-[#000B1D]/95 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 border border-white/5">
-        <button 
+      <div className="relative flex h-dvh w-full max-w-5xl flex-col overflow-y-auto overscroll-contain border-white/5 bg-[#100b28] pb-[env(safe-area-inset-bottom)] shadow-2xl animate-in zoom-in-95 duration-300 lg:block lg:h-auto lg:overflow-hidden lg:border lg:bg-[#000B1D]/95 lg:pb-0">
+        <div className="sticky top-0 z-40 flex h-[72px] shrink-0 items-center justify-between border-b border-white/10 bg-[#100b28] px-5 lg:hidden">
+          <span className="font-serif text-lg text-[#efebe3]">{t("search")}</span>
+        </div>
+
+        <button
+          type="button"
           onClick={onClose}
-          className="absolute top-6 right-6 text-white/40 hover:text-white transition-colors z-50"
+          aria-label={t("close")}
+          className="press fixed right-2 top-3.5 z-50 flex h-11 w-11 items-center justify-center text-white/70 transition-colors hover:text-white lg:absolute lg:right-4 lg:top-4"
         >
           <X size={24} />
         </button>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 min-h-[600px]">
-          {/* Left: Districts */}
-          <div className="lg:col-span-4 border-r border-white/5 p-8 lg:p-12 space-y-8">
-             <div className="space-y-2">
-                <h3 className="text-[10px] font-bold tracking-[0.4em] text-white/30 uppercase">{t('discover')} DISTRICTS</h3>
-                <div className="h-px w-8 bg-[#007EA7]" />
-             </div>
-             
-             <div className="space-y-4">
-                {data.map((district, idx) => (
-                   <button
-                     key={district._id}
-                     onMouseEnter={() => { setActiveDistrictIdx(idx); setActivePropertyIdx(0); }}
-                     className={cn(
-                       "w-full flex items-center justify-between text-left group transition-all",
-                       activeDistrictIdx === idx ? "text-white" : "text-white/40 hover:text-white/60"
-                     )}
-                   >
-                      <span className="text-sm font-serif uppercase tracking-widest">{district.name}</span>
-                      <ChevronRight size={14} className={cn("transition-transform", activeDistrictIdx === idx ? "translate-x-0" : "-translate-x-2 opacity-0 group-hover:opacity-100")} />
-                   </button>
-                ))}
-             </div>
+        <div className="grid flex-1 grid-cols-1 content-start lg:min-h-[600px] lg:grid-cols-12 lg:content-stretch">
+          {/* Districts: a swipeable row on phones, a column on desktop */}
+          <div className="min-w-0 border-white/5 px-5 pb-2 pt-6 lg:col-span-4 lg:space-y-8 lg:border-r lg:p-12">
+            <div className="mb-4 space-y-2 lg:mb-0">
+              <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/50 lg:tracking-[0.4em]">
+                {t("discover")} DISTRICTS
+              </h3>
+              <div className="h-px w-8 bg-[#4f9d8f]" />
+            </div>
 
-             <div className="pt-8 border-t border-white/5">
-                <Link 
-                  href="/properties" 
-                  onClick={onClose}
-                  className="text-[9px] font-bold tracking-[0.3em] text-[#007EA7] uppercase hover:underline"
+            <div className="no-scrollbar -mx-5 flex gap-2 overflow-x-auto px-5 lg:mx-0 lg:block lg:space-y-4 lg:overflow-visible lg:px-0">
+              {data.map((district, idx) => (
+                <button
+                  key={district._id}
+                  type="button"
+                  onClick={() => selectDistrict(idx)}
+                  onMouseEnter={() => selectDistrict(idx)}
+                  aria-pressed={activeDistrictIdx === idx}
+                  className={cn(
+                    "group flex min-h-11 shrink-0 items-center justify-between border px-4 text-left transition-colors lg:min-h-0 lg:w-full lg:border-0 lg:px-0",
+                    activeDistrictIdx === idx
+                      ? "border-[#4f9d8f] bg-[#2e7d6f]/15 text-white lg:bg-transparent"
+                      : "border-white/15 text-white/60 hover:text-white/80"
+                  )}
                 >
-                  VIEW ALL {t('properties')}
+                  <span className="whitespace-nowrap font-serif text-xs uppercase tracking-widest lg:text-sm">
+                    {district.name}
+                  </span>
+                  <ChevronRight
+                    size={14}
+                    className={cn(
+                      "hidden transition-transform lg:block",
+                      activeDistrictIdx === idx
+                        ? "translate-x-0"
+                        : "-translate-x-2 opacity-0 group-hover:opacity-100"
+                    )}
+                  />
+                </button>
+              ))}
+            </div>
+
+            <div className="hidden border-t border-white/5 pt-8 lg:block">
+              <Link
+                href="/properties"
+                onClick={onClose}
+                className="text-[9px] font-bold uppercase tracking-[0.3em] text-[#4f9d8f] hover:underline"
+              >
+                VIEW ALL {t("properties")}
+              </Link>
+            </div>
+          </div>
+
+          {/* Property names */}
+          <div className="min-w-0 border-white/5 px-5 py-6 lg:col-span-4 lg:space-y-8 lg:border-r lg:bg-black/20 lg:p-12">
+            <div className="mb-3 space-y-2 lg:mb-0">
+              <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/50 lg:tracking-[0.4em]">
+                PREMIER ASSETS
+              </h3>
+              <p className="text-[10px] uppercase tracking-widest text-white/40">
+                {activeDistrict?.name}
+              </p>
+            </div>
+
+            <div className="no-scrollbar lg:max-h-[400px] lg:space-y-4 lg:overflow-y-auto">
+              {activeDistrict?.properties.map((property, idx) => (
+                <Link
+                  key={property._id}
+                  href={`/properties/${property.slug}`}
+                  onClick={onClose}
+                  onMouseEnter={() => setActivePropertyIdx(idx)}
+                  className={cn(
+                    "flex items-center gap-4 border-b border-white/10 py-3 text-left transition-colors lg:block lg:border-0 lg:py-0",
+                    activePropertyIdx === idx
+                      ? "lg:text-white"
+                      : "lg:text-white/40 lg:hover:text-white/60"
+                  )}
+                >
+                  <span className="relative h-14 w-20 shrink-0 overflow-hidden bg-[#171232] lg:hidden">
+                    {property.imageUrl && (
+                      <Image
+                        src={property.imageUrl}
+                        alt=""
+                        fill
+                        sizes="80px"
+                        className="object-cover"
+                      />
+                    )}
+                  </span>
+                  <span className="min-w-0 flex-1 text-xs font-bold uppercase leading-relaxed tracking-widest">
+                    {property.title}
+                  </span>
+                  <ChevronRight size={16} className="shrink-0 text-white/35 lg:hidden" />
                 </Link>
-             </div>
+              ))}
+
+              {activeDistrict && (
+                <Link
+                  href={`/properties?search=${encodeURIComponent(activeDistrict.name)}`}
+                  onClick={onClose}
+                  className="block py-4 text-[10px] font-bold uppercase tracking-[0.25em] text-[#4f9d8f] hover:underline lg:pb-0 lg:text-[9px] lg:tracking-[0.3em]"
+                >
+                  ALL {activeDistrict.name} LISTINGS
+                </Link>
+              )}
+
+              <Link
+                href="/properties"
+                onClick={onClose}
+                className="mt-2 flex min-h-12 items-center justify-center border border-white/20 text-[10px] font-bold uppercase tracking-[0.25em] text-[#efebe3] lg:hidden"
+              >
+                VIEW ALL {t("properties")}
+              </Link>
+            </div>
           </div>
 
-          {/* Middle: Property Names */}
-          <div className="lg:col-span-4 border-r border-white/5 p-8 lg:p-12 space-y-8 bg-black/20">
-             <div className="space-y-2">
-                <h3 className="text-[10px] font-bold tracking-[0.4em] text-white/30 uppercase">PREMIER ASSETS</h3>
-                <p className="text-[8px] text-white/20 uppercase tracking-widest">{activeDistrict?.name}</p>
-             </div>
-
-             <div className="space-y-4 max-h-[400px] overflow-y-auto no-scrollbar">
-                {activeDistrict?.properties.map((property, idx) => (
-                   <Link
-                     key={property._id}
-                     href={`/properties/${property.slug}`}
-                     onClick={onClose}
-                     onMouseEnter={() => setActivePropertyIdx(idx)}
-                     className={cn(
-                       "block text-left transition-all",
-                       activePropertyIdx === idx ? "text-white" : "text-white/40 hover:text-white/60"
-                     )}
-                   >
-                      <span className="text-xs font-bold uppercase tracking-widest">{property.title}</span>
-                   </Link>
-                ))}
-                
-                {activeDistrict && (
-                  <Link 
-                    href={`/properties?search=${activeDistrict.name}`}
-                    onClick={onClose}
-                    className="block pt-4 text-[9px] font-bold tracking-[0.3em] text-[#007EA7] uppercase hover:underline"
-                  >
-                    ALL {activeDistrict.name} LISTINGS
-                  </Link>
-                )}
-             </div>
-          </div>
-
-          {/* Right: Property Photo */}
-          <div className="lg:col-span-4 relative group overflow-hidden">
-             {activeProperty ? (
-               <>
-                 <Image 
-                   src={activeProperty.imageUrl} 
-                   alt={activeProperty.title} 
-                   fill 
-                   className="object-cover transition-transform duration-1000 group-hover:scale-110"
-                 />
-                 <div className="absolute inset-0 bg-gradient-to-t from-[#000B1D] via-transparent to-transparent opacity-60" />
-                 <div className="absolute bottom-8 left-8 right-8 space-y-2">
-                    <p className="text-[8px] font-bold tracking-[0.4em] text-white/60 uppercase">FEATURED RESIDENCE</p>
-                    <h4 className="text-xl font-serif text-white uppercase tracking-tight">{activeProperty.title}</h4>
-                 </div>
-               </>
-             ) : (
-               <div className="w-full h-full bg-[#000B1D] flex items-center justify-center">
-                  <SearchIcon size={48} className="text-white/5" />
-               </div>
-             )}
+          {/* Property photo: desktop preview only, phones get row thumbnails */}
+          <div className="group relative hidden overflow-hidden lg:col-span-4 lg:block">
+            {activeProperty ? (
+              <>
+                <Image
+                  src={activeProperty.imageUrl}
+                  alt={activeProperty.title}
+                  fill
+                  sizes="340px"
+                  className="object-cover transition-transform duration-1000 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#000B1D] via-transparent to-transparent opacity-60" />
+                <div className="absolute bottom-8 left-8 right-8 space-y-2">
+                  <p className="text-[8px] font-bold uppercase tracking-[0.4em] text-white/60">FEATURED RESIDENCE</p>
+                  <h4 className="font-serif text-xl uppercase tracking-tight text-white">{activeProperty.title}</h4>
+                </div>
+              </>
+            ) : (
+              <div className="flex h-full w-full items-center justify-center bg-[#000B1D]">
+                <SearchIcon size={48} className="text-white/5" />
+              </div>
+            )}
           </div>
         </div>
       </div>
-
-      <style jsx global>{`
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        * { border-radius: 0 !important; }
-      `}</style>
     </div>
   );
 }
