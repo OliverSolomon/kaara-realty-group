@@ -38,7 +38,7 @@ import {
   sqmToSqft,
 } from "@/lib/site";
 import { extractCoordsFromGoogleMapsUrl } from "@/lib/geocoding";
-import { SITE_URL } from "@/lib/seo";
+import { SHARE_ORIGIN } from "@/lib/seo";
 
 const PropertyMap = dynamic(() => import("@/components/PropertyMap"), {
   ssr: false,
@@ -278,7 +278,7 @@ export default function PropertyDetailClient({ property }: { property: Property 
                 <ContactActions
                   contact={settings?.contact}
                   subject={property?.title}
-                  link={property?.slug ? `${SITE_URL}/properties/${property.slug}` : undefined}
+                  link={property?.slug ? `${SHARE_ORIGIN}/properties/${encodeURIComponent(property.slug)}` : undefined}
                   listingSlug={property?.slug}
                   className="mt-8"
                 />

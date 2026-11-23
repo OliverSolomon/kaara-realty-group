@@ -1,6 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Share cards read these at runtime, so they must ship with the function.
+  outputFileTracingIncludes: {
+    "/og/[kind]/[slug]": ["./assets/fonts/*.woff"],
+  },
   images: {
     unoptimized: true,
     // `domains` is deprecated and matches a whole host without a path, which is
@@ -35,6 +39,12 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
+      {
+        // One article was published with a "/blog/" prefix in its address.
+        source: '/market-insights/blog/:slug',
+        destination: '/market-insights/:slug',
+        permanent: true,
+      },
       {
         // The neighbourhood pages were retired. Anything that still points at
         // them lands on the Buy collection rather than a 404.

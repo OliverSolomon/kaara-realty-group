@@ -20,12 +20,15 @@ import { canonicalAmenity } from "@/sanity/schemaTypes/objects/amenityOptions";
 import Reveal from "@/components/site/Reveal";
 import { placeholderImage } from "@/lib/site";
 import type { Listing } from "@/components/site/ListingCard";
+import { resolveMeta, shareImage } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = resolveMeta({
   title: "Buy | Kaara & Co Realty Group",
   description:
     "Active listings from developers with a delivery record, priced in the currency you think in, with the payment schedule and handover terms stated up front.",
-};
+  path: "/buy",
+  image: shareImage("page", "buy"),
+});
 
 export default async function BuyPage() {
   const [{ data: listings }, { data: settings }, { data: developers }, { data: page }] =

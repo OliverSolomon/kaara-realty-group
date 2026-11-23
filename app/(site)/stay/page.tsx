@@ -18,12 +18,15 @@ import { canonicalAmenity } from "@/sanity/schemaTypes/objects/amenityOptions";
 import Reveal from "@/components/site/Reveal";
 import { placeholderImage } from "@/lib/site";
 import type { Listing } from "@/components/site/ListingCard";
+import { resolveMeta, shareImage } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = resolveMeta({
   title: "Stay | Kaara & Co Realty Group",
   description:
     "Luxury short stay apartments in Nairobi. Floor, aspect and nightly rate stated for every unit, with booking confirmed by phone and email.",
-};
+  path: "/stay",
+  image: shareImage("page", "stay"),
+});
 
 export default async function StayPage() {
   const [{ data: listings }, { data: settings }, { data: page }] = await Promise.all([

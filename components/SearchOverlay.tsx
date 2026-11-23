@@ -16,10 +16,28 @@ interface DistrictData {
   properties: {
     _id: string;
     title: string;
+    bedrooms?: number | null;
     slug: string;
     imageUrl: string;
   }[];
 }
+
+/** The CMS holds some districts twice, so one place must not appear as two. */
+function mergeDistricts(districts: DistrictData[]) {
+  const byName = new Map<string, DistrictData>();
+  for (const district of districts) {
+    const key = district.name.trim().toLowerCase();
+    const existing = byName.get(key);
+    if (existing) existing.properties = [...existing.properties, ...district.properties];
+    else byName.set(key, { ...district, properties: [...district.properties] });
+  }
+  return [...byName.values()]
+    .filter((district) => district.properties.length > 0)
+    .sort((a, b) => a.name.localeCompare(b.name));
+}
+
+const unitLabel = (property: DistrictData["properties"][number]) =>
+  property.bedrooms ? `${property.title} · ${property.bedrooms} bed` : property.title;
 
 export default function SearchOverlay({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const { t } = useLanguage();
@@ -29,7 +47,7 @@ export default function SearchOverlay({ isOpen, onClose }: { isOpen: boolean; on
 
   useEffect(() => {
     if (!isOpen) return;
-    client.fetch(SEARCH_QUERY).then(setData);
+    client.fetch(SEARCH_QUERY).then((rows) => setData(mergeDistricts(rows as DistrictData[])));
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
@@ -139,7 +157,7 @@ export default function SearchOverlay({ isOpen, onClose }: { isOpen: boolean; on
               {activeDistrict?.properties.map((property, idx) => (
                 <Link
                   key={property._id}
-                  href={`/properties/${property.slug}`}
+                  href={`/properties/${encodeURIComponent(property.slug)}`}
                   onClick={onClose}
                   onMouseEnter={() => setActivePropertyIdx(idx)}
                   className={cn(
@@ -161,7 +179,7 @@ export default function SearchOverlay({ isOpen, onClose }: { isOpen: boolean; on
                     )}
                   </span>
                   <span className="min-w-0 flex-1 text-xs font-bold uppercase leading-relaxed tracking-widest">
-                    {property.title}
+                    {unitLabel(property)}
                   </span>
                   <ChevronRight size={16} className="shrink-0 text-white/35 lg:hidden" />
                 </Link>

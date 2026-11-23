@@ -38,7 +38,7 @@ function FloatingButton({ number, siteUrl, pathname }: WhatsAppButtonProps & { p
 
   const message = messageFor(pathname, siteUrl);
   const listingSlug = pathname.startsWith("/properties/")
-    ? pathname.slice("/properties/".length).split("/")[0]
+    ? decodeURIComponent(pathname.slice("/properties/".length).split("/")[0])
     : undefined;
 
   return (

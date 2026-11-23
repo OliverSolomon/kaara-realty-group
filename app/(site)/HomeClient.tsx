@@ -481,9 +481,9 @@ export default function HomeClient({ data, settings }: HomeClientProps) {
             Immersive market insights, architectural narratives, and the lifestyle of the Nairobi elite. 
           </p>
           
-          <button className="bg-white text-[#100B28] px-10 py-4 lg:px-14 lg:py-5 text-[10px] lg:text-[11px] font-sans tracking-[0.3em] lg:tracking-[0.4em] font-bold hover:bg-transparent hover:text-white border border-white transition-all duration-500 uppercase rounded-full">
+          <Link href="/market-insights" className="inline-block bg-white text-[#100B28] px-10 py-4 lg:px-14 lg:py-5 text-[10px] lg:text-[11px] font-sans tracking-[0.3em] lg:tracking-[0.4em] font-bold hover:bg-transparent hover:text-white border border-white transition-all duration-500 uppercase rounded-full">
             EXPLORE THE EDITORIAL
-          </button>
+          </Link>
         </div>
       </section>
 

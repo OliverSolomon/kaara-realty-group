@@ -26,6 +26,7 @@ import {
   articleSchema,
   resolveMeta,
   SITE_NAME,
+  shareImage,
 } from "@/lib/seo";
 
 type Params = Promise<{ slug: string }>;
@@ -46,7 +47,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
     title: `${data.title} | ${SITE_NAME}`,
     description,
     path: `/market-insights/${slug}`,
-    image: data.coverUrl || undefined,
+    image: shareImage("insight", slug),
     type: "article",
     publishedTime: data.publishedAt || undefined,
     keywords: [

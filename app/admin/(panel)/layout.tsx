@@ -11,13 +11,16 @@ export default async function AdminPanelLayout({ children }: { children: React.R
           <Link href="/admin" className="whitespace-nowrap font-serif text-xs uppercase tracking-[0.2em] sm:text-sm">
             Kaara <span className="text-white/50">Leads</span>
           </Link>
-          <nav aria-label="Admin" className="flex items-center gap-3 sm:gap-6">
-            <Link href="/admin" className="min-h-11 content-center text-[10px] font-bold uppercase tracking-[0.18em] text-white/70 hover:text-white">
-              Inbox
-            </Link>
-            <Link href="/admin/whatsapp" className="min-h-11 content-center text-[10px] font-bold uppercase tracking-[0.18em] text-white/70 hover:text-white">
-              WhatsApp
-            </Link>
+          <nav aria-label="Admin" className="no-scrollbar flex min-w-0 items-center gap-3 overflow-x-auto sm:gap-6">
+            {[
+              ["/admin", "Inbox"],
+              ["/admin/whatsapp", "WhatsApp"],
+              ["/admin/account", "Account"],
+            ].map(([href, label]) => (
+              <Link key={href} href={href} className="min-h-11 shrink-0 content-center text-[10px] font-bold uppercase tracking-[0.14em] text-white/70 hover:text-white sm:tracking-[0.18em]">
+                {label}
+              </Link>
+            ))}
             <SignOutButton />
           </nav>
         </div>

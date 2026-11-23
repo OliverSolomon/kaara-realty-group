@@ -363,6 +363,7 @@ export const SEARCH_QUERY = defineQuery(`*[_type == "district"] {
   "properties": *[_type == "property" && district._ref == ^._id] {
     _id,
     title,
+    bedrooms,
     "slug": slug.current,
     "imageUrl": coalesce(
       image.asset->url, 

@@ -17,12 +17,15 @@ import EnquiryForm from "@/components/site/EnquiryForm";
 import Reveal from "@/components/site/Reveal";
 import { placeholderImage } from "@/lib/site";
 import { sanityImage } from "@/lib/sanityImage";
+import { resolveMeta, shareImage } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = resolveMeta({
   title: "World of Kaara | Kaara & Co Realty Group",
   description:
     "Kaara & Co Realty Group exists to restore trust in property investment in Nairobi through education, selective developer partnerships and long term after sales management.",
-};
+  path: "/world-of-kaara",
+  image: shareImage("page", "world-of-kaara"),
+});
 
 /** Shown until the World of Kaara document is filled in from the Studio. */
 const FALLBACK = {

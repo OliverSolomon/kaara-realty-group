@@ -10,6 +10,8 @@ import {
   realEstateAgentSchema,
   graph,
   SITE_URL,
+  SHARE_ORIGIN,
+  shareImage,
   DEFAULT_KEYWORDS,
 } from "@/lib/seo";
 import { VisualEditing } from "next-sanity/visual-editing";
@@ -47,12 +49,12 @@ export const metadata: Metadata = {
     siteName: 'Kaara Realty Group',
     images: [
       {
-        url: 'https://kaararealtygroup.com/og-image.png',
-        secureUrl: 'https://kaararealtygroup.com/og-image.png',
+        url: shareImage('page', 'home'),
+        secureUrl: shareImage('page', 'home'),
         width: 1200,
         height: 630,
         alt: 'Kaara Realty Group Luxury Real Estate',
-        type: 'image/png',
+        type: 'image/jpeg',
       },
     ],
     locale: 'en_KE',
@@ -62,7 +64,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Kaara Realty Group | Luxury Real Estate',
     description: 'The premier luxury real estate brokerage in Kenya, specializing in vertical luxury.',
-    images: ['https://kaararealtygroup.com/og-image.png'],
+    images: [shareImage('page', 'home')],
   },
   robots: {
     index: true,
@@ -115,7 +117,7 @@ export default async function RootLayout({
         <AttributionCapture />
         <WhatsAppButton
           number={siteSettings?.contact?.whatsapp || siteSettings?.socials?.whatsapp}
-          siteUrl={SITE_URL}
+          siteUrl={SHARE_ORIGIN}
         />
         <SanityLive />
         {(await draftMode()).isEnabled && <VisualEditing />}

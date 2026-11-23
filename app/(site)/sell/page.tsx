@@ -17,12 +17,15 @@ import ToolsPanel from "@/components/site/ToolsPanel";
 import Reveal from "@/components/site/Reveal";
 import { placeholderImage } from "@/lib/site";
 import type { Listing } from "@/components/site/ListingCard";
+import { resolveMeta, shareImage } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = resolveMeta({
   title: "Sell | Kaara & Co Realty Group",
   description:
     "Owner vetted resale units in Nairobi. Title and ownership are verified before a unit is listed, and viewings are arranged with the owner present.",
-};
+  path: "/sell",
+  image: shareImage("page", "sell"),
+});
 
 const VETTING = [
   {

@@ -30,6 +30,25 @@ export const SITE_SHORT_NAME = 'Kaara Realty Group'
 export const SITE_TAGLINE = 'Luxury Real Estate in Kenya'
 export const OG_IMAGE = `${SITE_URL}/og-image.png`
 
+/** The host that answers directly. The bare domain redirects, which link previews can drop. */
+export const SHARE_ORIGIN = SITE_URL.replace(
+  /^https:\/\/kaararealtygroup\.com$/,
+  'https://www.kaararealtygroup.com'
+)
+
+/** The generated 1200x630 card for a page, listing or article. */
+export function shareImage(kind: 'page' | 'property' | 'insight', slug: string) {
+  let clean = slug
+  try {
+    clean = decodeURIComponent(slug)
+  } catch {
+    // Keep the raw value. The check below rejects anything malformed.
+  }
+  return /^[a-z0-9][a-z0-9 -]{0,199}$/i.test(clean)
+    ? `${SHARE_ORIGIN}/og/${kind}/${encodeURIComponent(clean)}`
+    : `${SHARE_ORIGIN}/og/page/home`
+}
+
 export const ORG_ID = `${SITE_URL}/#organization`
 export const AGENT_ID = `${SITE_URL}/#agent`
 export const WEBSITE_ID = `${SITE_URL}/#website`
@@ -459,7 +478,7 @@ export function resolveMeta(opts: {
 }): Metadata {
   const title = opts.seo?.metaTitle || opts.title
   const description = opts.seo?.metaDescription || opts.description
-  const image = opts.seo?.ogImage || opts.image || OG_IMAGE
+  const image = opts.seo?.ogImage || opts.image || shareImage('page', 'home')
   const url = absoluteUrl(opts.path)
   const keywords = opts.seo?.keywords?.length
     ? opts.seo.keywords
@@ -481,7 +500,14 @@ export function resolveMeta(opts: {
       locale: 'en_KE',
       type: opts.type || 'website',
       ...(opts.publishedTime ? { publishedTime: opts.publishedTime } : {}),
-      images: [{ url: image, width: 1200, height: 630, alt: title }],
+      images: [
+        {
+          url: image,
+          alt: title,
+          // An image an editor uploaded can be any shape, so only generated cards state a size.
+          ...(opts.seo?.ogImage ? {} : { width: 1200, height: 630, type: 'image/jpeg' }),
+        },
+      ],
     },
     twitter: {
       card: 'summary_large_image',

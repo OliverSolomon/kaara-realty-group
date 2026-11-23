@@ -10,6 +10,7 @@ import {
   propertyProductSchema,
   realEstateListingSchema,
   resolveMeta,
+  shareImage,
   SITE_NAME,
 } from "@/lib/seo";
 
@@ -52,12 +53,21 @@ function listingCopy(property: {
   return { description, keywords, place };
 }
 
+/** Route params arrive URL-encoded, and some published slugs contain spaces. */
+function decodeSlug(slug: string) {
+  try {
+    return decodeURIComponent(slug);
+  } catch {
+    return slug;
+  }
+}
+
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
-  const { slug } = await params;
+  const slug = decodeSlug((await params).slug);
   const { data: property } = await sanityFetch({
     query: PROPERTY_DETAIL_QUERY,
     params: { slug },
@@ -72,13 +82,13 @@ export async function generateMetadata({
     description,
     keywords,
     path: `/properties/${slug}`,
-    image: property.imageUrl || undefined,
+    image: shareImage("property", slug),
     type: "website",
   });
 }
 
 export default async function PropertyPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
+  const slug = decodeSlug((await params).slug);
 
   const [{ data: property }, { data: siteSettings }] = await Promise.all([
     sanityFetch({ query: PROPERTY_DETAIL_QUERY, params: { slug } }),

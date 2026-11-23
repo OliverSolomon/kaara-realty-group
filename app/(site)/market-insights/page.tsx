@@ -7,12 +7,15 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Reveal from "@/components/site/Reveal";
 import { INSIGHT_CATEGORY_LABELS, placeholderImage } from "@/lib/site";
+import { resolveMeta, shareImage } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = resolveMeta({
   title: "Market Insights | Kaara & Co Realty Group",
   description:
     "Research on supply, pricing, handover performance and investment strategy across the Nairobi property market.",
-};
+  path: "/market-insights",
+  image: shareImage("page", "market-insights"),
+});
 
 function formatDate(value?: string) {
   if (!value) return null;

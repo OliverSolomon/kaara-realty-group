@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useSyncExternalStore } from "react";
 import { PiCaretDown, PiMagnifyingGlass, PiSlidersHorizontal, PiX } from "react-icons/pi";
 import ListingGrid from "@/components/site/ListingGrid";
 import type { Listing } from "@/components/site/ListingCard";
@@ -40,12 +40,21 @@ function amountInKes(
   return convertTo(numeric, base, "KES");
 }
 
+const subscribeToNothing = () => () => undefined;
+const readUrlSearch = () => {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("search") || params.get("district") || "";
+};
+
 export default function PropertiesClient({ listings }: { listings: Listing[] }) {
   const { convertTo, formatPrice } = useCurrency();
   const { t } = useLanguage();
 
   const [section, setSection] = useState<Section>("all");
-  const [query, setQuery] = useState("");
+  // A district link fills the search. This keeps the full list in the prerendered page.
+  const urlSearch = useSyncExternalStore(subscribeToNothing, readUrlSearch, () => "");
+  const [typedQuery, setQuery] = useState<string | null>(null);
+  const query = typedQuery ?? urlSearch;
   const [types, setTypes] = useState<string[]>([]);
   const [minBeds, setMinBeds] = useState<number | null>(null);
   const [maxPrice, setMaxPrice] = useState<number | null>(null);

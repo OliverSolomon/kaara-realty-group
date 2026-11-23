@@ -7,12 +7,15 @@ import Footer from "@/components/Footer";
 import EnquiryForm from "@/components/site/EnquiryForm";
 import ContactActions from "@/components/site/ContactActions";
 import { DEFAULT_CONTACT, telLink } from "@/lib/site";
+import { resolveMeta, shareImage } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = resolveMeta({
   title: "Contact | Kaara & Co Realty Group",
   description:
     "Speak to a Kaara advisor about buying, selling or staying in Nairobi. WhatsApp, phone and email, with a reply inside one working day.",
-};
+  path: "/contact",
+  image: shareImage("page", "contact"),
+});
 
 export default async function ContactPage() {
   const { data: settings } = await sanityFetch({ query: SITE_SETTINGS_QUERY });

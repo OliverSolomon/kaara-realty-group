@@ -4,7 +4,8 @@ import { getPool } from "@/lib/db";
 import type { Attribution } from "@/lib/leadTypes";
 
 export const BOT_PATTERN = /bot|crawl|spider|slurp|preview|headless|lighthouse|monitor|curl|wget/i;
-const SLUG_RE = /^[a-z0-9][a-z0-9-]{0,199}$/i;
+// Some published listing addresses contain spaces.
+const SLUG_RE = /^[a-z0-9][a-z0-9 -]{0,199}$/i;
 
 export function clip(value: unknown, max = 300): string | null {
   if (typeof value !== "string" && typeof value !== "number") return null;

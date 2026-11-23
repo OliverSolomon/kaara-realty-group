@@ -15,6 +15,7 @@ import {
   faqPageSchema,
   realEstateAgentSchema,
   resolveMeta,
+  shareImage,
   PROPERTY_FAQS,
   SITE_NAME,
 } from "@/lib/seo";
@@ -24,6 +25,7 @@ export const metadata: Metadata = resolveMeta({
   description:
     "Browse verified luxury properties for sale in Kenya — apartments, villas and gated-community homes across Westlands, Kilimani, Karen, Runda, Muthaiga and Lavington. Every listing title-checked before publication.",
   path: "/properties",
+  image: shareImage("page", "properties"),
   keywords: [
     "luxury properties in Kenya",
     "premium properties Kenya",
