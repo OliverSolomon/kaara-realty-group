@@ -1,6 +1,7 @@
 "use client";
 
 import { PiWhatsappLogo, PiPhone } from "react-icons/pi";
+import { trackWhatsAppClick } from "@/lib/attribution";
 import { DEFAULT_CONTACT, telLink, whatsappLink } from "@/lib/site";
 
 interface ContactActionsProps {
@@ -9,6 +10,8 @@ interface ContactActionsProps {
   subject?: string;
   /** Page link added to the WhatsApp message, so the advisor sees the exact listing. */
   link?: string;
+  /** Set on listing pages so a click is credited to that property. */
+  listingSlug?: string;
   className?: string;
   variant?: "solid" | "quiet";
 }
@@ -17,6 +20,7 @@ export default function ContactActions({
   contact,
   subject,
   link,
+  listingSlug,
   className = "",
   variant = "solid",
 }: ContactActionsProps) {
@@ -32,6 +36,15 @@ export default function ContactActions({
       <a
         data-whatsapp-cta
         href={whatsappLink(contact?.whatsapp, message)}
+        onClick={(event) =>
+          trackWhatsAppClick(event, {
+            number: contact?.whatsapp,
+            message,
+            placement: listingSlug ? "listing_card" : "page",
+            listingSlug,
+            listingTitle: listingSlug ? subject : undefined,
+          })
+        }
         target="_blank"
         rel="noopener noreferrer"
         className={

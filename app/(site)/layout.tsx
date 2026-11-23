@@ -20,6 +20,7 @@ import StylesheetGuard from "@/components/StylesheetGuard";
 import { CurrencyProvider } from "@/context/CurrencyContext";
 import { LanguageProvider } from "@/context/LanguageContext";
 import WhatsAppButton from "@/components/site/WhatsAppButton";
+import AttributionCapture from "@/components/site/AttributionCapture";
 
 const playfair = Playfair_Display({
   variable: "--font-playfair",
@@ -111,6 +112,7 @@ export default async function RootLayout({
             {children}
           </CurrencyProvider>
         </LanguageProvider>
+        <AttributionCapture />
         <WhatsAppButton
           number={siteSettings?.contact?.whatsapp || siteSettings?.socials?.whatsapp}
           siteUrl={SITE_URL}

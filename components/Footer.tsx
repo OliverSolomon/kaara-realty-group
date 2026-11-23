@@ -8,6 +8,7 @@ import { FaFacebookF, FaInstagram, FaLinkedinIn } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { PRIMARY_NAV, SECONDARY_NAV, DEFAULT_CONTACT, telLink } from "@/lib/site";
 import { useLanguage } from "@/context/LanguageContext";
+import { readAttribution } from "@/lib/attribution";
 
 interface FooterProps {
   settings?: {
@@ -51,7 +52,11 @@ export default function Footer({ settings }: FooterProps) {
       const response = await fetch("/api/newsletter", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({
+          email,
+          path: window.location.pathname,
+          attribution: readAttribution(),
+        }),
       });
       if (!response.ok) throw new Error();
       setStatus("done");

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { PiCheckCircle, PiWarningCircle, PiArrowRight } from "react-icons/pi";
+import { readAttribution } from "@/lib/attribution";
 
 export type EnquiryKind = "buy" | "viewing" | "booking" | "tour";
 
@@ -9,6 +10,7 @@ interface EnquiryFormProps {
   kind: EnquiryKind;
   /** Listing this enquiry refers to, when it comes from a listing page. */
   listing?: string;
+  listingSlug?: string;
   className?: string;
 }
 
@@ -117,7 +119,7 @@ const CONFIG: Record<
 const FIELD_CLASS =
   "w-full bg-transparent border border-white/15 px-4 py-3 text-sm text-[#efebe3] outline-none transition-colors duration-200 focus:border-[#4f9d8f] placeholder:text-white/35 disabled:opacity-50";
 
-export default function EnquiryForm({ kind, listing, className = "" }: EnquiryFormProps) {
+export default function EnquiryForm({ kind, listing, listingSlug, className = "" }: EnquiryFormProps) {
   const config = CONFIG[kind];
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [error, setError] = useState("");
@@ -151,7 +153,14 @@ export default function EnquiryForm({ kind, listing, className = "" }: EnquiryFo
       const response = await fetch("/api/enquiry", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ kind, listing, ...data }),
+        body: JSON.stringify({
+          kind,
+          listing,
+          listingSlug,
+          path: window.location.pathname,
+          attribution: readAttribution(),
+          ...data,
+        }),
       });
       const body = await response.json();
       if (!response.ok) throw new Error(body.error || "We could not send that request");
@@ -186,7 +195,14 @@ export default function EnquiryForm({ kind, listing, className = "" }: EnquiryFo
   const sending = status === "sending";
 
   return (
-    <form onSubmit={onSubmit} noValidate className={className}>
+    <form onSubmit={onSubmit} noValidate className={`relative ${className}`}>
+      <input
+        name="website"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        className="absolute -left-[9999px] h-px w-px opacity-0"
+      />
       <h3 className="font-serif text-2xl leading-tight text-[#efebe3] sm:text-3xl">
         {config.heading}
       </h3>

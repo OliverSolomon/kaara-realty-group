@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { PiWhatsappLogo } from "react-icons/pi";
+import { trackWhatsAppClick } from "@/lib/attribution";
 import { whatsappLink } from "@/lib/site";
 
 interface WhatsAppButtonProps {
@@ -35,9 +36,17 @@ function FloatingButton({ number, siteUrl, pathname }: WhatsAppButtonProps & { p
     return () => observer.disconnect();
   }, []);
 
+  const message = messageFor(pathname, siteUrl);
+  const listingSlug = pathname.startsWith("/properties/")
+    ? pathname.slice("/properties/".length).split("/")[0]
+    : undefined;
+
   return (
     <a
-      href={whatsappLink(number, messageFor(pathname, siteUrl))}
+      href={whatsappLink(number, message)}
+      onClick={(event) =>
+        trackWhatsAppClick(event, { number, message, placement: "floating", listingSlug })
+      }
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Chat with Kaara on WhatsApp"

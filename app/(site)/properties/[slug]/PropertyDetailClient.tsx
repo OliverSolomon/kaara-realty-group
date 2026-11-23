@@ -24,6 +24,7 @@ import CurrencyConverter from "@/components/site/CurrencyConverter";
 import MortgageCalculator from "@/components/site/MortgageCalculator";
 import EnquiryForm from "@/components/site/EnquiryForm";
 import ContactActions from "@/components/site/ContactActions";
+import PaymentPlanOffer from "@/components/site/PaymentPlanOffer";
 import ListingCard, { type Listing } from "@/components/site/ListingCard";
 import Reveal from "@/components/site/Reveal";
 import ViewTracker from "@/components/site/ViewTracker";
@@ -278,8 +279,11 @@ export default function PropertyDetailClient({ property }: { property: Property 
                   contact={settings?.contact}
                   subject={property?.title}
                   link={property?.slug ? `${SITE_URL}/properties/${property.slug}` : undefined}
+                  listingSlug={property?.slug}
                   className="mt-8"
                 />
+
+                {!isStay && <PaymentPlanOffer title={property?.title} slug={property?.slug} />}
 
                 <a
                   href="#enquire"
@@ -452,7 +456,7 @@ export default function PropertyDetailClient({ property }: { property: Property 
         {/* Enquiry */}
         <section id="enquire" className="border-t border-white/10">
           <div className="mx-auto max-w-[1500px] px-5 py-20 lg:px-10 lg:py-28">
-            <EnquiryForm kind={enquiryKind} listing={property?.title} />
+            <EnquiryForm kind={enquiryKind} listing={property?.title} listingSlug={property?.slug} />
           </div>
         </section>
 
