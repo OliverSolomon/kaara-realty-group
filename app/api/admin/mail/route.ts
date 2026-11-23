@@ -3,6 +3,7 @@ import MailComposer from "nodemailer/lib/mail-composer";
 import { adminFromRequest, audit } from "@/lib/auth/admin";
 import { encryptSecret } from "@/lib/crypto";
 import { getPool } from "@/lib/db";
+import { connectDetected, describeMail } from "@/lib/mail/detect";
 import { oauthConfigured } from "@/lib/mail/oauth";
 import {
   assertPublicHost,
@@ -246,7 +247,7 @@ async function send(account: MailAccount, body: Body, actor: string) {
 }
 
 export async function GET(request: Request) {
-  const admin = await adminFromRequest(request);
+  const admin = await adminFromRequest(request, "mail");
   if (!admin) return bad("Unauthorized", 401);
   const params = new URL(request.url).searchParams;
   const uid = Number(params.get("uid"));
@@ -282,7 +283,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const admin = await adminFromRequest(request);
+  const admin = await adminFromRequest(request, "mail");
   if (!admin) return bad("Unauthorized", 401);
   try {
     const body = (await request.json()) as Body;
@@ -302,28 +303,38 @@ export async function POST(request: Request) {
           snippets: snippets.rows,
         });
       }
+      case "detectMail": {
+        const email = text(body.email, 200).trim().toLowerCase();
+        if (!EMAIL_RE.test(email)) return bad("Enter a valid email address.");
+        return ok(await describeMail(email));
+      }
       case "addAccount": {
         const email = text(body.email, 200).trim().toLowerCase();
         const password = text(body.password, 500);
         if (!EMAIL_RE.test(email)) return bad("Enter a valid email address.");
         if (!password) return bad("Enter the mailbox password.");
-        const detected = detectServers(email);
-        const imapHost = text(body.imapHost, 253).trim().toLowerCase() || detected.imap[0];
-        const smtpHost = text(body.smtpHost, 253).trim().toLowerCase() || detected.smtp[0];
-        const imapPort = Number(body.imapPort) || detected.imap[1];
-        const smtpPort = Number(body.smtpPort) || detected.smtp[1];
-        if (![993, 143].includes(imapPort) || ![465, 587].includes(smtpPort)) return bad("Use standard mail ports.");
-        await Promise.all([assertPublicHost(imapHost), assertPublicHost(smtpHost)]);
-        const config = {
-          imap_host: imapHost,
-          imap_port: imapPort,
-          imap_secure: imapPort === 993,
-          smtp_host: smtpHost,
-          smtp_port: smtpPort,
-          smtp_secure: smtpPort === 465,
-          username: text(body.username, 200).trim() || email,
-        };
-        await testConnection(config, { pass: password });
+        const manualHost = text(body.imapHost, 253).trim().toLowerCase();
+        let config;
+        if (manualHost) {
+          const detected = detectServers(email);
+          const smtpHost = text(body.smtpHost, 253).trim().toLowerCase() || manualHost;
+          const imapPort = Number(body.imapPort) || detected.imap[1];
+          const smtpPort = Number(body.smtpPort) || detected.smtp[1];
+          if (![993, 143].includes(imapPort) || ![465, 587].includes(smtpPort)) return bad("Use standard mail ports.");
+          await Promise.all([assertPublicHost(manualHost), assertPublicHost(smtpHost)]);
+          config = {
+            imap_host: manualHost,
+            imap_port: imapPort,
+            imap_secure: imapPort === 993,
+            smtp_host: smtpHost,
+            smtp_port: smtpPort,
+            smtp_secure: smtpPort === 465,
+            username: text(body.username, 200).trim() || email,
+          };
+          await testConnection(config, { pass: password });
+        } else {
+          config = await connectDetected(email, { pass: password });
+        }
         const { rows } = await db().query(
           `INSERT INTO mail_accounts (label, email, username, password_enc, imap_host, imap_port, imap_secure, smtp_host, smtp_port, smtp_secure, connected_by)
            VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)

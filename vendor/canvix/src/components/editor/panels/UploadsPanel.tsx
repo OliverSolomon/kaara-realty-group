@@ -192,14 +192,14 @@ export function UploadsPanel() {
   }
 
   return (
-    <div className="flex flex-col h-full bg-[#16181D] text-[#EDEEF2]">
-      <div className="px-4 pt-4 pb-3 border-b border-white/[0.07] shrink-0">
+    <div className="flex flex-col h-full bg-[#FFFFFF] text-[#0E1318]">
+      <div className="px-4 pt-4 pb-3 border-b border-black/[0.07] shrink-0">
         <h3 className="font-bold text-sm">Uploads</h3>
-        <p className="text-xs text-white/50 mt-0.5">
+        <p className="text-xs text-[#0E1318]/50 mt-0.5">
           {hasImageSelected ? 'Click a file to replace the selected image.' : 'Your files follow your account.'}
         </p>
         {hasImageSelected && (
-          <div className="mt-2 inline-flex items-center gap-1.5 text-[11px] font-semibold text-[#02C0CC] bg-[#02C0CC]/10 border border-[#02C0CC]/25 rounded-full px-2.5 py-1">
+          <div className="mt-2 inline-flex items-center gap-1.5 text-[11px] font-semibold text-[#00C4CC] bg-[#00C4CC]/10 border border-[#00C4CC]/25 rounded-full px-2.5 py-1">
             <Replace size={11} /> Replace mode
           </div>
         )}
@@ -214,11 +214,11 @@ export function UploadsPanel() {
       >
         <button
           onClick={() => fileRef.current?.click()}
-          className="w-full rounded-xl border-2 border-dashed border-white/15 hover:border-[#7630D7] hover:bg-[#7630D7]/10 transition-all py-8 flex flex-col items-center gap-2 text-white/50"
+          className="w-full rounded-xl border-2 border-dashed border-white/15 hover:border-[#7D2AE8] hover:bg-[#7D2AE8]/10 transition-all py-8 flex flex-col items-center gap-2 text-white/50"
           aria-label="Upload images and media"
         >
           <Upload size={22} />
-          <span className="text-sm font-medium text-white/80">Click or drag files here</span>
+          <span className="text-sm font-medium text-[#0E1318]/80">Click or drag files here</span>
           <span className="text-xs">PNG, JPG, SVG, GIF — plus MP3/WAV audio &amp; MP4/WebM video</span>
         </button>
         <input
@@ -236,52 +236,52 @@ export function UploadsPanel() {
 
         {mediaUploads.length > 0 && (
           <div className="mt-4 flex flex-col gap-2">
-            <h4 className="text-xs font-semibold text-white/50">Uploading</h4>
+            <h4 className="text-xs font-semibold text-[#0E1318]/50">Uploading</h4>
             {mediaUploads.map((u) => (
               <div
                 key={u.key}
                 className={cn(
                   'rounded-lg border px-3 py-2.5 flex items-center gap-2.5',
-                  u.failed ? 'border-red-500/40 bg-red-500/10' : 'border-white/10 bg-white/[0.04]',
+                  u.failed ? 'border-red-500/40 bg-red-500/10' : 'border-black/10 bg-black/[0.04]',
                 )}
               >
                 {u.failed ? (
                   <Film size={16} className="text-red-400 shrink-0" />
                 ) : (
-                  <Loader2 size={16} className="text-[#02C0CC] shrink-0 animate-spin" />
+                  <Loader2 size={16} className="text-[#00C4CC] shrink-0 animate-spin" />
                 )}
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-1.5">
-                    {u.kind === 'audio' ? <Music size={11} className="text-white/50 shrink-0" /> : null}
-                    <span className="text-xs truncate text-white/80">{u.name}</span>
+                    {u.kind === 'audio' ? <Music size={11} className="text-[#0E1318]/50 shrink-0" /> : null}
+                    <span className="text-xs truncate text-[#0E1318]/80">{u.name}</span>
                     {u.failed ? <span className="text-[10px] font-semibold text-red-400 shrink-0">failed</span> : null}
                   </div>
                   {!u.failed && (
-                    <div className="mt-1.5 h-1 rounded-full bg-white/10 overflow-hidden">
+                    <div className="mt-1.5 h-1 rounded-full bg-black/10 overflow-hidden">
                       <div
-                        className="h-full rounded-full bg-[#02C0CC] transition-all"
+                        className="h-full rounded-full bg-[#00C4CC] transition-all"
                         style={{ width: `${Math.round(Math.max(0.04, u.ratio) * 100)}%` }}
                       />
                     </div>
                   )}
                 </div>
-                {!u.failed && <span className="text-[10px] text-white/40 shrink-0 tabular-nums">{Math.round(u.ratio * 100)}%</span>}
+                {!u.failed && <span className="text-[10px] text-[#0E1318]/40 shrink-0 tabular-nums">{Math.round(u.ratio * 100)}%</span>}
               </div>
             ))}
           </div>
         )}
 
         {items === null ? (
-          <div className="mt-6 flex flex-col items-center py-6 text-white/35">
+          <div className="mt-6 flex flex-col items-center py-6 text-[#0E1318]/35">
             <Loader2 size={22} className="animate-spin" />
             <p className="text-xs mt-2.5">Loading your library…</p>
           </div>
         ) : items.length > 0 ? (
           <>
             <div className="flex items-center justify-between mt-6 mb-2">
-              <h4 className="text-xs font-semibold text-white/50">Your library</h4>
+              <h4 className="text-xs font-semibold text-[#0E1318]/50">Your library</h4>
               {quota && (
-                <span className="text-[10px] text-white/40 tabular-nums">
+                <span className="text-[10px] text-[#0E1318]/40 tabular-nums">
                   {formatBytes(quota.used)} of {formatBytes(quota.total)}
                 </span>
               )}
@@ -302,17 +302,17 @@ export function UploadsPanel() {
                           if (e.key === 'Enter') void commitRename()
                           if (e.key === 'Escape') setRenaming(null)
                         }}
-                        className="w-full rounded-lg border border-[#02C0CC]/60 bg-[#0F1015] px-2 py-1.5 text-xs text-white outline-none"
+                        className="w-full rounded-lg border border-[#00C4CC]/60 bg-[#EBECF0] px-2 py-1.5 text-xs text-[#0E1318] outline-none"
                         aria-label="Rename file"
                       />
                     ) : (
                       <button
                         onClick={() => void insertItem(item)}
                         className={cn(
-                          'w-full rounded-lg overflow-hidden border transition-all aspect-square bg-[#0F1015]',
+                          'w-full rounded-lg overflow-hidden border transition-all aspect-square bg-[#EBECF0]',
                           hasImageSelected
-                            ? 'border-[#02C0CC]/60 hover:border-[#02C0CC]'
-                            : 'border-white/10 hover:border-[#7630D7]'
+                            ? 'border-[#00C4CC]/60 hover:border-[#00C4CC]'
+                            : 'border-black/10 hover:border-[#7D2AE8]'
                         )}
                         title={item.name ?? undefined}
                         aria-label={hasImageSelected ? `Replace selected image with ${item.name ?? 'file'}` : `Add ${item.name ?? 'file'} to canvas`}
@@ -320,7 +320,7 @@ export function UploadsPanel() {
                         {isImage ? (
                           <img src={`/api/admin/studio/media/${item.id}`} alt={item.name ?? 'Uploaded'} className="w-full h-full object-cover" loading="lazy" />
                         ) : (
-                          <span className="w-full h-full flex flex-col items-center justify-center gap-1.5 text-white/45">
+                          <span className="w-full h-full flex flex-col items-center justify-center gap-1.5 text-[#0E1318]/45">
                             {isAudio ? <Music size={20} strokeWidth={1.5} /> : <Film size={20} strokeWidth={1.5} />}
                             <span className="text-[9px] px-1 text-center leading-tight break-all line-clamp-2">
                               {(item.name ?? 'file').replace(/\.[^.]+$/, '')}
@@ -361,12 +361,12 @@ export function UploadsPanel() {
                 )
               })}
             </div>
-            <p className="mt-3 text-[11px] text-white/35 leading-relaxed">
+            <p className="mt-3 text-[11px] text-[#0E1318]/35 leading-relaxed">
               Files live in your account — insert them in any design. Removing a file never breaks designs using it.
             </p>
           </>
         ) : (
-          <div className="mt-6 flex flex-col items-center py-6 text-white/35">
+          <div className="mt-6 flex flex-col items-center py-6 text-[#0E1318]/35">
             <ImageIcon size={28} strokeWidth={1.4} />
             <p className="text-xs mt-2.5 text-center leading-relaxed">No uploads yet.<br />Your files will appear here.</p>
           </div>

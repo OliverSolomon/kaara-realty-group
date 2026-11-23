@@ -46,9 +46,9 @@ const EFFECT_PREVIEW: Record<string, React.CSSProperties> = {
   glow: { textShadow: '0 0 10px rgba(255,255,255,0.9)' },
   hollow: { color: 'transparent', WebkitTextStroke: '0.8px #fff' },
   outline: { WebkitTextStroke: '0.7px #fff' },
-  background: { background: '#EFEFEF', color: '#7630D7', padding: '2px 6px', borderRadius: 4 },
+  background: { background: '#EFEFEF', color: '#7D2AE8', padding: '2px 6px', borderRadius: 4 },
   splice: { textShadow: '0 -2px 0 rgba(255,255,255,0.4), 0 2px 0 rgba(255,255,255,0.4)' },
-  neon: { textShadow: '0 0 6px #7630D7, 0 0 14px #7630D7, 0 0 22px #9954FF' },
+  neon: { textShadow: '0 0 6px #7D2AE8, 0 0 14px #7D2AE8, 0 0 22px #9954FF' },
   echo: { textShadow: '4px 4px 0 rgba(255,255,255,0.35)' },
 }
 
@@ -89,7 +89,7 @@ export function ContextToolbar({ variant = 'topbar' }: { variant?: 'topbar' | 'm
     <div
       className={cn(
         'flex items-center gap-0.5 min-w-0 overflow-x-auto cv-scroll-dark',
-        isTopbar ? 'h-14 items-center px-1' : 'h-14 items-center px-2 bg-[#16181D] border-t border-white/[0.09]'
+        isTopbar ? 'h-14 items-center px-1' : 'h-14 items-center px-2 bg-[#FFFFFF] border-t border-black/[0.09]'
       )}
       aria-label="Selected element common controls"
       style={{ scrollbarWidth: 'none' }}
@@ -97,7 +97,7 @@ export function ContextToolbar({ variant = 'topbar' }: { variant?: 'topbar' | 'm
       {/* ── multi-select ─────────────────────────────────────── */}
       {isMulti ? (
         <>
-          <span className="text-[12px] font-semibold text-white/85 px-2 shrink-0">{sel.length} selected</span>
+          <span className="text-[12px] font-semibold text-[#0E1318]/85 px-2 shrink-0">{sel.length} selected</span>
           <TBtn onClick={() => state.groupSelection()} disabled={!canGroup} title="Group (Ctrl+G)" ariaLabel="Group">
             <Group size={15} />
           </TBtn>
@@ -129,7 +129,7 @@ export function ContextToolbar({ variant = 'topbar' }: { variant?: 'topbar' | 'm
               max={400}
               onChange={(e) => { const v = Number(e.target.value); if (v >= 6 && v <= 400) updateLive(ids, { fontSize: v }) }}
               onBlur={() => update(ids, { fontSize: text.fontSize })}
-              className="h-8 w-10 bg-white/[0.06] border-y border-white/10 text-white text-[12px] text-center outline-none focus:border-[#7630D7] [color-scheme:dark]"
+              className="h-8 w-10 bg-black/[0.06] border-y border-black/10 text-[#0E1318] text-[12px] text-center outline-none focus:border-[#7D2AE8] [color-scheme:dark]"
               aria-label="Font size"
             />
             <TBtn onClick={() => update(ids, { fontSize: Math.min(400, text.fontSize + 2) })} title="Increase font size" ariaLabel="Increase font size" className="!rounded-l-none">
@@ -194,7 +194,7 @@ export function ContextToolbar({ variant = 'topbar' }: { variant?: 'topbar' | 'm
                   <button
                     key={a}
                     onClick={() => update(ids, { align: a })}
-                    className={cn('flex items-center justify-center gap-1.5 h-8 rounded-lg text-[11px] font-medium capitalize', text.align === a ? 'bg-white/[0.16] text-white' : 'text-white/75 hover:bg-white/[0.08]')}
+                    className={cn('flex items-center justify-center gap-1.5 h-8 rounded-lg text-[11px] font-medium capitalize', text.align === a ? 'bg-black/[0.16] text-[#0E1318]' : 'text-[#0E1318]/75 hover:bg-black/[0.08]')}
                   >
                     <I size={13} /> <span className="w-[42px] text-left">{a}</span>
                   </button>
@@ -224,7 +224,7 @@ export function ContextToolbar({ variant = 'topbar' }: { variant?: 'topbar' | 'm
               </button>
             )}
           >
-            <div className="text-[12px] font-bold text-white/90 mb-1.5">List style</div>
+            <div className="text-[12px] font-bold text-[#0E1318]/90 mb-1.5">List style</div>
             <div className="flex gap-1 mb-2.5">
               <TBtn onClick={() => update(ids, { listStyle: 'none' })} dataActive={!text.listStyle || text.listStyle === 'none'} title="No list" ariaLabel="No list">
                 <List size={13} className="opacity-40 line-through" />
@@ -236,7 +236,7 @@ export function ContextToolbar({ variant = 'topbar' }: { variant?: 'topbar' | 'm
                 <ListOrdered size={13} />
               </TBtn>
             </div>
-            <div className="text-[12px] font-bold text-white/90 mb-1.5">Direction</div>
+            <div className="text-[12px] font-bold text-[#0E1318]/90 mb-1.5">Direction</div>
             <div className="flex gap-1 mb-2.5">
               <TBtn onClick={() => update(ids, { direction: 'ltr' })} dataActive={text.direction !== 'rtl'} title="Left to right" ariaLabel="Left to right">
                 <span className="text-[11px] font-semibold px-1">LTR</span>
@@ -245,13 +245,13 @@ export function ContextToolbar({ variant = 'topbar' }: { variant?: 'topbar' | 'm
                 <Languages size={13} />
               </TBtn>
             </div>
-            <label className="flex items-center justify-between text-[12px] text-white/80 mb-1 cursor-pointer" data-testid="autofit-toggle">
+            <label className="flex items-center justify-between text-[12px] text-[#0E1318]/80 mb-1 cursor-pointer" data-testid="autofit-toggle">
               <span className="flex items-center gap-1.5">
                 <Shrink size={13} /> Auto-fit
               </span>
-              <input type="checkbox" checked={!!text.autoFit} onChange={(e) => update(ids, { autoFit: e.target.checked })} className="accent-[#7630D7]" />
+              <input type="checkbox" checked={!!text.autoFit} onChange={(e) => update(ids, { autoFit: e.target.checked })} className="accent-[#7D2AE8]" />
             </label>
-            <div className="text-[11px] text-white/40 leading-snug">
+            <div className="text-[11px] text-[#0E1318]/40 leading-snug">
               Shrinks the font so the text fits its box — never grows past the set size.
             </div>
           </ToolbarPopover>
@@ -266,12 +266,12 @@ export function ContextToolbar({ variant = 'topbar' }: { variant?: 'topbar' | 'm
             )}
           >
             <div className="flex items-center justify-between mb-1.5">
-              <div className="text-[12px] font-bold text-white/90">Curved text</div>
-              <button className="text-[11px] text-white/60 hover:text-white" onClick={() => update(ids, { curve: 0 })}>Reset</button>
+              <div className="text-[12px] font-bold text-[#0E1318]/90">Curved text</div>
+              <button className="text-[11px] text-[#0E1318]/60 hover:text-[#0E1318]" onClick={() => update(ids, { curve: 0 })}>Reset</button>
             </div>
             <SliderRow label="Curve" value={text.curve ?? 0} min={-180} max={180} step={5} onChange={(v) => updateLive(ids, { curve: v })} onCommit={() => update(ids, { curve: text.curve ?? 0 })} format={(v) => `${v}°`} />
             <div className="flex justify-center pt-1.5">
-              <span className="text-[15px] text-white/85" style={{ fontFamily: text.fontFamily, color: text.fill }} aria-hidden="true">
+              <span className="text-[15px] text-[#0E1318]/85" style={{ fontFamily: text.fontFamily, color: text.fill }} aria-hidden="true">
                 {(text.curve ?? 0) >= 0 ? '◠' : '◡'} Curved preview
               </span>
             </div>
@@ -297,7 +297,7 @@ export function ContextToolbar({ variant = 'topbar' }: { variant?: 'topbar' | 'm
               <Sparkles size={14} /> <span className="text-[12px] hidden lg:inline">Effects</span>
             </button>
           )}>
-            <div className="text-[12px] font-bold text-white/90 mb-2">Text effects</div>
+            <div className="text-[12px] font-bold text-[#0E1318]/90 mb-2">Text effects</div>
             <div className="grid grid-cols-3 gap-1.5">
               {TEXT_EFFECTS.map((fx) => (
                 <button
@@ -305,20 +305,20 @@ export function ContextToolbar({ variant = 'topbar' }: { variant?: 'topbar' | 'm
                   onClick={() => update(ids, { effect: fx.id })}
                   className={cn(
                     'flex flex-col items-center justify-center rounded-lg py-2 gap-1 border transition-colors',
-                    text.effect === fx.id ? 'bg-white/[0.14] border-white/30' : 'border-white/[0.09] hover:bg-white/[0.07]'
+                    text.effect === fx.id ? 'bg-black/[0.14] border-black/30' : 'border-black/[0.09] hover:bg-black/[0.07]'
                   )}
                   aria-label={`Effect ${fx.label}`}
                 >
-                  <span className="text-[19px] leading-none text-white" style={{ fontFamily: 'Poppins', ...EFFECT_PREVIEW[fx.id] }}>Ag</span>
-                  <span className="text-[9.5px] text-white/65 font-medium">{fx.label}</span>
+                  <span className="text-[19px] leading-none text-[#0E1318]" style={{ fontFamily: 'Poppins', ...EFFECT_PREVIEW[fx.id] }}>Ag</span>
+                  <span className="text-[9.5px] text-[#0E1318]/65 font-medium">{fx.label}</span>
                 </button>
               ))}
             </div>
             {text.effect === 'background' && (
-              <div className="mt-2.5 border-t border-white/[0.08] pt-2.5">
-                <div className="text-[11px] text-white/60 mb-1.5 font-medium">Background block</div>
+              <div className="mt-2.5 border-t border-black/[0.08] pt-2.5">
+                <div className="text-[11px] text-[#0E1318]/60 mb-1.5 font-medium">Background block</div>
                 <div className="flex flex-wrap gap-1.5">
-                  {['#EFEFEF', '#7630D7', '#00C4CC', '#FF5C8A', '#1F2226', '#FFE066'].map((c) => (
+                  {['#EFEFEF', '#7D2AE8', '#00C4CC', '#FF5C8A', '#1F2226', '#FFE066'].map((c) => (
                     <button key={c} className="cv-swatch h-6 w-6" style={{ background: c }} onClick={() => update(ids, { effectBackground: c })} data-selected={text.effectBackground === c} aria-label={`Background ${c}`} />
                   ))}
                 </div>
@@ -346,9 +346,9 @@ export function ContextToolbar({ variant = 'topbar' }: { variant?: 'topbar' | 'm
                   <SquareDashed size={14} /> <span className="text-[12px] hidden lg:inline">Border</span>
                 </button>
               )}>
-                <div className="text-[12px] font-bold text-white/90 mb-2">Border</div>
+                <div className="text-[12px] font-bold text-[#0E1318]/90 mb-2">Border</div>
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="text-[11px] text-white/60">Colour</span>
+                  <span className="text-[11px] text-[#0E1318]/60">Colour</span>
                   <ColorMenu value={shape.stroke === 'transparent' ? '#FFFFFF' : shape.stroke} onChange={(c, committed) => committed ? update(ids, { stroke: c, strokeWidth: shape.strokeWidth || 4 }) : updateLive(ids, { stroke: c, strokeWidth: shape.strokeWidth || 4 })} title="Border colour" />
                 </div>
                 <SliderRow label="Width" value={shape.strokeWidth} min={0} max={40} step={1} onChange={(v) => updateLive(ids, { strokeWidth: v })} onCommit={() => update(ids, { strokeWidth: shape.strokeWidth })} />
@@ -365,7 +365,7 @@ export function ContextToolbar({ variant = 'topbar' }: { variant?: 'topbar' | 'm
                     </button>
                   )}
                 >
-                  <div className="text-[12px] font-bold text-white/90 mb-1.5">
+                  <div className="text-[12px] font-bold text-[#0E1318]/90 mb-1.5">
                     {shape.type === 'polygon' ? 'Polygon' : 'Star'}
                   </div>
                   <SliderRow
@@ -403,9 +403,9 @@ export function ContextToolbar({ variant = 'topbar' }: { variant?: 'topbar' | 'm
                 </button>
               )}>
                 <SliderRow label="Thickness" value={line.strokeWidth} min={1} max={40} step={1} onChange={(v) => updateLive(ids, { strokeWidth: v })} onCommit={() => update(ids, { strokeWidth: line.strokeWidth })} />
-                <label className="flex items-center justify-between text-[12px] text-white/80 mb-2.5 cursor-pointer">
+                <label className="flex items-center justify-between text-[12px] text-[#0E1318]/80 mb-2.5 cursor-pointer">
                   Dashed
-                  <input type="checkbox" checked={line.dashed} onChange={(e) => update(ids, { dashed: e.target.checked })} className="accent-[#7630D7]" />
+                  <input type="checkbox" checked={line.dashed} onChange={(e) => update(ids, { dashed: e.target.checked })} className="accent-[#7D2AE8]" />
                 </label>
                 <div className="flex gap-1.5">
                   <TBtn onClick={() => update(ids, { arrowEnd: !line.arrowEnd })} dataActive={line.arrowEnd} title="Arrow end" ariaLabel="Arrow end">→</TBtn>
@@ -418,7 +418,7 @@ export function ContextToolbar({ variant = 'topbar' }: { variant?: 'topbar' | 'm
             <SliderRowMini label="Size" value={sticker.fontSize} min={24} max={320} onChange={(v) => updateLive(ids, { fontSize: v, width: v * 1.3, height: v * 1.3 })} onCommit={() => update(ids, { fontSize: sticker.fontSize })} />
           )}
           {group && (
-            <span className="text-[12px] font-semibold text-white/85 px-2 shrink-0 flex items-center gap-1.5">
+            <span className="text-[12px] font-semibold text-[#0E1318]/85 px-2 shrink-0 flex items-center gap-1.5">
               <Layers size={13} /> Group
             </span>
           )}
@@ -470,7 +470,7 @@ export function ContextToolbar({ variant = 'topbar' }: { variant?: 'topbar' | 'm
               href={image.credit.url || undefined}
               target="_blank"
               rel="noreferrer"
-              className="text-[11px] font-semibold text-[#02C0CC] bg-[#02C0CC]/10 border border-[#02C0CC]/25 rounded-full px-2 py-0.5 shrink-0 max-w-[190px] truncate"
+              className="text-[11px] font-semibold text-[#00C4CC] bg-[#00C4CC]/10 border border-[#00C4CC]/25 rounded-full px-2 py-0.5 shrink-0 max-w-[190px] truncate"
               title={`${image.credit.license}${image.credit.url ? ` — ${image.credit.url}` : ''}`}
               aria-label={`Stock photo by ${image.credit.author} on ${image.credit.provider}`}
             >
@@ -482,7 +482,7 @@ export function ContextToolbar({ variant = 'topbar' }: { variant?: 'topbar' | 'm
         </>
       ) : table ? (
         <>
-          <span className="text-[12px] font-semibold text-white/85 px-2 shrink-0 flex items-center gap-1.5">
+          <span className="text-[12px] font-semibold text-[#0E1318]/85 px-2 shrink-0 flex items-center gap-1.5">
             <Table2 size={13} /> Table
           </span>
           <TableToolbar table={table} ids={ids} />
@@ -491,7 +491,7 @@ export function ContextToolbar({ variant = 'topbar' }: { variant?: 'topbar' | 'm
         </>
       ) : frame ? (
         <>
-          <span className="text-[12px] font-semibold text-white/85 px-2 shrink-0 flex items-center gap-1.5">
+          <span className="text-[12px] font-semibold text-[#0E1318]/85 px-2 shrink-0 flex items-center gap-1.5">
             <SquareDashed size={13} /> Frame
           </span>
           <FrameToolbar frame={frame} ids={ids} />
@@ -500,7 +500,7 @@ export function ContextToolbar({ variant = 'topbar' }: { variant?: 'topbar' | 'm
         </>
       ) : embed ? (
         <>
-          <span className="text-[12px] font-semibold text-white/85 px-2 shrink-0 flex items-center gap-1.5 capitalize">
+          <span className="text-[12px] font-semibold text-[#0E1318]/85 px-2 shrink-0 flex items-center gap-1.5 capitalize">
             <ExternalLink size={13} /> {embed.kind} card
           </span>
           <EmbedToolbar embed={embed} ids={ids} />
@@ -519,7 +519,7 @@ export function ContextToolbar({ variant = 'topbar' }: { variant?: 'topbar' | 'm
         </>
       ) : chart ? (
         <>
-          <span className="text-[12px] font-semibold text-white/85 px-2 shrink-0 flex items-center gap-1.5">
+          <span className="text-[12px] font-semibold text-[#0E1318]/85 px-2 shrink-0 flex items-center gap-1.5">
             <BarChart3 size={13} /> {CHART_KIND_LABELS[chart.kind]}
           </span>
           <ChartToolbar chart={chart} ids={ids} />
@@ -528,7 +528,7 @@ export function ContextToolbar({ variant = 'topbar' }: { variant?: 'topbar' | 'm
         </>
       ) : plugin ? (
         <>
-          <span className="text-[12px] font-semibold text-white/85 px-2 shrink-0 flex items-center gap-1.5">
+          <span className="text-[12px] font-semibold text-[#0E1318]/85 px-2 shrink-0 flex items-center gap-1.5">
             <Puzzle size={13} /> {plugin.name?.trim() || plugin.kind}
           </span>
           <PluginToolbar plugin={plugin} ids={ids} />
@@ -537,7 +537,7 @@ export function ContextToolbar({ variant = 'topbar' }: { variant?: 'topbar' | 'm
         </>
       ) : audio ? (
         <>
-          <span className="text-[12px] font-semibold text-white/85 px-2 shrink-0 flex items-center gap-1.5">
+          <span className="text-[12px] font-semibold text-[#0E1318]/85 px-2 shrink-0 flex items-center gap-1.5">
             <Music size={13} /> Audio
           </span>
           <MediaToolbar
@@ -551,7 +551,7 @@ export function ContextToolbar({ variant = 'topbar' }: { variant?: 'topbar' | 'm
             trim={undefined}
           />
           {audio.bpm ? (
-            <span className="text-[11px] font-semibold text-[#02C0CC] bg-[#02C0CC]/10 border border-[#02C0CC]/25 rounded-full px-2 py-0.5 shrink-0 tabular-nums" title="Detected tempo (Beat Sync grid)">
+            <span className="text-[11px] font-semibold text-[#00C4CC] bg-[#00C4CC]/10 border border-[#00C4CC]/25 rounded-full px-2 py-0.5 shrink-0 tabular-nums" title="Detected tempo (Beat Sync grid)">
               {Math.round(audio.bpm)} BPM
             </span>
           ) : null}
@@ -562,7 +562,7 @@ export function ContextToolbar({ variant = 'topbar' }: { variant?: 'topbar' | 'm
               href={audio.credit.url || undefined}
               target="_blank"
               rel="noreferrer"
-              className="text-[11px] font-semibold text-[#02C0CC] bg-[#02C0CC]/10 border border-[#02C0CC]/25 rounded-full px-2 py-0.5 shrink-0 max-w-[190px] truncate"
+              className="text-[11px] font-semibold text-[#00C4CC] bg-[#00C4CC]/10 border border-[#00C4CC]/25 rounded-full px-2 py-0.5 shrink-0 max-w-[190px] truncate"
               title={`${audio.credit.license}${audio.credit.url ? ` — ${audio.credit.url}` : ''}`}
               aria-label={`Audio by ${audio.credit.author} on ${audio.credit.provider}`}
             >
@@ -574,7 +574,7 @@ export function ContextToolbar({ variant = 'topbar' }: { variant?: 'topbar' | 'm
         </>
       ) : video ? (
         <>
-          <span className="text-[12px] font-semibold text-white/85 px-2 shrink-0 flex items-center gap-1.5">
+          <span className="text-[12px] font-semibold text-[#0E1318]/85 px-2 shrink-0 flex items-center gap-1.5">
             <Film size={13} /> Video
           </span>
           <MediaToolbar
@@ -595,7 +595,7 @@ export function ContextToolbar({ variant = 'topbar' }: { variant?: 'topbar' | 'm
               href={video.credit.url || undefined}
               target="_blank"
               rel="noreferrer"
-              className="text-[11px] font-semibold text-[#02C0CC] bg-[#02C0CC]/10 border border-[#02C0CC]/25 rounded-full px-2 py-0.5 shrink-0 max-w-[190px] truncate"
+              className="text-[11px] font-semibold text-[#00C4CC] bg-[#00C4CC]/10 border border-[#00C4CC]/25 rounded-full px-2 py-0.5 shrink-0 max-w-[190px] truncate"
               title={`${video.credit.license}${video.credit.url ? ` — ${video.credit.url}` : ''}`}
               aria-label={`Stock video by ${video.credit.author} on ${video.credit.provider}`}
             >
@@ -668,7 +668,7 @@ function MediaToolbar({
         ) : null}
       </div>
       {trim && Number.isFinite(duration) && duration > 0.2 ? (
-        <div className="mt-2 border-t border-white/[0.08] pt-2">
+        <div className="mt-2 border-t border-black/[0.08] pt-2">
           <SliderRow label="Trim start" value={Number(trim.start.toFixed(1))} min={0} max={Math.max(0.1, duration - 0.1)} step={0.1}
             onChange={(v) => updateLive(ids, { trimStart: Math.min(v, trim.end - 0.1) })}
             onCommit={() => update(ids, { trimStart: trim.start })}
@@ -679,7 +679,7 @@ function MediaToolbar({
             format={(v) => `${v.toFixed(1)}s`} />
         </div>
       ) : null}
-      <p className="text-[10px] text-white/40 leading-relaxed mt-2">
+      <p className="text-[10px] text-[#0E1318]/40 leading-relaxed mt-2">
         Media plays in Preview / Present mode and in exported video (audio muxing is best-effort per browser).
       </p>
     </ToolbarPopover>
@@ -699,14 +699,14 @@ function BeatSyncPopover({ el, ids, bpm }: { el: AnyElement; ids: string[]; bpm:
         </button>
       )}
     >
-      <div className="text-[10px] font-semibold text-white/45 uppercase tracking-wide mb-1.5">
+      <div className="text-[10px] font-semibold text-[#0E1318]/45 uppercase tracking-wide mb-1.5">
         Beat Sync · {Math.round(bpm)} BPM
       </div>
       <SliderRow label="Pulse" value={strength} min={0} max={100} step={1}
         onChange={(v) => updateLive(ids, { beatPulse: v / 100 })}
         onCommit={() => update(ids, { beatPulse: (el.beatPulse ?? 0) })}
         format={(v) => (v === 0 ? 'off' : `+${(v * 0.12).toFixed(2)}× scale`)} />
-      <p className="text-[10px] text-white/40 leading-relaxed mt-2">
+      <p className="text-[10px] text-[#0E1318]/40 leading-relaxed mt-2">
         The element scales on every beat of the page's audio (Preview, Present and video export). Enable “Play on page open” on the audio element so the music runs with it.
       </p>
     </ToolbarPopover>
@@ -760,13 +760,13 @@ function TableToolbar({ table, ids }: { table: TableElement; ids: string[] }) {
           <Palette size={14} /> <span className="text-[12px] hidden lg:inline">Style</span>
         </button>
       )}>
-        <div className="text-[12px] font-bold text-white/90 mb-2">Table style</div>
+        <div className="text-[12px] font-bold text-[#0E1318]/90 mb-2">Table style</div>
         <div className="flex items-center gap-2 mb-2">
-          <span className="text-[11px] text-white/60">Border</span>
+          <span className="text-[11px] text-[#0E1318]/60">Border</span>
           <ColorMenu value={table.borderColor} onChange={(c, committed) => committed ? update(ids, { borderColor: c }) : updateLive(ids, { borderColor: c })} title="Border colour" />
         </div>
         <div className="flex items-center gap-2 mb-2">
-          <span className="text-[11px] text-white/60">Header</span>
+          <span className="text-[11px] text-[#0E1318]/60">Header</span>
           <ColorMenu value={table.headerFill} onChange={(c, committed) => committed ? update(ids, { headerFill: c }) : updateLive(ids, { headerFill: c })} title="Header fill" />
         </div>
         <SliderRow label="Border width" value={table.borderWidth} min={0} max={6} step={0.5} onChange={(v) => updateLive(ids, { borderWidth: v })} onCommit={() => update(ids, { borderWidth: table.borderWidth })} />
@@ -804,7 +804,7 @@ function FrameToolbar({ frame, ids }: { frame: FrameElement; ids: string[] }) {
           <SquareDashed size={14} /> <span className="text-[12px] hidden lg:inline">Shape</span>
         </button>
       )}>
-        <div className="text-[12px] font-bold text-white/90 mb-2">Frame shape</div>
+        <div className="text-[12px] font-bold text-[#0E1318]/90 mb-2">Frame shape</div>
         <div className="grid grid-cols-3 gap-1.5">
           {FRAME_SHAPES.map((fs: FrameShape) => (
             <button
@@ -812,7 +812,7 @@ function FrameToolbar({ frame, ids }: { frame: FrameElement; ids: string[] }) {
               onClick={() => update(ids, { frameShape: fs })}
               className={cn(
                 'h-9 rounded-lg text-[11px] font-medium capitalize border transition-colors',
-                frame.frameShape === fs ? 'bg-white/[0.16] border-white/30 text-white' : 'border-white/[0.09] text-white/75 hover:bg-white/[0.07]'
+                frame.frameShape === fs ? 'bg-black/[0.16] border-black/30 text-[#0E1318]' : 'border-black/[0.09] text-[#0E1318]/75 hover:bg-black/[0.07]'
               )}
               aria-label={`Frame shape ${fs}`}
             >
@@ -821,7 +821,7 @@ function FrameToolbar({ frame, ids }: { frame: FrameElement; ids: string[] }) {
           ))}
         </div>
         {frame.frameShape === 'rect' && (
-          <div className="mt-2 border-t border-white/[0.08] pt-2">
+          <div className="mt-2 border-t border-black/[0.08] pt-2">
             <SliderRow label="Corner radius" value={frame.radius} min={0} max={Math.round(frame.width / 2)} step={1} onChange={(v) => useEditorStore.getState().updateElementsLive(ids, { radius: v })} onCommit={() => update(ids, { radius: frame.radius })} />
           </div>
         )}
@@ -841,21 +841,21 @@ function EmbedToolbar({ embed, ids }: { embed: EmbedElement; ids: string[] }) {
           <ExternalLink size={14} /> <span className="text-[12px] hidden lg:inline">Link</span>
         </button>
       )}>
-        <div className="text-[12px] font-bold text-white/90 mb-2">Embed link</div>
+        <div className="text-[12px] font-bold text-[#0E1318]/90 mb-2">Embed link</div>
         <input
           value={editingUrl}
           onChange={(e) => setEditingUrl(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === 'Enter' && editingUrl.trim()) update(ids, { url: editingUrl.trim(), title: undefined })
           }}
-          className="w-full h-8 rounded-lg bg-white/[0.06] border border-white/10 px-2.5 text-[12px] text-white outline-none focus:border-[#7630D7]"
+          className="w-full h-8 rounded-lg bg-black/[0.06] border border-black/10 px-2.5 text-[12px] text-[#0E1318] outline-none focus:border-[#7D2AE8]"
           aria-label="Embed URL"
         />
         <div className="flex gap-1.5 mt-2">
           <button className="btn-cv h-8 px-3 text-[11px]" onClick={() => editingUrl.trim() && update(ids, { url: editingUrl.trim(), title: undefined })}>Apply</button>
-          <button className="h-8 px-3 text-[11px] rounded-lg border border-white/10 text-white/70 hover:bg-white/[0.07]" onClick={() => setEditingUrl(embed.url)}>Reset</button>
+          <button className="h-8 px-3 text-[11px] rounded-lg border border-black/10 text-[#0E1318]/70 hover:bg-black/[0.07]" onClick={() => setEditingUrl(embed.url)}>Reset</button>
         </div>
-        <p className="text-[10px] text-white/40 mt-2 leading-relaxed">Cards open their link in Preview &amp; shared views.</p>
+        <p className="text-[10px] text-[#0E1318]/40 mt-2 leading-relaxed">Cards open their link in Preview &amp; shared views.</p>
       </ToolbarPopover>
     </>
   )
@@ -891,8 +891,8 @@ function PositionPopover({ ids, count, element }: { ids: string[]; count: number
         <IconTile icon={<SendToBack size={15} />} label="To back" onClick={() => ids.forEach((id) => store.moveLayer(id, 'back'))} />
       </div>
 
-      <div className="border-t border-white/[0.08] pt-2 mb-2.5">
-        <div className="text-[10px] font-semibold text-white/45 uppercase tracking-wide mb-1.5">Align to page</div>
+      <div className="border-t border-black/[0.08] pt-2 mb-2.5">
+        <div className="text-[10px] font-semibold text-[#0E1318]/45 uppercase tracking-wide mb-1.5">Align to page</div>
         <div className="grid grid-cols-3 gap-1">
           <IconTile icon={<AlignVerticalJustifyStart size={15} />} label="Top" onClick={() => store.alignElements(ids, 'top')} />
           <IconTile icon={<AlignVerticalJustifyCenter size={15} />} label="Middle" onClick={() => store.alignElements(ids, 'cy')} />
@@ -904,8 +904,8 @@ function PositionPopover({ ids, count, element }: { ids: string[]; count: number
       </div>
 
       {count >= 3 && (
-        <div className="border-t border-white/[0.08] pt-2 mb-2.5">
-          <div className="text-[10px] font-semibold text-white/45 uppercase tracking-wide mb-1.5">Distribute</div>
+        <div className="border-t border-black/[0.08] pt-2 mb-2.5">
+          <div className="text-[10px] font-semibold text-[#0E1318]/45 uppercase tracking-wide mb-1.5">Distribute</div>
           <div className="grid grid-cols-3 gap-1">
             <IconTile icon={<AlignHorizontalDistributeCenter size={15} />} label="Spacing H" onClick={() => store.distributeElements(ids, 'x')} />
             <IconTile icon={<AlignVerticalDistributeCenter size={15} />} label="Spacing V" onClick={() => store.distributeElements(ids, 'y')} />
@@ -914,17 +914,17 @@ function PositionPopover({ ids, count, element }: { ids: string[]; count: number
       )}
 
       {count === 1 && el && (
-        <div className="border-t border-white/[0.08] pt-2">
-          <div className="text-[10px] font-semibold text-white/45 uppercase tracking-wide mb-1.5">Advanced</div>
+        <div className="border-t border-black/[0.08] pt-2">
+          <div className="text-[10px] font-semibold text-[#0E1318]/45 uppercase tracking-wide mb-1.5">Advanced</div>
           <div className="grid grid-cols-3 gap-1.5 mb-1.5">
             <NumField label="W" value={W} onCommit={(v) => setSize(ratio ? v * (H / W) : v, ratio ? v * (H / W) : H)} />
             <NumField label="H" value={H} onCommit={(v) => setSize(ratio ? v * (W / H) : W, ratio ? v * (W / H) : v)} />
             <button
-              className="flex flex-col items-center justify-center gap-0.5 rounded-lg border border-white/10 text-white/75 hover:bg-white/[0.09] text-[10px] font-medium py-1"
+              className="flex flex-col items-center justify-center gap-0.5 rounded-lg border border-black/10 text-[#0E1318]/75 hover:bg-black/[0.09] text-[10px] font-medium py-1"
               onClick={() => setRatio(!ratio)}
               title="Lock aspect ratio"
             >
-              <Lock size={12} className={ratio ? 'text-[#7630D7]' : 'opacity-50'} />
+              <Lock size={12} className={ratio ? 'text-[#7D2AE8]' : 'opacity-50'} />
               Ratio
             </button>
           </div>
@@ -948,12 +948,12 @@ function MaskThumb({ shape, sides, innerRatio, active }: { shape: string; sides?
       {pts ? (
         <polygon
           points={pts.map(([x, y]) => `${x},${y}`).join(' ')}
-          fill={active ? '#02C0CC33' : '#FFFFFF22'}
-          stroke={active ? '#02C0CC' : '#FFFFFF66'}
+          fill={active ? '#00C4CC33' : '#FFFFFF22'}
+          stroke={active ? '#00C4CC' : '#FFFFFF66'}
           strokeWidth={4}
         />
       ) : (
-        <rect x={10} y={10} width={80} height={80} rx={10} fill="none" stroke={active ? '#02C0CC' : '#FFFFFF66'} strokeWidth={4} strokeDasharray="10 8" />
+        <rect x={10} y={10} width={80} height={80} rx={10} fill="none" stroke={active ? '#00C4CC' : '#FFFFFF66'} strokeWidth={4} strokeDasharray="10 8" />
       )}
     </svg>
   )
@@ -976,7 +976,7 @@ function MaskPopover({ el, ids }: { el: ImageElement; ids: string[] }) {
         </button>
       )}
     >
-      <div className="text-[12px] font-bold text-white/90 mb-1.5">Mask shape</div>
+      <div className="text-[12px] font-bold text-[#0E1318]/90 mb-1.5">Mask shape</div>
       <div className="grid grid-cols-4 gap-1.5" data-testid="mask-grid">
         {MASK_SHAPES.map((m) => (
           <button
@@ -987,7 +987,7 @@ function MaskPopover({ el, ids }: { el: ImageElement; ids: string[] }) {
             aria-label={MASK_SHAPE_LABELS[m]}
             className={cn(
               'h-[38px] rounded-lg border flex items-center justify-center p-1 transition-colors',
-              current === m ? 'border-[#02C0CC] bg-[#02C0CC]/10' : 'border-white/10 hover:border-white/30'
+              current === m ? 'border-[#00C4CC] bg-[#00C4CC]/10' : 'border-black/10 hover:border-black/30'
             )}
           >
             <MaskThumb shape={m} sides={el.maskSides} innerRatio={el.maskInnerRatio} active={current === m} />
@@ -1020,7 +1020,7 @@ function MaskPopover({ el, ids }: { el: ImageElement; ids: string[] }) {
           )}
         </div>
       )}
-      <div className="text-[11px] text-white/40 leading-snug mt-2">
+      <div className="text-[11px] text-[#0E1318]/40 leading-snug mt-2">
         Clips the image to the shape — corner radius is ignored while a mask is set.
       </div>
     </ToolbarPopover>
@@ -1042,7 +1042,7 @@ function ImageAdjustPopover({ el, ids }: { el: ImageElement; ids: string[] }) {
       <SliderRow label="Brightness" value={el.brightness ?? 0} min={-100} max={100} step={1} onChange={(v) => updateLive(ids, { brightness: v })} onCommit={() => update(ids, { brightness: el.brightness ?? 0 })} />
       <SliderRow label="Contrast" value={el.contrast ?? 0} min={-100} max={100} step={1} onChange={(v) => updateLive(ids, { contrast: v })} onCommit={() => update(ids, { contrast: el.contrast ?? 0 })} />
       <SliderRow label="Saturation" value={el.saturation ?? 0} min={-100} max={100} step={1} onChange={(v) => updateLive(ids, { saturation: v })} onCommit={() => update(ids, { saturation: el.saturation ?? 0 })} />
-      <div className="flex gap-1.5 mt-1 border-t border-white/[0.08] pt-2.5">
+      <div className="flex gap-1.5 mt-1 border-t border-black/[0.08] pt-2.5">
         <TBtn onClick={() => update(ids, { flipH: !el.flipH })} dataActive={el.flipH} title="Flip horizontal" ariaLabel="Flip horizontal"><FlipHorizontal size={14} /></TBtn>
         <TBtn onClick={() => update(ids, { flipV: !el.flipV })} dataActive={el.flipV} title="Flip vertical" ariaLabel="Flip vertical"><FlipVertical size={14} /></TBtn>
         <TBtn onClick={() => update(ids, { brightness: 0, contrast: 0, saturation: 0 })} title="Reset adjustments" ariaLabel="Reset adjustments"><RotateCcw size={14} /></TBtn>
@@ -1080,11 +1080,11 @@ function ImageFilterPopover({ el, ids }: { el: ImageElement; ids: string[] }) {
             onClick={() => update(ids, { filter: p.id, filterIntensity: p.id === 'none' ? 100 : intensity })}
             className={cn(
               'rounded-lg overflow-hidden border transition-colors',
-              active === p.id ? 'border-[#7630D7] bg-white/[0.13]' : 'border-white/10 hover:border-white/25'
+              active === p.id ? 'border-[#7D2AE8] bg-black/[0.13]' : 'border-black/10 hover:border-black/25'
             )}
           >
             <FilterThumb image={image} preset={p.id} intensity={intensity} />
-            <div className="text-[10px] text-white/80 py-1 text-center leading-none">{p.label}</div>
+            <div className="text-[10px] text-[#0E1318]/80 py-1 text-center leading-none">{p.label}</div>
           </button>
         ))}
       </div>
@@ -1131,17 +1131,17 @@ function FilterThumb({ image, preset, intensity }: { image: HTMLImageElement | n
     applyPresetToImageData(data, preset, intensity / 100)
     ctx.putImageData(data, 0, 0)
   }, [image, preset, intensity])
-  return <canvas ref={ref} className="block w-full aspect-[7/5] bg-white/[0.06]" />
+  return <canvas ref={ref} className="block w-full aspect-[7/5] bg-black/[0.06]" />
 }
 
 function SliderRowMini({ label, value, min, max, onChange, onCommit }: { label: string; value: number; min: number; max: number; onChange: (v: number) => void; onCommit: () => void }) {
   return (
     <div className="flex items-center gap-2 px-2 shrink-0 w-[150px]">
-      <span className="text-[11px] text-white/60 w-8">{label}</span>
+      <span className="text-[11px] text-[#0E1318]/60 w-8">{label}</span>
       <input
         type="range"
         className="cv-slider w-full"
-        style={{ background: `linear-gradient(to right, #7630D7 ${((value - min) / (max - min)) * 100}%, rgba(255,255,255,0.14) ${((value - min) / (max - min)) * 100}%)` }}
+        style={{ background: `linear-gradient(to right, #7D2AE8 ${((value - min) / (max - min)) * 100}%, rgba(255,255,255,0.14) ${((value - min) / (max - min)) * 100}%)` }}
         min={min}
         max={max}
         value={value}
@@ -1159,7 +1159,7 @@ function NumField({ label, value, onCommit, suffix }: { label: string; value: nu
   if (!editing && String(value) !== v) setV(String(value))
   return (
     <label className="flex flex-col items-center gap-0.5">
-      <span className="text-[9px] text-white/40 font-medium">{label}</span>
+      <span className="text-[9px] text-[#0E1318]/40 font-medium">{label}</span>
       <span className="relative w-full">
         <input
           value={v}
@@ -1167,10 +1167,10 @@ function NumField({ label, value, onCommit, suffix }: { label: string; value: nu
           onChange={(e) => setV(e.target.value)}
           onBlur={() => { setEditing(false); const n = Number(v); if (!Number.isNaN(n)) onCommit(n) }}
           onKeyDown={(e) => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur() }}
-          className="h-7 w-full rounded-lg bg-white/[0.07] border border-white/10 px-1 text-[11px] text-white text-center outline-none focus:border-[#7630D7] [color-scheme:dark]"
+          className="h-7 w-full rounded-lg bg-black/[0.07] border border-black/10 px-1 text-[11px] text-[#0E1318] text-center outline-none focus:border-[#7D2AE8] [color-scheme:dark]"
           aria-label={label}
         />
-        {suffix && <span className="absolute right-1.5 top-1/2 -translate-y-1/2 text-[9px] text-white/35 pointer-events-none">{suffix}</span>}
+        {suffix && <span className="absolute right-1.5 top-1/2 -translate-y-1/2 text-[9px] text-[#0E1318]/35 pointer-events-none">{suffix}</span>}
       </span>
     </label>
   )
@@ -1201,7 +1201,7 @@ function TBtn({ children, onClick, title, ariaLabel, disabled, danger, className
   )
 }
 
-const Divider = () => <span className="w-px h-5 bg-white/15 mx-1 shrink-0" />
+const Divider = () => <span className="w-px h-5 bg-black/15 mx-1 shrink-0" />
 
 // ── v0.13 (P4): plugin element properties slot ───────────────
 
@@ -1230,10 +1230,10 @@ function PluginToolbar({ plugin, ids }: { plugin: PluginElement; ids: string[] }
         spec.schema.slice(0, 5).map((raw) => {
           const f = raw as { key: string; type: string; label: string; min?: number; max?: number; step?: number; maxLength?: number; options?: { value: string; label: string }[] }
           const value = plugin.data[f.key]
-          const inputCls = 'h-7 rounded-lg bg-white/[0.07] border border-white/10 px-1.5 text-[11px] text-white outline-none focus:border-[#7630D7] [color-scheme:dark]'
+          const inputCls = 'h-7 rounded-lg bg-black/[0.07] border border-black/10 px-1.5 text-[11px] text-[#0E1318] outline-none focus:border-[#7D2AE8] [color-scheme:dark]'
           return (
             <label key={f.key} className="flex items-center gap-1.5 shrink-0" title={f.label}>
-              <span className="text-[10px] text-white/45">{f.label}</span>
+              <span className="text-[10px] text-[#0E1318]/45">{f.label}</span>
               {f.type === 'text' && (
                 <input
                   defaultValue={typeof value === 'string' ? value : ''}
@@ -1262,9 +1262,9 @@ function PluginToolbar({ plugin, ids }: { plugin: PluginElement; ids: string[] }
               {f.type === 'color' && (
                 <input
                   type="color"
-                  defaultValue={typeof value === 'string' && /^#[0-9a-fA-F]{6}$/.test(value) ? value : '#7630D7'}
+                  defaultValue={typeof value === 'string' && /^#[0-9a-fA-F]{6}$/.test(value) ? value : '#7D2AE8'}
                   onBlur={(e) => { const v = e.target.value; if (v !== plugin.data[f.key]) void patchData({ [f.key]: v }) }}
-                  className="h-7 w-8 rounded-lg border border-white/10 bg-transparent cursor-pointer"
+                  className="h-7 w-8 rounded-lg border border-black/10 bg-transparent cursor-pointer"
                   aria-label={f.label}
                 />
               )}
@@ -1284,7 +1284,7 @@ function PluginToolbar({ plugin, ids }: { plugin: PluginElement; ids: string[] }
           )
         })
       ) : (
-        <span className="text-[11px] text-white/40 shrink-0" title="Install the app to edit this element's settings">
+        <span className="text-[11px] text-[#0E1318]/40 shrink-0" title="Install the app to edit this element's settings">
           {install ? `"${plugin.kind}" settings` : 'App not installed — settings unavailable'}
         </span>
       )}
@@ -1351,10 +1351,10 @@ function ChartToolbar({ chart, ids }: { chart: ChartElement; ids: string[] }) {
           </button>
         )}
       >
-        <div className="text-[12px] font-bold text-white/90 mb-2">Chart options</div>
+        <div className="text-[12px] font-bold text-[#0E1318]/90 mb-2">Chart options</div>
         {chart.kind === 'bar' && (
           <div className="flex items-center gap-2 mb-2">
-            <span className="text-[11px] text-white/60 w-16">Bars</span>
+            <span className="text-[11px] text-[#0E1318]/60 w-16">Bars</span>
             <ChartToggle label="Group" active={chart.barMode !== 'stack'} onClick={() => update(ids, { barMode: 'group' })} />
             <ChartToggle label="Stack" active={chart.barMode === 'stack'} onClick={() => update(ids, { barMode: 'stack' })} />
           </div>
@@ -1373,7 +1373,7 @@ function ChartToolbar({ chart, ids }: { chart: ChartElement; ids: string[] }) {
         )}
         {chart.kind === 'line' && (
           <div className="flex items-center gap-2 mb-2">
-            <span className="text-[11px] text-white/60 w-16">Line</span>
+            <span className="text-[11px] text-[#0E1318]/60 w-16">Line</span>
             <ChartToggle label="Smooth" active={chart.smooth} onClick={() => update(ids, { smooth: !chart.smooth })} />
           </div>
         )}
@@ -1383,9 +1383,9 @@ function ChartToolbar({ chart, ids }: { chart: ChartElement; ids: string[] }) {
           <ChartToggle label="Legend" active={chart.showLegend} onClick={() => update(ids, { showLegend: !chart.showLegend })} />
         </div>
         <div className="flex items-center gap-2 mb-2">
-          <span className="text-[11px] text-white/60">Panel</span>
+          <span className="text-[11px] text-[#0E1318]/60">Panel</span>
           <ColorMenu value={chart.fill} onChange={(c, committed) => committed ? update(ids, { fill: c }) : updateLive(ids, { fill: c })} title="Chart background" />
-          <span className="text-[11px] text-white/60 ml-2">Text</span>
+          <span className="text-[11px] text-[#0E1318]/60 ml-2">Text</span>
           <ColorMenu value={chart.textColor} onChange={(c, committed) => committed ? update(ids, { textColor: c }) : updateLive(ids, { textColor: c })} title="Text colour" />
         </div>
         <SliderRow
@@ -1419,7 +1419,7 @@ function ChartToggle({ label, active, onClick }: { label: string; active: boolea
       aria-pressed={active}
       className={cn(
         'h-7 rounded-md px-2.5 text-[11px] border transition-colors shrink-0',
-        active ? 'bg-[#7630D7] border-[#7630D7] text-white' : 'bg-white/[0.05] border-white/10 text-white/60 hover:text-white'
+        active ? 'bg-[#7D2AE8] border-[#7D2AE8] text-white' : 'bg-black/[0.05] border-black/10 text-[#0E1318]/60 hover:text-[#0E1318]'
       )}
     >
       {label}
@@ -1448,12 +1448,12 @@ function ChartNumInput({ value, onCommit, ariaLabel, className }: { value: numbe
       onKeyDown={(e) => {
         if (e.key === 'Enter') (e.target as HTMLInputElement).blur()
       }}
-      className={cn('w-14 bg-white/[0.06] rounded-md px-1.5 py-1 text-[12px] text-white/90 border border-white/10 focus:border-[#7630D7] outline-none tabular-nums', className)}
+      className={cn('w-14 bg-black/[0.06] rounded-md px-1.5 py-1 text-[12px] text-[#0E1318]/90 border border-black/10 focus:border-[#7D2AE8] outline-none tabular-nums', className)}
     />
   )
 }
 
-const CV_INPUT_CLS = 'bg-white/[0.06] rounded-md px-1.5 py-1 text-[12px] text-white/90 border border-white/10 focus:border-[#7630D7] outline-none'
+const CV_INPUT_CLS = 'bg-black/[0.06] rounded-md px-1.5 py-1 text-[12px] text-[#0E1318]/90 border border-black/10 focus:border-[#7D2AE8] outline-none'
 
 function ChartDataEditor({ chart, ids }: { chart: ChartElement; ids: string[] }) {
   const update = useEditorStore((s) => s.updateElements)
@@ -1518,11 +1518,11 @@ function ChartDataEditor({ chart, ids }: { chart: ChartElement; ids: string[] })
 
   return (
     <div>
-      <div className="text-[12px] font-bold text-white/90 mb-2">Chart data</div>
+      <div className="text-[12px] font-bold text-[#0E1318]/90 mb-2">Chart data</div>
       {scatter ? (
         <div className="max-h-[320px] overflow-y-auto cv-scroll-dark pr-1">
           {chart.series.map((sr, si) => (
-            <div key={si} className="mb-3 pb-2 border-b border-white/[0.07] last:border-b-0">
+            <div key={si} className="mb-3 pb-2 border-b border-black/[0.07] last:border-b-0">
               <div className="flex items-center gap-1.5 mb-1.5">
                 <ColorMenu value={sr.color} onChange={(c, committed) => committed ? update(ids, { series: chart.series.map((x, j) => (j === si ? { ...x, color: c } : x)) }) : setSeriesField(si, { color: c })} title={`Series ${si + 1} colour`} />
                 <input value={sr.name} onChange={(e) => setSeriesField(si, { name: e.target.value.slice(0, 40) })} aria-label={`Series ${si + 1} name`} className={cn(CV_INPUT_CLS, 'w-28')} />
@@ -1534,9 +1534,9 @@ function ChartDataEditor({ chart, ids }: { chart: ChartElement; ids: string[] })
               </div>
               {Array.from({ length: Math.floor(sr.values.length / 2) }, (_, pi) => (
                 <div key={pi} className="flex items-center gap-1.5 mb-1">
-                  <span className="w-4 text-[10px] text-white/35 text-right">x</span>
+                  <span className="w-4 text-[10px] text-[#0E1318]/35 text-right">x</span>
                   <ChartNumInput value={sr.values[pi * 2] ?? 0} onCommit={(n) => setValue(si, pi * 2, n)} ariaLabel={`Series ${si + 1} point ${pi + 1} x`} />
-                  <span className="w-4 text-[10px] text-white/35 text-right">y</span>
+                  <span className="w-4 text-[10px] text-[#0E1318]/35 text-right">y</span>
                   <ChartNumInput value={sr.values[pi * 2 + 1] ?? 0} onCommit={(n) => setValue(si, pi * 2 + 1, n)} ariaLabel={`Series ${si + 1} point ${pi + 1} y`} />
                   <TBtn onClick={() => removePoint(si, pi)} title="Remove point" ariaLabel={`Remove point ${pi + 1}`} disabled={sr.values.length <= 4} className="!h-6 !w-6">
                     <Minus size={11} />
@@ -1548,7 +1548,7 @@ function ChartDataEditor({ chart, ids }: { chart: ChartElement; ids: string[] })
               </button>
             </div>
           ))}
-          <p className="text-[10px] text-white/35">Each point is an x, y pair on numeric axes.</p>
+          <p className="text-[10px] text-[#0E1318]/35">Each point is an x, y pair on numeric axes.</p>
         </div>
       ) : (
         <div>
@@ -1556,7 +1556,7 @@ function ChartDataEditor({ chart, ids }: { chart: ChartElement; ids: string[] })
             <table className="border-collapse text-[12px]">
               <thead>
                 <tr>
-                  <th className="sticky left-0 bg-[#1B1D24] z-10 pr-2 pb-2 text-left text-white/40 font-medium text-[10px] w-[128px]">Series \ Labels</th>
+                  <th className="sticky left-0 bg-[#1B1D24] z-10 pr-2 pb-2 text-left text-[#0E1318]/40 font-medium text-[10px] w-[128px]">Series \ Labels</th>
                   {chart.labels.map((l, i) => (
                     <th key={i} className="px-1 pb-2">
                       <input value={l} onChange={(e) => setLabel(i, e.target.value)} aria-label={`Label ${i + 1}`} className={cn(CV_INPUT_CLS, 'w-16')} />
@@ -1606,7 +1606,7 @@ function ChartDataEditor({ chart, ids }: { chart: ChartElement; ids: string[] })
         <button onClick={addSeries} disabled={chart.series.length >= MAX_CHART_SERIES} className="btn-cv h-7 px-3 text-[11px]">
           + Series
         </button>
-        <span className="text-[10px] text-white/35">
+        <span className="text-[10px] text-[#0E1318]/35">
           {scatter ? 'One x,y point per row.' : chart.kind === 'donut' ? 'Donut renders the first series.' : 'Values update the chart live.'}
         </span>
       </div>

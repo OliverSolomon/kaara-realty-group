@@ -2,7 +2,7 @@ import { adminFromRequest, audit } from "@/lib/auth/admin";
 import { sanityWriter } from "@/lib/sanityAdmin";
 
 export async function POST(request: Request) {
-  const admin = await adminFromRequest(request);
+  const admin = await adminFromRequest(request, "library");
   if (!admin) return Response.json({ error: "Unauthorized" }, { status: 401 });
   const body = (await request.json().catch(() => ({}))) as { op?: string; id?: string };
   if (body.op !== "delete" || !/^(image|file)-[A-Za-z0-9-]+$/.test(body.id ?? "")) {

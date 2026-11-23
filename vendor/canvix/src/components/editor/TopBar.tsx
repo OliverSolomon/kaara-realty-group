@@ -77,7 +77,7 @@ export function TopBar({ onSave, onShortcuts }: { onSave: () => Promise<void>; o
 
       {hasSelection ? (
         /* context toolbar occupies the middle (desktop only; mobile gets the bottom bar) */
-        <div className="hidden md:flex flex-1 min-w-0 overflow-hidden">
+        <div className="hidden md:flex flex-1 min-w-0 overflow-hidden rounded-xl bg-white text-[#0E1318] px-1 py-0.5 shadow-md">
           <ContextToolbar />
         </div>
       ) : (
@@ -89,7 +89,7 @@ export function TopBar({ onSave, onShortcuts }: { onSave: () => Promise<void>; o
             File <ChevronDown size={12} className="opacity-70" />
           </button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="start" className="w-56 bg-[#16181D] border-white/10 text-white">
+        <DropdownMenuContent align="start" className="w-56 bg-[#FFFFFF] border-black/10 text-[#0E1318]">
           <DropdownMenuItem className="gap-2" onClick={goDashboard}>
             <Home size={15} /> Home
           </DropdownMenuItem>
@@ -132,7 +132,7 @@ export function TopBar({ onSave, onShortcuts }: { onSave: () => Promise<void>; o
             {mode === 'viewing' ? 'Viewing' : mode === 'draw' ? 'Draw' : 'Editing'} <ChevronDown size={12} className="opacity-70" />
           </button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="start" className="w-44 bg-[#16181D] border-white/10 text-white">
+        <DropdownMenuContent align="start" className="w-44 bg-[#FFFFFF] border-black/10 text-[#0E1318]">
           <DropdownMenuItem className="gap-2" onClick={() => { setEditingMode('editing'); setTool('select') }}>
             <MousePointer2 size={15} /> Editing — select & edit
           </DropdownMenuItem>
@@ -185,7 +185,7 @@ export function TopBar({ onSave, onShortcuts }: { onSave: () => Promise<void>; o
           <Redo2 size={17} />
         </Button>
         <button className={cn(item, 'hidden sm:flex')} onClick={toggleAnimate} aria-label="Animate">
-          <Zap size={13} className={cn(animateOpen && 'text-[#02C0CC]')} /> Animate
+          <Zap size={13} className={cn(animateOpen && 'text-[#00C4CC]')} /> Animate
         </button>
         <button className={cn(item, 'hidden sm:flex')} onClick={() => setPreviewOpen(true)} aria-label="Preview design">
           <Play size={14} /> Preview
@@ -199,6 +199,9 @@ export function TopBar({ onSave, onShortcuts }: { onSave: () => Promise<void>; o
           data-testid="present-notes-button"
         >
           <Presentation size={14} /> Present
+        </button>
+        <button className={cn(item, 'kaara-share-button')} onClick={() => window.dispatchEvent(new CustomEvent('kaara:share-design'))} aria-label="Share to co-edit">
+          <Share2 size={14} /> <span className="hidden sm:inline">Share</span>
         </button>
         <Button size="sm" className="btn-cv-white h-10 px-4 sm:px-5 gap-1.5 font-semibold" onClick={() => setExportOpen(true)} aria-label="Download" title="Download">
           <Download size={15} /> <span className="hidden sm:inline">Download</span>

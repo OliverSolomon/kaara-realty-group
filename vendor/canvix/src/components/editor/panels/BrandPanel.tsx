@@ -262,7 +262,7 @@ export function BrandPanel() {
             useEditorStore.getState().setBrand(merged)
             try { localStorage.setItem(BRAND_KEY, JSON.stringify(merged)) } catch { /* ignore */ }
           }}
-          className="flex-1 min-w-0 h-9 rounded-xl bg-white/[0.05] border border-white/10 text-white text-[12px] px-2 outline-none focus:border-[#7630D7] [color-scheme:dark]"
+          className="flex-1 min-w-0 h-9 rounded-xl bg-black/[0.05] border border-black/10 text-[#0E1318] text-[12px] px-2 outline-none focus:border-[#7D2AE8] [color-scheme:dark]"
           aria-label="Active brand kit"
         >
           <option value="">{activeKitId ? 'Choose a kit…' : 'My brand (unsaved)'}</option>
@@ -290,7 +290,7 @@ export function BrandPanel() {
               }
             })()
           }}
-          className="h-9 px-2.5 rounded-xl border border-white/12 bg-white/[0.05] hover:bg-[#7630D7] hover:border-transparent text-white/80 text-[11px] font-semibold shrink-0"
+          className="h-9 px-2.5 rounded-xl border border-white/12 bg-white/[0.05] hover:bg-[#7D2AE8] hover:border-transparent text-white/80 text-[11px] font-semibold shrink-0"
           aria-label="Create a new brand kit"
           title="New brand kit"
         >
@@ -324,20 +324,20 @@ export function BrandPanel() {
           </button>
         )}
         <span
-          className={cn('shrink-0 flex items-center gap-1 text-[10px] font-semibold', synced ? 'text-white/35' : 'text-[#FFD166]')}
+          className={cn('shrink-0 flex items-center gap-1 text-[10px] font-semibold', synced ? 'text-[#0E1318]/35' : 'text-[#FFD166]')}
           title={synced ? 'Synced to your account' : 'Saving…'}
         >
           {synced ? <Cloud size={12} /> : <CloudOff size={12} className="animate-pulse" />}
         </span>
       </div>
-      <h4 className="mt-4 mb-2 text-xs font-semibold text-white/50 uppercase tracking-wide flex items-center gap-1.5">
+      <h4 className="mt-4 mb-2 text-xs font-semibold text-[#0E1318]/50 uppercase tracking-wide flex items-center gap-1.5">
         <BookMarked size={13} /> Brand colours
       </h4>
       <div className="grid grid-cols-5 gap-2">
         {local.colors.map((c, i) => (
           <div key={i} className="relative group">
             <label
-              className="block w-full aspect-square rounded-full border-2 border-white/15 cursor-pointer overflow-hidden hover:scale-105 transition-transform"
+              className="block w-full aspect-square rounded-full border-2 border-black/15 cursor-pointer overflow-hidden hover:scale-105 transition-transform"
               style={{ background: c }}
               title={`Brand colour ${i + 1}: ${c}`}
             >
@@ -351,7 +351,7 @@ export function BrandPanel() {
             </label>
             <button
               onClick={() => applyColor(c)}
-              className="absolute -top-1.5 -right-1.5 w-6 h-6 rounded-full bg-[#7630D7] text-white items-center justify-center hidden group-hover:flex hover:bg-[#8B5CF6] shadow-lg"
+              className="absolute -top-1.5 -right-1.5 w-6 h-6 rounded-full bg-[#7D2AE8] text-white items-center justify-center hidden group-hover:flex hover:bg-[#6A22C9] shadow-lg"
               aria-label={`Apply ${c} to selection`}
               title="Apply to selection"
             >
@@ -360,23 +360,23 @@ export function BrandPanel() {
           </div>
         ))}
       </div>
-      <button onClick={savePalette} className="mt-2 text-[11px] text-white/50 hover:text-white inline-flex items-center gap-1">
+      <button onClick={savePalette} className="mt-2 text-[11px] text-[#0E1318]/50 hover:text-[#0E1318] inline-flex items-center gap-1">
         <Palette size={11} /> Save current colours as palette
       </button>
 
       {(local.palettes?.length ?? 0) > 0 && (
         <>
-          <h4 className="mt-5 mb-2 text-xs font-semibold text-white/50 uppercase tracking-wide flex items-center gap-1.5">
+          <h4 className="mt-5 mb-2 text-xs font-semibold text-[#0E1318]/50 uppercase tracking-wide flex items-center gap-1.5">
             <Layers size={13} /> Palettes
           </h4>
           <div className="space-y-1.5">
             {local.palettes!.map((pal, pi) => (
-              <div key={pi} className="group flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.03] p-1.5 hover:border-[#7630D7]/50 transition-colors">
+              <div key={pi} className="group flex items-center gap-2 rounded-lg border border-black/10 bg-black/[0.03] p-1.5 hover:border-[#7D2AE8]/50 transition-colors">
                 <div className="flex gap-1.5 flex-1">
                   {pal.map((c) => (
                     <button
                       key={c}
-                      className="h-6 w-6 rounded-full border border-white/20 hover:scale-110 transition-transform"
+                      className="h-6 w-6 rounded-full border border-black/20 hover:scale-110 transition-transform"
                       style={{ background: c }}
                       onClick={() => applyColor(c)}
                       title={`Apply ${c}`}
@@ -385,7 +385,7 @@ export function BrandPanel() {
                   ))}
                 </div>
                 <button
-                  className="opacity-0 group-hover:opacity-100 text-white/40 hover:text-red-400"
+                  className="opacity-0 group-hover:opacity-100 text-[#0E1318]/40 hover:text-red-400"
                   onClick={() => persist({ ...local, palettes: local.palettes!.filter((_, i) => i !== pi) })}
                   aria-label="Delete palette"
                 >
@@ -397,7 +397,7 @@ export function BrandPanel() {
         </>
       )}
 
-      <h4 className="mt-6 mb-2 text-xs font-semibold text-white/50 uppercase tracking-wide flex items-center gap-1.5">
+      <h4 className="mt-6 mb-2 text-xs font-semibold text-[#0E1318]/50 uppercase tracking-wide flex items-center gap-1.5">
         <Type size={13} /> Brand fonts
       </h4>
       <div className="space-y-2">
@@ -415,12 +415,12 @@ export function BrandPanel() {
         />
       </div>
 
-      <h4 className="mt-6 mb-2 text-xs font-semibold text-white/50 uppercase tracking-wide flex items-center gap-1.5">
+      <h4 className="mt-6 mb-2 text-xs font-semibold text-[#0E1318]/50 uppercase tracking-wide flex items-center gap-1.5">
         <ImagePlus size={13} /> Logos
       </h4>
       <div className="grid grid-cols-4 gap-2">
         {(local.logos ?? []).map((src, i) => (
-          <div key={i} className="group relative rounded-lg border border-white/10 bg-[#0F1015] aspect-square overflow-hidden">
+          <div key={i} className="group relative rounded-lg border border-black/10 bg-[#EBECF0] aspect-square overflow-hidden">
             <button onClick={() => addLogoToCanvas(src)} className="w-full h-full flex items-center justify-center" aria-label="Add logo to canvas" title="Add to canvas">
               <img src={src} alt="Brand logo" className="max-w-full max-h-full object-contain p-1" />
             </button>
@@ -435,7 +435,7 @@ export function BrandPanel() {
         ))}
         <button
           onClick={() => logoInputRef.current?.click()}
-          className="rounded-lg border-2 border-dashed border-white/15 hover:border-[#7630D7] aspect-square flex flex-col items-center justify-center text-white/40 hover:text-white transition-colors"
+          className="rounded-lg border-2 border-dashed border-black/15 hover:border-[#7D2AE8] aspect-square flex flex-col items-center justify-center text-[#0E1318]/40 hover:text-[#0E1318] transition-colors"
           aria-label="Upload logo"
         >
           <Plus size={16} />
@@ -455,8 +455,8 @@ export function BrandPanel() {
         />
       </div>
 
-      <div className="mt-6 rounded-xl border border-dashed border-white/15 p-4 text-center">
-        <div className="text-white/70 text-sm font-semibold">Brand kit preview</div>
+      <div className="mt-6 rounded-xl border border-dashed border-black/15 p-4 text-center">
+        <div className="text-[#0E1318]/70 text-sm font-semibold">Brand kit preview</div>
         <div className="mt-2 rounded-lg p-3" style={{ background: local.colors[0], color: '#fff' }}>
           <div style={{ fontFamily: local.headingFont, fontWeight: 800, fontSize: 20, lineHeight: 1.1 }}>Aa Your brand heading</div>
           <div style={{ fontFamily: local.bodyFont, fontSize: 12, marginTop: 6, opacity: 0.85 }}>Body text in your brand voice — consistent everywhere.</div>
@@ -464,14 +464,14 @@ export function BrandPanel() {
       </div>
 
       <button
-        className="w-full h-10 rounded-xl bg-gradient-to-r from-[#02C0CC] to-[#7630D7] hover:brightness-110 text-white text-[13px] font-semibold mt-3 flex items-center justify-center gap-1.5 transition-all"
+        className="w-full h-10 rounded-xl bg-gradient-to-r from-[#00C4CC] to-[#7D2AE8] hover:brightness-110 text-white text-[13px] font-semibold mt-3 flex items-center justify-center gap-1.5 transition-all"
         onClick={applyBrandToPage}
       >
         <Wand2 size={14} /> Apply brand style to page
       </button>
 
       <button
-        className="w-full h-9 rounded-xl border border-white/12 hover:bg-white/[0.06] text-white/70 text-[12px] font-semibold mt-2 transition-colors"
+        className="w-full h-9 rounded-xl border border-black/12 hover:bg-black/[0.06] text-[#0E1318]/70 text-[12px] font-semibold mt-2 transition-colors"
         onClick={() => persist(DEFAULT_BRAND)}
       >
         Reset to defaults
@@ -490,11 +490,11 @@ function fillColorOf(el: AnyElement): string | null {
 function FontRow({ label, font, onChange, onApply }: { label: string; font: string; onChange: (f: string) => void; onApply: () => void }) {
   return (
     <div className="flex items-center gap-2">
-      <span className="text-[11px] text-white/50 w-14 shrink-0">{label}</span>
+      <span className="text-[11px] text-[#0E1318]/50 w-14 shrink-0">{label}</span>
       <select
         value={font}
         onChange={(e) => onChange(e.target.value)}
-        className="flex-1 min-w-0 h-10 rounded-xl bg-white/[0.05] border border-white/10 text-white text-[13px] px-2 outline-none focus:border-[#7630D7] [color-scheme:dark]"
+        className="flex-1 min-w-0 h-10 rounded-xl bg-black/[0.05] border border-black/10 text-[#0E1318] text-[13px] px-2 outline-none focus:border-[#7D2AE8] [color-scheme:dark]"
         aria-label={`Brand ${label} font`}
       >
         {FONTS.map((f) => (
@@ -504,7 +504,7 @@ function FontRow({ label, font, onChange, onApply }: { label: string; font: stri
         ))}
       </select>
       <button
-        className={cn('h-10 px-3 rounded-xl border border-white/12 bg-white/[0.05] hover:bg-[#7630D7] hover:border-transparent text-white text-[12px] font-semibold flex items-center gap-1 shrink-0 transition-colors')}
+        className={cn('h-10 px-3 rounded-xl border border-white/12 bg-white/[0.05] hover:bg-[#7D2AE8] hover:border-transparent text-white text-[12px] font-semibold flex items-center gap-1 shrink-0 transition-colors')}
         onClick={onApply}
         title={`Apply as ${label.toLowerCase()} font`}
       >

@@ -132,12 +132,12 @@ export function TranslateDialog({ open, onOpenChange }: { open: boolean; onOpenC
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="rounded-[28px] bg-[#16181D] border-white/10 text-white sm:max-w-md">
+      <DialogContent className="rounded-[28px] bg-[#FFFFFF] border-black/10 text-[#0E1318] sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="text-lg font-bold flex items-center gap-2">
-            <Languages size={17} className="text-[#02C0CC]" /> Translate design
+            <Languages size={17} className="text-[#00C4CC]" /> Translate design
           </DialogTitle>
-          <DialogDescription className="text-white/60">
+          <DialogDescription className="text-[#0E1318]/60">
             {texts.length + cellEntries.length
               ? `Translate all ${texts.length + cellEntries.length} text${texts.length + cellEntries.length === 1 ? '' : 's'} (incl. table cells) across ${pages.length} page${pages.length === 1 ? '' : 's'} with AI. Your layout stays intact.`
               : 'This design has no text to translate yet.'}
@@ -156,15 +156,15 @@ export function TranslateDialog({ open, onOpenChange }: { open: boolean; onOpenC
                   className={cn(
                     'flex items-center justify-between gap-2 rounded-xl px-3 py-2.5 border text-left transition-colors',
                     active
-                      ? 'bg-[#7630D7] border-transparent'
-                      : 'bg-white/5 border-white/10 hover:bg-white/10'
+                      ? 'bg-[#7D2AE8] border-transparent'
+                      : 'bg-black/5 border-black/10 hover:bg-black/10'
                   )}
                 >
                   <span className="min-w-0">
                     <span className="block text-[13px] font-semibold truncate">{l.native}</span>
-                    <span className={cn('block text-[10.5px] truncate', active ? 'text-white/80' : 'text-white/45')}>{l.name}</span>
+                    <span className={cn('block text-[10.5px] truncate', active ? 'text-[#0E1318]/80' : 'text-[#0E1318]/45')}>{l.name}</span>
                   </span>
-                  {active && <ArrowRight size={13} className="shrink-0 text-white/90" />}
+                  {active && <ArrowRight size={13} className="shrink-0 text-[#0E1318]/90" />}
                 </button>
               )
             })}
@@ -172,7 +172,7 @@ export function TranslateDialog({ open, onOpenChange }: { open: boolean; onOpenC
         </div>
 
         <div className="flex items-center gap-2 pt-1">
-          <span className="text-[11px] text-white/45 flex items-center gap-1.5 min-w-0">
+          <span className="text-[11px] text-[#0E1318]/45 flex items-center gap-1.5 min-w-0">
             <Globe size={12} className="shrink-0" />
             {picked ? `Target: ${picked.native}` : 'Pick a language'}
           </span>

@@ -41,7 +41,7 @@ export function ColorPicker({ value, onChange, children, label }: ColorPickerPro
       <PopoverTrigger asChild>
         {children ?? (
           <button
-            className="h-8 w-8 rounded-lg border-2 border-white shadow-[0_0_0_1px_rgba(0,0,0,0.12)] overflow-hidden"
+            className="h-8 w-8 rounded-lg border-2 border-[#7D2AE8] shadow-[0_0_0_1px_rgba(0,0,0,0.12)] overflow-hidden"
             style={{ background: value === 'transparent' ? 'repeating-conic-gradient(#e3e3e8 0% 25%, #ffffff 0% 50%) 50% / 10px 10px' : value }}
             aria-label={label ?? 'Pick color'}
           />

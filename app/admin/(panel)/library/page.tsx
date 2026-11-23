@@ -1,8 +1,10 @@
+import { requireAdmin } from "@/lib/auth/admin";
 import { getPool } from "@/lib/db";
 import { sanityWriter } from "@/lib/sanityAdmin";
 import LibraryApp, { type DesignOption, type LibraryAsset, type PropertyFolder } from "./LibraryApp";
 
 export default async function LibraryPage() {
+  await requireAdmin("library");
   const client = sanityWriter();
   const [assets, properties, designs] = await Promise.all([
     client.fetch<LibraryAsset[]>(

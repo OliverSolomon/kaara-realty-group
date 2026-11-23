@@ -31,7 +31,7 @@ import { Bold, Check, Italic, Link2, Strikethrough, Underline, X } from 'lucide-
 
 /** canva-measured tokens */
 const GUIDE_COLOR = '#9954FF' // rgb(153,84,255) — measured 2026-09-03
-const SELECTION_COLOR = '#7630D7' // rgb(118,48,215) — measured
+const SELECTION_COLOR = '#7D2AE8' // rgb(118,48,215) — measured
 
 export default function CanvasStage() {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -880,7 +880,7 @@ export default function CanvasStage() {
                 rotateEnabled
                 flipEnabled={false}
                 boundBoxFunc={(oldBox, newBox) => (newBox.width < 8 || newBox.height < 8 ? oldBox : newBox)}
-                // canva-measured selection chrome: #7630D7 2px border + white circle handles
+                // canva-measured selection chrome: #7D2AE8 2px border + white circle handles
                 borderStroke={SELECTION_COLOR}
                 borderStrokeWidth={2 / zoom}
                 borderDash={undefined}
@@ -959,7 +959,7 @@ export default function CanvasStage() {
                     listening={false}
                   />
                 ))}
-              {/* marquee selection rect (canva: #7630D7 border, translucent fill) */}
+              {/* marquee selection rect (canva: #7D2AE8 border, translucent fill) */}
               {marquee && (
                 <Rect
                   x={Math.min(marquee.x0, marquee.x1)}

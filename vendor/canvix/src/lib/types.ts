@@ -629,6 +629,7 @@ export interface TemplateRecord extends DesignSnapshot {
 }
 
 export const TEMPLATE_CATEGORIES = [
+  { id: 'real-estate', label: 'Real estate', icon: 'home' },
   { id: 'social', label: 'Social media', icon: 'instagram' },
   { id: 'presentation', label: 'Presentation', icon: 'presentation' },
   { id: 'print', label: 'Print', icon: 'printer' },

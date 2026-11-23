@@ -1,3 +1,4 @@
+import { requireAdmin } from "@/lib/auth/admin";
 import Link from "next/link";
 import { PiMagnifyingGlass, PiWhatsappLogo } from "react-icons/pi";
 import { getStats, listLeads } from "@/lib/admin";
@@ -10,6 +11,7 @@ export default async function AdminInboxPage({
 }: {
   searchParams: Promise<{ status?: string; q?: string; interest?: string }>;
 }) {
+  await requireAdmin("leads");
   const params = await searchParams;
   const status = LEAD_STATUSES.includes(params.status as LeadStatus) ? (params.status as LeadStatus) : null;
   const q = (params.q || "").slice(0, 100);

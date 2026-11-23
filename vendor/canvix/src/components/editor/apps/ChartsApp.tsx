@@ -28,8 +28,8 @@ export function ChartsApp({ onClose }: AppPanelProps) {
   return (
     <div>
       <AppHeader icon={BarChart3} title="Charts" onClose={onClose} />
-      <p className="text-[11px] text-white/45 leading-relaxed mb-3">
-        Charts are native data-bound elements — select one on the canvas and hit <span className="text-white/70">Edit data</span> in the toolbar to change labels, values and colours.
+      <p className="text-[11px] text-[#0E1318]/45 leading-relaxed mb-3">
+        Charts are native data-bound elements — select one on the canvas and hit <span className="text-[#0E1318]/70">Edit data</span> in the toolbar to change labels, values and colours.
       </p>
       <div className="space-y-2">
         {ROWS.map((r) => (
@@ -53,12 +53,12 @@ function ChartRow({ icon: Icon, name, desc, onAdd }: { icon: typeof BarChart3; n
           onAdd()
         }
       }}
-      className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.03] p-3 hover:border-[#7630D7] transition-colors cursor-pointer focus:outline-none focus-visible:border-[#7630D7]"
+      className="flex items-center gap-3 rounded-xl border border-black/10 bg-black/[0.03] p-3 hover:border-[#7D2AE8] transition-colors cursor-pointer focus:outline-none focus-visible:border-[#7D2AE8]"
     >
-      <Icon size={18} className="text-[#02C0CC] shrink-0" />
+      <Icon size={18} className="text-[#00C4CC] shrink-0" />
       <div className="min-w-0 flex-1">
-        <div className="text-[13px] font-semibold text-white">{name}</div>
-        <div className="text-[11px] text-white/45 truncate">{desc}</div>
+        <div className="text-[13px] font-semibold text-[#0E1318]">{name}</div>
+        <div className="text-[11px] text-[#0E1318]/45 truncate">{desc}</div>
       </div>
       <button className="btn-cv h-8 px-3.5 text-[11px] shrink-0" onClick={(e) => { e.stopPropagation(); onAdd() }}>
         Add

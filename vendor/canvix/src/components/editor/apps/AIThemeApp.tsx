@@ -75,7 +75,7 @@ export function AIThemeApp({ onClose }: AppPanelProps) {
   return (
     <div>
       <AppHeader icon={SwatchBook} title="AI theme" onClose={onClose} />
-      <p className="text-[11.5px] text-white/50 leading-snug mb-3">
+      <p className="text-[11.5px] text-[#0E1318]/50 leading-snug mb-3">
         Describe a mood — get a palette + font pairing, preview it, then recolor the whole design in one
         undoable step. Text contrast is guarded automatically.
       </p>
@@ -86,7 +86,7 @@ export function AIThemeApp({ onClose }: AppPanelProps) {
           onChange={(e) => setMood(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && !busy && void generate()}
           placeholder="e.g. moody jazz club, deep blues"
-          className="flex-1 h-9 rounded-xl bg-white/[0.05] border border-white/10 text-white text-[12px] px-3 focus:outline-none focus:border-[#02C0CC]"
+          className="flex-1 h-9 rounded-xl bg-black/[0.05] border border-black/10 text-[#0E1318] text-[12px] px-3 focus:outline-none focus:border-[#00C4CC]"
           aria-label="Theme mood"
           maxLength={400}
         />
@@ -106,7 +106,7 @@ export function AIThemeApp({ onClose }: AppPanelProps) {
             <button
               key={m}
               onClick={() => setMood(m)}
-              className="block w-full text-left text-[11px] text-white/45 hover:text-white/80 px-2.5 py-2 rounded-lg hover:bg-white/[0.04] transition-colors"
+              className="block w-full text-left text-[11px] text-[#0E1318]/45 hover:text-[#0E1318]/80 px-2.5 py-2 rounded-lg hover:bg-black/[0.04] transition-colors"
             >
               “{m}”
             </button>
@@ -121,18 +121,18 @@ export function AIThemeApp({ onClose }: AppPanelProps) {
       )}
 
       {theme && (
-        <div className="mt-4 border-t border-white/10 pt-3">
+        <div className="mt-4 border-t border-black/10 pt-3">
           <div className="flex items-start gap-2">
             <div className="min-w-0">
-              <p className="text-[12.5px] font-bold text-white truncate">{theme.name}</p>
-              {theme.mood && <p className="text-[11px] text-white/50 leading-snug mt-0.5">{theme.mood}</p>}
-              <p className="text-[11px] text-white/45 mt-1">
+              <p className="text-[12.5px] font-bold text-[#0E1318] truncate">{theme.name}</p>
+              {theme.mood && <p className="text-[11px] text-[#0E1318]/50 leading-snug mt-0.5">{theme.mood}</p>}
+              <p className="text-[11px] text-[#0E1318]/45 mt-1">
                 {theme.fonts.heading} + {theme.fonts.body}
               </p>
             </div>
             <div className="ml-auto flex gap-2 shrink-0">
               <button
-                className="text-[11px] text-white/55 hover:text-white px-2.5 h-8 rounded-lg hover:bg-white/10"
+                className="text-[11px] text-[#0E1318]/55 hover:text-[#0E1318] px-2.5 h-8 rounded-lg hover:bg-black/10"
                 onClick={() => setTheme(null)}
               >
                 Redraft
@@ -143,17 +143,17 @@ export function AIThemeApp({ onClose }: AppPanelProps) {
             </div>
           </div>
 
-          <div className="mt-3 rounded-xl border border-white/10 overflow-hidden">
+          <div className="mt-3 rounded-xl border border-black/10 overflow-hidden">
             {theme.palette.map((c) => (
-              <div key={c.role} className="flex items-center gap-2.5 px-2.5 h-10 border-b border-white/[0.06] last:border-b-0" style={{ background: `${c.hex}14` }}>
-                <span className="w-6 h-6 rounded-md border border-white/15 shrink-0" style={{ background: c.hex }} />
-                <span className="text-[11.5px] text-white/80">{ROLE_LABELS[c.role] ?? c.role}</span>
-                <span className="ml-auto font-mono text-[10.5px] text-white/45">{c.hex}</span>
+              <div key={c.role} className="flex items-center gap-2.5 px-2.5 h-10 border-b border-black/[0.06] last:border-b-0" style={{ background: `${c.hex}14` }}>
+                <span className="w-6 h-6 rounded-md border border-black/15 shrink-0" style={{ background: c.hex }} />
+                <span className="text-[11.5px] text-[#0E1318]/80">{ROLE_LABELS[c.role] ?? c.role}</span>
+                <span className="ml-auto font-mono text-[10.5px] text-[#0E1318]/45">{c.hex}</span>
               </div>
             ))}
           </div>
 
-          <p className="mt-3 text-[10.5px] text-white/35 leading-snug">
+          <p className="mt-3 text-[10.5px] text-[#0E1318]/35 leading-snug">
             Applying recolors page backgrounds, text, shapes and lines across every page. Images, charts and
             stickers stay untouched; one Ctrl+Z reverts everything.
           </p>

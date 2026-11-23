@@ -1,4 +1,6 @@
 import { adminFromRequest, audit } from "@/lib/auth/admin";
+import { can } from "@/lib/auth/roles";
+import { sharedDesignAllowed } from "@/lib/auth/shares";
 import { getPool } from "@/lib/db";
 import { sanityWriter } from "@/lib/sanityAdmin";
 import { mergePages } from "@canvix/lib/collab/merge";
@@ -264,6 +266,7 @@ async function handle(request: Request, context: Context) {
   const { path } = await context.params;
   const [family, ...rest] = path;
   const method = request.method;
+  if (!can(admin.role, "design") && !(await sharedDesignAllowed(admin.email, method, family, rest))) return json({ error: "Unauthorized" }, 401);
   try {
     switch (family) {
       case "designs":

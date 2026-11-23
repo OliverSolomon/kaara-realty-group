@@ -66,7 +66,7 @@ export function PageBar() {
                 onClick={() => setCurrentPage(i)}
                 className={cn(
                   'block rounded-md overflow-hidden border-2 transition-all bg-white shadow-md',
-                  i === currentPage ? 'border-[#02C0CC]' : 'border-white/20 hover:border-white/45'
+                  i === currentPage ? 'border-[#00C4CC]' : 'border-black/20 hover:border-black/45'
                 )}
                 style={{ height: THUMB_H, width: thumbW }}
                 aria-label={`Go to page ${i + 1}`}
@@ -75,12 +75,12 @@ export function PageBar() {
                   <DesignPreview page={p} width={ps.width} height={ps.height} />
                 </div>
               </button>
-              <span className="absolute -top-1.5 -left-1.5 h-4 min-w-4 px-0.5 rounded-full bg-[#7630D7] text-white text-[9px] font-bold flex items-center justify-center shadow">
+              <span className="absolute -top-1.5 -left-1.5 h-4 min-w-4 px-0.5 rounded-full bg-[#7D2AE8] text-white text-[9px] font-bold flex items-center justify-center shadow">
                 {i + 1}
               </span>
               {i === currentPage && p.notes ? (
                 <span
-                  className="absolute -bottom-1.5 -right-1.5 h-4 w-4 rounded-full bg-[#02C0CC] text-white flex items-center justify-center shadow"
+                  className="absolute -bottom-1.5 -right-1.5 h-4 w-4 rounded-full bg-[#00C4CC] text-white flex items-center justify-center shadow"
                   title="This page has speaker notes"
                 >
                   <NotebookPen size={9} />
@@ -112,7 +112,7 @@ export function PageBar() {
       </div>
       <button
         onClick={addPage}
-        className="h-9 w-9 rounded-lg border-2 border-dashed border-white/25 text-white/60 hover:border-[#02C0CC] hover:text-[#02C0CC] flex items-center justify-center shrink-0 bg-white/[0.06]"
+        className="h-9 w-9 rounded-lg border-2 border-dashed border-black/25 text-[#0E1318]/60 hover:border-[#00C4CC] hover:text-[#00C4CC] flex items-center justify-center shrink-0 bg-black/[0.06]"
         title="Add page"
         aria-label="Add page"
       >
@@ -124,9 +124,9 @@ export function PageBar() {
         <button
           onClick={() => { setNotesOpen((v) => !v); setResizeOpen(false) }}
           className={cn(
-            'h-9 w-9 rounded-lg border text-white/60 hover:border-[#02C0CC] hover:text-[#02C0CC] flex items-center justify-center bg-white/[0.06] transition-colors',
-            notesOpen ? 'border-[#02C0CC] text-[#02C0CC]' : 'border-white/15',
-            page?.notes ? 'text-[#02C0CC]' : ''
+            'h-9 w-9 rounded-lg border text-[#0E1318]/60 hover:border-[#00C4CC] hover:text-[#00C4CC] flex items-center justify-center bg-black/[0.06] transition-colors',
+            notesOpen ? 'border-[#00C4CC] text-[#00C4CC]' : 'border-black/15',
+            page?.notes ? 'text-[#00C4CC]' : ''
           )}
           title="Speaker notes"
           aria-label="Speaker notes"
@@ -135,8 +135,8 @@ export function PageBar() {
           <NotebookPen size={15} />
         </button>
         {notesOpen && page && (
-          <div className="absolute bottom-11 left-0 w-72 rounded-xl bg-[#16181D] border border-white/10 shadow-2xl p-3" data-testid="notes-popover">
-            <div className="text-[11px] font-semibold uppercase tracking-wide text-white/50 mb-2">
+          <div className="absolute bottom-11 left-0 w-72 rounded-xl bg-[#FFFFFF] border border-black/10 shadow-2xl p-3" data-testid="notes-popover">
+            <div className="text-[11px] font-semibold uppercase tracking-wide text-[#0E1318]/50 mb-2">
               Notes — page {currentPage + 1}
             </div>
             <textarea
@@ -144,13 +144,13 @@ export function PageBar() {
               onChange={(e) => setPageNotes(page.id, e.target.value)}
               placeholder="Type speaker notes…"
               data-testid="notes-textarea"
-              className="w-full h-28 resize-none rounded-lg bg-black/30 border border-white/10 px-2.5 py-2 text-[13px] text-white/85 placeholder:text-white/30 focus:outline-none focus:border-[#02C0CC]"
+              className="w-full h-28 resize-none rounded-lg bg-black/30 border border-white/10 px-2.5 py-2 text-[13px] text-white/85 placeholder:text-white/30 focus:outline-none focus:border-[#00C4CC]"
             />
             {/* v0.19 (Wave 4): AI notes generation (review gate inside) */}
             <div className="mt-1.5">
               <NotesAIGenerator />
             </div>
-            <div className="text-[11px] text-white/40 mt-1.5">
+            <div className="text-[11px] text-[#0E1318]/40 mt-1.5">
               Shown in presenter view — never on the canvas or in exports.
             </div>
           </div>
@@ -162,8 +162,8 @@ export function PageBar() {
         <button
           onClick={() => (resizeOpen ? setResizeOpen(false) : openResize())}
           className={cn(
-            'h-9 px-2.5 rounded-lg border text-white/60 hover:border-[#02C0CC] hover:text-[#02C0CC] flex items-center gap-1.5 bg-white/[0.06] transition-colors',
-            resizeOpen ? 'border-[#02C0CC] text-[#02C0CC]' : 'border-white/15'
+            'h-9 px-2.5 rounded-lg border text-[#0E1318]/60 hover:border-[#00C4CC] hover:text-[#00C4CC] flex items-center gap-1.5 bg-black/[0.06] transition-colors',
+            resizeOpen ? 'border-[#00C4CC] text-[#00C4CC]' : 'border-black/15'
           )}
           title="Resize this page"
           aria-label="Resize this page"
@@ -177,29 +177,29 @@ export function PageBar() {
           {page?.width && page?.height ? <span className="w-1.5 h-1.5 rounded-full bg-[#FFB84C]" title="Custom page size" /> : null}
         </button>
         {resizeOpen && sizeDraft && page && (
-          <div className="absolute bottom-11 left-0 w-72 rounded-xl bg-[#16181D] border border-white/10 shadow-2xl p-3" data-testid="page-size-popover">
-            <div className="text-[11px] font-semibold uppercase tracking-wide text-white/50 mb-2">
+          <div className="absolute bottom-11 left-0 w-72 rounded-xl bg-[#FFFFFF] border border-black/10 shadow-2xl p-3" data-testid="page-size-popover">
+            <div className="text-[11px] font-semibold uppercase tracking-wide text-[#0E1318]/50 mb-2">
               Page {currentPage + 1} size
             </div>
             <div className="flex items-center gap-2 mb-2">
               <label className="flex items-center gap-1.5 flex-1">
-                <span className="text-xs text-white/50">W</span>
+                <span className="text-xs text-[#0E1318]/50">W</span>
                 <input
                   inputMode="numeric"
                   value={sizeDraft.w}
                   onChange={(e) => setSizeDraft({ ...sizeDraft, w: e.target.value.replace(/[^0-9]/g, '') })}
-                  className="w-full h-8 rounded-lg bg-black/30 border border-white/10 px-2 text-[13px] text-white focus:outline-none focus:border-[#02C0CC]"
+                  className="w-full h-8 rounded-lg bg-black/30 border border-white/10 px-2 text-[13px] text-white focus:outline-none focus:border-[#00C4CC]"
                   data-testid="page-size-w"
                 />
               </label>
-              <span className="text-white/30">×</span>
+              <span className="text-[#0E1318]/30">×</span>
               <label className="flex items-center gap-1.5 flex-1">
-                <span className="text-xs text-white/50">H</span>
+                <span className="text-xs text-[#0E1318]/50">H</span>
                 <input
                   inputMode="numeric"
                   value={sizeDraft.h}
                   onChange={(e) => setSizeDraft({ ...sizeDraft, h: e.target.value.replace(/[^0-9]/g, '') })}
-                  className="w-full h-8 rounded-lg bg-black/30 border border-white/10 px-2 text-[13px] text-white focus:outline-none focus:border-[#02C0CC]"
+                  className="w-full h-8 rounded-lg bg-black/30 border border-white/10 px-2 text-[13px] text-white focus:outline-none focus:border-[#00C4CC]"
                   data-testid="page-size-h"
                 />
               </label>
@@ -212,8 +212,8 @@ export function PageBar() {
                   className={cn(
                     'h-7 rounded-lg text-[10.5px] leading-tight border transition-colors',
                     sizeDraft.w === String(p.width) && sizeDraft.h === String(p.height)
-                      ? 'border-[#02C0CC] text-[#02C0CC] bg-[#02C0CC]/10'
-                      : 'border-white/10 text-white/60 hover:border-white/30'
+                      ? 'border-[#00C4CC] text-[#00C4CC] bg-[#00C4CC]/10'
+                      : 'border-black/10 text-[#0E1318]/60 hover:border-black/30'
                   )}
                 >
                   {p.name}
@@ -223,7 +223,7 @@ export function PageBar() {
             <div className="flex items-center gap-2">
               <button
                 onClick={applyResize}
-                className="flex-1 h-8 rounded-lg bg-[#02C0CC] text-[#0B0C10] text-xs font-semibold flex items-center justify-center gap-1 hover:bg-[#02C0CC]/85"
+                className="flex-1 h-8 rounded-lg bg-[#00C4CC] text-[#0B0C10] text-xs font-semibold flex items-center justify-center gap-1 hover:bg-[#00C4CC]/85"
                 data-testid="page-size-apply"
               >
                 <Check size={13} /> Apply
@@ -231,14 +231,14 @@ export function PageBar() {
               {page.width || page.height ? (
                 <button
                   onClick={resetPageSize}
-                  className="h-8 px-2.5 rounded-lg border border-white/15 text-white/60 text-xs flex items-center gap-1 hover:border-white/35"
+                  className="h-8 px-2.5 rounded-lg border border-black/15 text-[#0E1318]/60 text-xs flex items-center gap-1 hover:border-black/35"
                   title="Back to the design size"
                 >
                   <RotateCcw size={12} /> Reset
                 </button>
               ) : null}
             </div>
-            <div className="text-[11px] text-white/40 mt-1.5">
+            <div className="text-[11px] text-[#0E1318]/40 mt-1.5">
               Applies to this page only — other pages keep their size.
             </div>
           </div>

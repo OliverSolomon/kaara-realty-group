@@ -3,13 +3,20 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import dynamic from "next/dynamic";
-import { PiArrowDown, PiArrowLeft, PiArrowUp, PiFile, PiImage, PiPlus, PiShareNetwork, PiTrash, PiX } from "react-icons/pi";
+import { PiArrowDown, PiArrowLeft, PiArrowUp, PiEye, PiFile, PiImage, PiPencilSimple, PiPlus, PiShareNetwork, PiTrash, PiUsers, PiX } from "react-icons/pi";
 import { uploadAsset } from "@/lib/cms/upload";
 import { fieldVisible, type CmsDocumentType, type CmsField } from "@/lib/cms/types";
 
 const WordEditorDialog = dynamic(() => import("./WordEditorDialog"), { ssr: false });
+const SanityBodyEditor = dynamic(() => import("./SanityBodyEditor"), { ssr: false, loading: () => <p className="border border-white/15 p-4 text-sm text-white/50">Opening the editor…</p> });
+const ArticlePreview = dynamic(() => import("./ArticlePreview"), { ssr: false });
+const ShareDialog = dynamic(() => import("../../../ShareDialog"), { ssr: false });
+
+type BodyEditor = "sanity" | "word";
+const BODY_EDITOR_KEY = "kaara.bodyEditor";
+const BodyEditorContext = createContext<BodyEditor>("sanity");
 
 type Value = any;
 const FIELD = "w-full border border-white/15 bg-transparent px-3 py-2.5 text-sm text-[#efebe3] outline-none placeholder:text-white/30 focus:border-[#4f9d8f]";
@@ -173,12 +180,14 @@ const blockText = (block: Value) => (block.children ?? []).map((child: Value) =>
 
 /** Rich text opens in the full Word editor. Citations, callouts and images travel through it safely. */
 function PortableTextInput({ field, value, onChange }: { field: CmsField; value: Value; onChange: (value: Value) => void }) {
+  const bodyEditor = useContext(BodyEditorContext);
   const blocks: Value[] = Array.isArray(value) ? value : [];
   const [editing, setEditing] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const words = blocks.reduce((total, block) => total + (block._type === "block" ? blockText(block).trim().split(/\s+/).filter(Boolean).length : 0), 0);
   const rich = blocks.filter((block) => block._type !== "block").length;
   const preview = blocks.filter((block) => block._type === "block" && blockText(block).trim()).slice(0, 2).map(blockText).join(" ");
+  if (bodyEditor === "sanity") return <SanityBodyEditor value={blocks} onChange={(next) => onChange(next.length ? next : undefined)} />;
   return (
     <div className="border border-white/15 p-3">
       {preview ? <p className="line-clamp-3 text-sm leading-relaxed text-white/65">{preview}</p> : <p className="text-sm text-white/40">Nothing written yet.</p>}
@@ -373,7 +382,7 @@ function Fields({ fields, value, onChange, document, prefix }: { fields: CmsFiel
   );
 }
 
-export default function CmsEditor({ schema, initial, rev, hasPublished, hasDraft, isNew, singleton }: {
+export default function CmsEditor({ schema, initial, rev, hasPublished, hasDraft, isNew, singleton, coEditor = false }: {
   schema: CmsDocumentType;
   initial: Value;
   rev: string | null;
@@ -381,6 +390,7 @@ export default function CmsEditor({ schema, initial, rev, hasPublished, hasDraft
   hasDraft: boolean;
   isNew: boolean;
   singleton: boolean;
+  coEditor?: boolean;
 }) {
   const router = useRouter();
   const [doc, setDoc] = useState<Value>(initial);
@@ -391,6 +401,30 @@ export default function CmsEditor({ schema, initial, rev, hasPublished, hasDraft
   const [busy, setBusy] = useState("");
   const [message, setMessage] = useState<{ ok: boolean; text: string } | null>(null);
   const [created, setCreated] = useState(!isNew);
+  const [bodyEditor, setBodyEditor] = useState<BodyEditor>("sanity");
+  const [view, setView] = useState<"edit" | "preview">("edit");
+  const [sharing, setSharing] = useState(false);
+  const hasBody = schema.fields.some((field) => field.type === "portableText");
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      try {
+        if (window.localStorage.getItem(BODY_EDITOR_KEY) === "word") setBodyEditor("word");
+      } catch {
+        // Private browsing keeps the default editor.
+      }
+    }, 0);
+    return () => clearTimeout(timer);
+  }, []);
+
+  function chooseEditor(next: BodyEditor) {
+    setBodyEditor(next);
+    try {
+      window.localStorage.setItem(BODY_EDITOR_KEY, next);
+    } catch {
+      // The choice still applies to this page.
+    }
+  }
 
   useEffect(() => {
     const warn = (event: BeforeUnloadEvent) => { if (dirty) event.preventDefault(); };
@@ -398,7 +432,7 @@ export default function CmsEditor({ schema, initial, rev, hasPublished, hasDraft
     return () => window.removeEventListener("beforeunload", warn);
   }, [dirty]);
 
-  const backHref = singleton ? "/admin/content" : `/admin/content/${schema.name}${doc.listingType ? `?listing=${doc.listingType}` : ""}`;
+  const backHref = coEditor ? "/admin/shared" : singleton ? "/admin/content" : `/admin/content/${schema.name}${doc.listingType ? `?listing=${doc.listingType}` : ""}`;
   const id = doc._id as string;
 
   async function run(op: "save" | "publish") {
@@ -451,15 +485,44 @@ export default function CmsEditor({ schema, initial, rev, hasPublished, hasDraft
           {dirty ? "Unsaved" : draft ? (published ? "Draft changes" : "Draft") : published ? "Published" : "New"}
         </span>
       </div>
-      <div className="mt-5 grid gap-5 border border-white/10 bg-[#171232] p-4 sm:p-6">
+      {(hasBody || (created && !singleton && !coEditor)) && (
+        <div className="mt-4 flex flex-wrap items-center gap-2">
+          {hasBody && (
+            <>
+              <div className="flex border border-white/15" role="group" aria-label="View">
+                <button type="button" aria-pressed={view === "edit"} onClick={() => setView("edit")} className={`inline-flex min-h-11 items-center gap-1.5 px-3 text-xs ${view === "edit" ? "bg-[#2e7d6f] text-white" : "text-white/60"}`}><PiPencilSimple size={14} aria-hidden="true" /> Edit</button>
+                <button type="button" aria-pressed={view === "preview"} onClick={() => setView("preview")} className={`inline-flex min-h-11 items-center gap-1.5 px-3 text-xs ${view === "preview" ? "bg-[#2e7d6f] text-white" : "text-white/60"}`}><PiEye size={14} aria-hidden="true" /> Preview</button>
+              </div>
+              {view === "edit" && (
+                <label className="flex items-center gap-2 text-xs text-white/60">
+                  Editor
+                  <select aria-label="Choose editor" value={bodyEditor} onChange={(event) => { if (!dirty || window.confirm("Switch editor? Your unsaved text is kept.")) chooseEditor(event.target.value as BodyEditor); }} className="min-h-11 border border-white/15 px-2 text-xs">
+                    <option value="sanity">Sanity editor (default)</option>
+                    <option value="word">Word editor</option>
+                  </select>
+                </label>
+              )}
+            </>
+          )}
+          {created && !singleton && !coEditor && (
+            <button type="button" onClick={() => setSharing(true)} className="press ml-auto inline-flex min-h-11 items-center gap-1.5 border border-white/20 px-3 text-xs"><PiUsers size={14} aria-hidden="true" /> Share to co-edit</button>
+          )}
+        </div>
+      )}
+      {coEditor && <p className="mt-3 border border-[#4f9d8f]/40 bg-[#2e7d6f]/15 p-3 text-xs text-white/75">You are co-editing this item. Save your changes as a draft, and the Kaara team will publish it.</p>}
+      {view === "preview" && <div className="mt-5"><ArticlePreview doc={doc} /></div>}
+      <div className={`mt-5 grid gap-5 border border-white/10 bg-[#171232] p-4 sm:p-6 ${view === "preview" ? "hidden" : ""}`}>
+        <BodyEditorContext.Provider value={bodyEditor}>
         <Fields fields={schema.fields} value={doc} document={doc} prefix="cms" onChange={(next) => { setDoc({ ...next, _id: id, _type: schema.name, ...(doc._rev ? { _rev: doc._rev } : {}) }); setDirty(true); setMessage(null); }} />
+        </BodyEditorContext.Provider>
       </div>
+      {sharing && <ShareDialog kind="content" itemId={`${schema.name}:${id}`} title={String(doc.title ?? doc.name ?? schema.title)} link={`${window.location.origin}/admin/content/${schema.name}/${encodeURIComponent(id)}`} onClose={() => setSharing(false)} />}
       <div className="sticky bottom-0 z-20 -mx-4 mt-5 border-t border-white/10 bg-[#100b28]/95 px-4 py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] backdrop-blur-md">
         <div className="mx-auto flex max-w-3xl flex-wrap items-center gap-2">
           {message && <p role={message.ok ? "status" : "alert"} className={`w-full text-sm ${message.ok ? "text-[#7fd0c1]" : "text-[#f0a08a]"}`}>{message.text}</p>}
-          {!singleton && created && <button type="button" disabled={Boolean(busy)} onClick={() => remove("delete")} className="press min-h-11 border border-[#f0a08a]/40 px-3 text-[10px] font-bold uppercase tracking-[0.14em] text-[#f0a08a] disabled:opacity-50">Delete</button>}
-          {draft && published && <button type="button" disabled={Boolean(busy)} onClick={() => remove("discard")} className="press min-h-11 border border-white/20 px-3 text-[10px] font-bold uppercase tracking-[0.14em] disabled:opacity-50">Discard</button>}
-          {schema.name === "post" && published && !dirty && !draft && (
+          {!coEditor && !singleton && created && <button type="button" disabled={Boolean(busy)} onClick={() => remove("delete")} className="press min-h-11 border border-[#f0a08a]/40 px-3 text-[10px] font-bold uppercase tracking-[0.14em] text-[#f0a08a] disabled:opacity-50">Delete</button>}
+          {!coEditor && draft && published && <button type="button" disabled={Boolean(busy)} onClick={() => remove("discard")} className="press min-h-11 border border-white/20 px-3 text-[10px] font-bold uppercase tracking-[0.14em] disabled:opacity-50">Discard</button>}
+          {!coEditor && schema.name === "post" && published && !dirty && !draft && (
             <Link href={`/admin/posts?insight=${encodeURIComponent(id)}`} className="press inline-flex min-h-11 items-center gap-2 border border-[#4f9d8f] px-3 text-[10px] font-bold uppercase tracking-[0.14em] text-[#7fd0c1]">
               <PiShareNetwork size={14} aria-hidden="true" />
               Share to social
@@ -467,7 +530,9 @@ export default function CmsEditor({ schema, initial, rev, hasPublished, hasDraft
           )}
           <div className="ml-auto flex gap-2">
             <button type="button" disabled={Boolean(busy) || !dirty} onClick={() => run("save")} className="press min-h-11 border border-white/20 px-4 text-[10px] font-bold uppercase tracking-[0.14em] disabled:opacity-40">{busy === "save" ? "Saving" : "Save draft"}</button>
+            {!coEditor && (
             <button type="button" disabled={Boolean(busy) || (!dirty && !draft && published)} onClick={() => run("publish")} className="press min-h-11 border border-[#4f9d8f] bg-[#2e7d6f] px-5 text-[10px] font-bold uppercase tracking-[0.14em] text-[#f4faf8] disabled:opacity-40">{busy === "publish" ? "Publishing" : "Publish"}</button>
+            )}
           </div>
         </div>
       </div>

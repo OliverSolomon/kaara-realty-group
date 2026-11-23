@@ -1,4 +1,5 @@
-import { adminFromRequest, audit } from "@/lib/auth/admin";
+import { audit } from "@/lib/auth/admin";
+import { uploaderFromRequest } from "@/lib/auth/shares";
 import { getPool } from "@/lib/db";
 import { sanityWriter } from "@/lib/sanityAdmin";
 
@@ -24,7 +25,7 @@ function matchesType(bytes: Buffer, type: string) {
 }
 
 export async function POST(request: Request) {
-  const admin = await adminFromRequest(request);
+  const admin = await uploaderFromRequest(request);
   if (!admin) return Response.json({ error: "Unauthorized" }, { status: 401 });
   const pool = getPool();
   if (!pool) return Response.json({ error: "The database is not configured." }, { status: 503 });

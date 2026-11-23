@@ -90,7 +90,7 @@ function PresenterOverlayInner() {
       {/* top bar */}
       <div className="h-12 flex items-center justify-between px-3 shrink-0 border-b border-white/10">
         <div className="flex items-center gap-2 text-sm font-semibold text-white/90 px-2">
-          <NotebookPen size={15} className="text-[#02C0CC]" />
+          <NotebookPen size={15} className="text-[#00C4CC]" />
           Presenter
           <span className="text-white/50 font-normal">
             — page {safeIndex + 1} of {pages.length}
@@ -108,7 +108,7 @@ function PresenterOverlayInner() {
           <Button
             variant="ghost"
             size="icon"
-            className={cn('rounded-full text-white hover:bg-white/15 hover:text-white', notesOpen && 'bg-white/15 text-[#02C0CC]')}
+            className={cn('rounded-full text-white hover:bg-white/15 hover:text-white', notesOpen && 'bg-white/15 text-[#00C4CC]')}
             onClick={() => setNotesOpen((v) => !v)}
             aria-label="Toggle notes"
             title="Notes (N)"
@@ -151,7 +151,7 @@ function PresenterOverlayInner() {
               <button
                 onClick={prev}
                 disabled={safeIndex === 0}
-                className="absolute left-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-[#16171D]/90 text-white flex items-center justify-center hover:bg-[#7630D7] transition-colors disabled:opacity-30"
+                className="absolute left-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-[#16171D]/90 text-white flex items-center justify-center hover:bg-[#7D2AE8] transition-colors disabled:opacity-30"
                 aria-label="Previous page"
               >
                 <ChevronLeft size={22} />
@@ -159,7 +159,7 @@ function PresenterOverlayInner() {
               <button
                 onClick={next}
                 disabled={safeIndex === pages.length - 1}
-                className="absolute right-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-[#16171D]/90 text-white flex items-center justify-center hover:bg-[#7630D7] transition-colors disabled:opacity-30"
+                className="absolute right-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-[#16171D]/90 text-white flex items-center justify-center hover:bg-[#7D2AE8] transition-colors disabled:opacity-30"
                 aria-label="Next page"
               >
                 <ChevronRight size={22} />
@@ -189,7 +189,7 @@ function PresenterOverlayInner() {
                 </div>
                 <button
                   onClick={() => goTo(safeIndex + 1)}
-                  className="block w-full rounded-lg overflow-hidden ring-1 ring-white/15 hover:ring-[#02C0CC] transition-all"
+                  className="block w-full rounded-lg overflow-hidden ring-1 ring-white/15 hover:ring-[#00C4CC] transition-all"
                   aria-label="Jump to next page"
                 >
                   <div

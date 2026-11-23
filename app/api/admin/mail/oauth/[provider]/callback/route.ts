@@ -14,12 +14,20 @@ export async function GET(request: Request, { params }: { params: Promise<{ prov
   const done = (query: string) => {
     const response = NextResponse.redirect(new URL(`/admin/mail?${query}`, url));
     response.cookies.delete({ name: "kaara_mail_oauth", path: "/api/admin/mail/oauth" });
+    response.cookies.delete({ name: "kaara_mail_name", path: "/api/admin/mail/oauth" });
     return response;
   };
-  const admin = await adminFromRequest(request);
+  const admin = await adminFromRequest(request, "mail");
   if (!admin) return NextResponse.redirect(new URL("/admin/login", url));
   if (!isProvider(provider)) return done("mailError=provider");
-  const nonce = (await cookies()).get("kaara_mail_oauth")?.value;
+  const jar = await cookies();
+  const nonce = jar.get("kaara_mail_oauth")?.value;
+  let senderName = "Kaara Realty Group";
+  try {
+    senderName = decodeURIComponent(jar.get("kaara_mail_name")?.value ?? "").trim().slice(0, 60) || senderName;
+  } catch {
+    // A damaged cookie only loses the custom name.
+  }
   const state = url.searchParams.get("state") ?? "";
   let valid = false;
   try {
@@ -52,10 +60,10 @@ export async function GET(request: Request, { params }: { params: Promise<{ prov
     await pool.query(
       `INSERT INTO mail_accounts (label, email, username, password_enc, auth_type, imap_host, imap_port, imap_secure, smtp_host, smtp_port, smtp_secure, connected_by)
        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)
-       ON CONFLICT (email) DO UPDATE SET username=EXCLUDED.username, password_enc=EXCLUDED.password_enc, auth_type=EXCLUDED.auth_type,
+       ON CONFLICT (email) DO UPDATE SET label=EXCLUDED.label, username=EXCLUDED.username, password_enc=EXCLUDED.password_enc, auth_type=EXCLUDED.auth_type,
          imap_host=EXCLUDED.imap_host, imap_port=EXCLUDED.imap_port, imap_secure=EXCLUDED.imap_secure,
          smtp_host=EXCLUDED.smtp_host, smtp_port=EXCLUDED.smtp_port, smtp_secure=EXCLUDED.smtp_secure, connected_by=EXCLUDED.connected_by`,
-      ["Kaara Realty Group", email, email, encryptSecret(tokens.refresh_token), provider, config.imap_host, config.imap_port, config.imap_secure, config.smtp_host, config.smtp_port, config.smtp_secure, admin.email]
+      [senderName, email, email, encryptSecret(tokens.refresh_token), provider, config.imap_host, config.imap_port, config.imap_secure, config.smtp_host, config.smtp_port, config.smtp_secure, admin.email]
     );
     await audit(admin.email, "mail.account_connected", email, { provider });
     return done("mailConnected=1");

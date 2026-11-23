@@ -19,7 +19,7 @@ const PAGE_SIZE = 48
  */
 export function IconsApp({ onClose }: AppPanelProps) {
   const [query, setQuery] = useState('')
-  const [fill, setFill] = useState('#7630D7')
+  const [fill, setFill] = useState('#7D2AE8')
   const [source, setSource] = useState<'offline' | 'online'>('offline')
   const [shown, setShown] = useState(PAGE_SIZE)
   const [online, setOnline] = useState<string[]>([])
@@ -88,22 +88,22 @@ export function IconsApp({ onClose }: AppPanelProps) {
     <div>
       <AppHeader icon={Shapes} title="Icons" onClose={onClose} />
       <div className="flex items-center gap-2 mb-3">
-        <div className="flex items-center gap-2 h-9 rounded-lg bg-white/[0.06] border border-white/10 px-2.5 flex-1">
-          <Search size={12} className="text-white/40 shrink-0" />
+        <div className="flex items-center gap-2 h-9 rounded-lg bg-black/[0.06] border border-black/10 px-2.5 flex-1">
+          <Search size={12} className="text-[#0E1318]/40 shrink-0" />
           <input
             value={query}
             onChange={(e) => onQueryChange(e.target.value)}
-            className="bg-transparent outline-none text-[12px] text-white w-full placeholder:text-white/35"
+            className="bg-transparent outline-none text-[12px] text-[#0E1318] w-full placeholder:text-[#0E1318]/35"
             placeholder={source === 'offline' ? 'Search 562 icons…' : 'Search all of Iconify…'}
             aria-label="Search icons"
           />
-          {onlineLoading && <Loader2 size={12} className="text-white/40 animate-spin shrink-0" />}
+          {onlineLoading && <Loader2 size={12} className="text-[#0E1318]/40 animate-spin shrink-0" />}
         </div>
         <input
           type="color"
           value={fill}
           onChange={(e) => setFill(e.target.value)}
-          className="h-9 w-9 rounded-lg border border-white/15 cursor-pointer bg-transparent"
+          className="h-9 w-9 rounded-lg border border-black/15 cursor-pointer bg-transparent"
           title="Icon colour"
           aria-label="Icon colour"
         />
@@ -116,8 +116,8 @@ export function IconsApp({ onClose }: AppPanelProps) {
           className={cn(
             'flex-1 h-8 rounded-lg text-[11px] font-semibold border transition-colors flex items-center justify-center gap-1.5',
             source === 'offline'
-              ? 'bg-[#7630D7] text-white border-transparent'
-              : 'border-white/12 text-white/60 hover:text-white'
+              ? 'bg-[#7D2AE8] text-white border-transparent'
+              : 'border-black/12 text-[#0E1318]/60 hover:text-[#0E1318]'
           )}
           aria-pressed={source === 'offline'}
         >
@@ -128,8 +128,8 @@ export function IconsApp({ onClose }: AppPanelProps) {
           className={cn(
             'flex-1 h-8 rounded-lg text-[11px] font-semibold border transition-colors flex items-center justify-center gap-1.5',
             source === 'online'
-              ? 'bg-[#7630D7] text-white border-transparent'
-              : 'border-white/12 text-white/60 hover:text-white'
+              ? 'bg-[#7D2AE8] text-white border-transparent'
+              : 'border-black/12 text-[#0E1318]/60 hover:text-[#0E1318]'
           )}
           aria-pressed={source === 'online'}
         >
@@ -145,8 +145,8 @@ export function IconsApp({ onClose }: AppPanelProps) {
                 key={icon.id}
                 onClick={() => addIconPath(icon.d, fill)}
                 className={cn(
-                  'flex flex-col items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.03] p-3 h-[80px]',
-                  'hover:border-[#7630D7] hover:bg-[#7630D7]/10 transition-all'
+                  'flex flex-col items-center gap-1.5 rounded-xl border border-black/10 bg-black/[0.03] p-3 h-[80px]',
+                  'hover:border-[#7D2AE8] hover:bg-[#7D2AE8]/10 transition-all'
                 )}
                 aria-label={`Add icon ${icon.name}`}
                 title={`${icon.name} — vector, recolourable`}
@@ -154,21 +154,21 @@ export function IconsApp({ onClose }: AppPanelProps) {
                 <svg viewBox="0 0 100 100" className="h-7 w-7" fill="none" stroke={fill} strokeWidth={6} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                   <path d={icon.d} />
                 </svg>
-                <span className="text-[10px] text-white/55 truncate w-full text-center">{icon.name}</span>
+                <span className="text-[10px] text-[#0E1318]/55 truncate w-full text-center">{icon.name}</span>
               </button>
             ))}
           </div>
           {shown < offlineIcons.length && (
             <button
               onClick={() => setShown((s) => s + PAGE_SIZE * 2)}
-              className="w-full h-9 mt-3 rounded-xl border border-white/12 hover:bg-white/[0.06] text-white/70 text-[12px] font-semibold transition-colors"
+              className="w-full h-9 mt-3 rounded-xl border border-black/12 hover:bg-black/[0.06] text-[#0E1318]/70 text-[12px] font-semibold transition-colors"
             >
               Show more ({offlineIcons.length - shown} left)
             </button>
           )}
           {!offlineIcons.length && (
-            <p className="text-center text-[12px] text-white/40 py-6">
-              No icons match “{query}” — try the <button className="text-[#02C0CC] underline" onClick={() => switchSource('online')}>online search</button>
+            <p className="text-center text-[12px] text-[#0E1318]/40 py-6">
+              No icons match “{query}” — try the <button className="text-[#00C4CC] underline" onClick={() => switchSource('online')}>online search</button>
             </p>
           )}
         </>
@@ -176,7 +176,7 @@ export function IconsApp({ onClose }: AppPanelProps) {
         <>
           {onlineError && <p className="text-[11px] text-amber-300/80 mb-2">{onlineError}</p>}
           {!query.trim() ? (
-            <p className="text-center text-[12px] text-white/40 py-6">
+            <p className="text-center text-[12px] text-[#0E1318]/40 py-6">
               Type to search the full Iconify universe — 200,000+ icons from 150+ sets (Tabler, Material, Phosphor…).
             </p>
           ) : (
@@ -186,20 +186,20 @@ export function IconsApp({ onClose }: AppPanelProps) {
                   key={ref}
                   onClick={() => void insertOnline(ref)}
                   className={cn(
-                    'flex flex-col items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.03] p-3 h-[80px]',
-                    'hover:border-[#7630D7] hover:bg-[#7630D7]/10 transition-all'
+                    'flex flex-col items-center gap-1.5 rounded-xl border border-black/10 bg-black/[0.03] p-3 h-[80px]',
+                    'hover:border-[#7D2AE8] hover:bg-[#7D2AE8]/10 transition-all'
                   )}
                   aria-label={`Add icon ${ref}`}
                   title={`${ref} — image insert`}
                 >
                   <IconThumb icon={ref} color={fill} />
-                  <span className="text-[10px] text-white/55 truncate w-full text-center">{ref.split(':')[1]}</span>
+                  <span className="text-[10px] text-[#0E1318]/55 truncate w-full text-center">{ref.split(':')[1]}</span>
                 </button>
               ))}
             </div>
           )}
           {!onlineLoading && query.trim() && !online.length && !onlineError && (
-            <p className="text-center text-[12px] text-white/40 py-6">No icons match “{query}”</p>
+            <p className="text-center text-[12px] text-[#0E1318]/40 py-6">No icons match “{query}”</p>
           )}
         </>
       )}
@@ -234,6 +234,6 @@ function IconThumb({ icon, color }: { icon: string; color: string }) {
   }, [icon, color])
 
   if (svg) return <div className="h-7 w-7 [&>svg]:h-full [&>svg]:w-full" dangerouslySetInnerHTML={{ __html: svg }} aria-hidden="true" />
-  if (failed) return <div className="h-7 w-7 rounded bg-white/[0.06] flex items-center justify-center text-[9px] text-white/30">n/a</div>
-  return <div className="h-7 w-7 rounded bg-white/[0.06] animate-pulse" />
+  if (failed) return <div className="h-7 w-7 rounded bg-black/[0.06] flex items-center justify-center text-[9px] text-[#0E1318]/30">n/a</div>
+  return <div className="h-7 w-7 rounded bg-black/[0.06] animate-pulse" />
 }

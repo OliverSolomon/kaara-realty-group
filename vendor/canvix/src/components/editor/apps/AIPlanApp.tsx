@@ -112,7 +112,7 @@ export function AIPlanApp({ onClose }: AppPanelProps) {
   return (
     <div>
       <AppHeader icon={Bot} title="AI design plan" onClose={onClose} />
-      <p className="text-[11.5px] text-white/50 leading-snug mb-3">
+      <p className="text-[11.5px] text-[#0E1318]/50 leading-snug mb-3">
         Describe the design — the agent drafts a full multi-page plan you REVIEW and EDIT before a single
         element lands on the canvas.
       </p>
@@ -121,13 +121,13 @@ export function AIPlanApp({ onClose }: AppPanelProps) {
         value={prompt}
         onChange={(e) => setPrompt(e.target.value)}
         placeholder="e.g. A 3-page menu for an Italian trattoria — rustic, warm, handwritten accents"
-        className="w-full h-24 rounded-xl bg-white/[0.05] border border-white/10 text-white text-[12.5px] p-3 resize-none focus:outline-none focus:border-[#02C0CC]"
+        className="w-full h-24 rounded-xl bg-black/[0.05] border border-black/10 text-[#0E1318] text-[12.5px] p-3 resize-none focus:outline-none focus:border-[#00C4CC]"
         maxLength={2000}
         aria-label="Design brief"
       />
 
       <div className="flex items-center gap-2 mt-2.5">
-        <span className="text-[11px] text-white/50">Pages</span>
+        <span className="text-[11px] text-[#0E1318]/50">Pages</span>
         <div className="flex gap-1">
           {[1, 2, 3, 4, 6].map((n) => (
             <button
@@ -135,7 +135,7 @@ export function AIPlanApp({ onClose }: AppPanelProps) {
               onClick={() => setPageCount(n)}
               className={cn(
                 'w-8 h-8 rounded-lg text-[11px] font-bold transition-colors',
-                pageCount === n ? 'bg-[#7630D7] text-white' : 'bg-white/[0.05] text-white/60 hover:bg-white/10',
+                pageCount === n ? 'bg-[#7D2AE8] text-white' : 'bg-black/[0.05] text-[#0E1318]/60 hover:bg-black/10',
               )}
               aria-pressed={pageCount === n}
             >
@@ -159,7 +159,7 @@ export function AIPlanApp({ onClose }: AppPanelProps) {
             <button
               key={idea}
               onClick={() => setPrompt(idea)}
-              className="block w-full text-left text-[11px] text-white/45 hover:text-white/80 px-2.5 py-2 rounded-lg hover:bg-white/[0.04] transition-colors"
+              className="block w-full text-left text-[11px] text-[#0E1318]/45 hover:text-[#0E1318]/80 px-2.5 py-2 rounded-lg hover:bg-black/[0.04] transition-colors"
             >
               “{idea}”
             </button>
@@ -174,15 +174,15 @@ export function AIPlanApp({ onClose }: AppPanelProps) {
       )}
 
       {plan && (
-        <div className="mt-4 border-t border-white/10 pt-3">
+        <div className="mt-4 border-t border-black/10 pt-3">
           <div className="flex items-start gap-2 mb-3">
             <div className="min-w-0">
-              <p className="text-[12.5px] font-bold text-white truncate">{plan.name}</p>
-              {plan.summary && <p className="text-[11px] text-white/50 leading-snug mt-0.5">{plan.summary}</p>}
+              <p className="text-[12.5px] font-bold text-[#0E1318] truncate">{plan.name}</p>
+              {plan.summary && <p className="text-[11px] text-[#0E1318]/50 leading-snug mt-0.5">{plan.summary}</p>}
             </div>
             <div className="ml-auto flex gap-2 shrink-0">
               <button
-                className="text-[11px] text-white/55 hover:text-white px-2.5 h-8 rounded-lg hover:bg-white/10"
+                className="text-[11px] text-[#0E1318]/55 hover:text-[#0E1318] px-2.5 h-8 rounded-lg hover:bg-black/10"
                 onClick={() => setPlan(null)}
               >
                 Redraft
@@ -207,7 +207,7 @@ export function AIPlanApp({ onClose }: AppPanelProps) {
             ))}
           </div>
 
-          <p className="mt-3 text-[10.5px] text-white/35 leading-snug">
+          <p className="mt-3 text-[10.5px] text-[#0E1318]/35 leading-snug">
             Uncheck anything you don&apos;t want; edit any copy inline. Apply adds the checked pages to this design
             as native editable elements — one Ctrl+Z removes them all.
           </p>
@@ -237,7 +237,7 @@ function PageCard({
     <div
       className={cn(
         'rounded-xl border p-2.5 transition-colors',
-        page.enabled ? 'border-white/12 bg-white/[0.04]' : 'border-white/8 bg-white/[0.015] opacity-60',
+        page.enabled ? 'border-black/12 bg-black/[0.04]' : 'border-black/8 bg-black/[0.015] opacity-60',
       )}
     >
       <div className="flex items-center gap-2">
@@ -245,21 +245,21 @@ function PageCard({
           onClick={() => onTogglePage(page.id)}
           className={cn(
             'w-5 h-5 rounded-md border flex items-center justify-center shrink-0 transition-colors',
-            page.enabled ? 'bg-[#02C0CC] border-[#02C0CC] text-black' : 'border-white/25 text-transparent',
+            page.enabled ? 'bg-[#00C4CC] border-[#00C4CC] text-black' : 'border-black/25 text-transparent',
           )}
           aria-label={page.enabled ? `Disable page ${page.title}` : `Enable page ${page.title}`}
           aria-pressed={page.enabled}
         >
           <Check size={12} strokeWidth={3.5} />
         </button>
-        <span className="text-[12px] font-semibold text-white/90 truncate">{page.title}</span>
-        <span className="ml-auto text-[10px] text-white/40">{page.elements.filter((e) => e.enabled).length}/{page.elements.length}</span>
+        <span className="text-[12px] font-semibold text-[#0E1318]/90 truncate">{page.title}</span>
+        <span className="ml-auto text-[10px] text-[#0E1318]/40">{page.elements.filter((e) => e.enabled).length}/{page.elements.length}</span>
       </div>
 
       <div className="flex gap-2.5 mt-2">
         {/* scaled geometry preview — the honest wireframe of the plan */}
         <div
-          className="relative shrink-0 rounded-lg overflow-hidden border border-white/10"
+          className="relative shrink-0 rounded-lg overflow-hidden border border-black/10"
           style={{
             width: 96,
             height: Math.max(48, Math.round((96 * planHeight) / Math.max(1, planWidth))),
@@ -279,7 +279,7 @@ function PageCard({
                 top: `${(el.y / planHeight) * 100}%`,
                 width: `${(el.width / planWidth) * 100}%`,
                 height: `${((el.height ?? Math.round(planHeight * 0.06)) / planHeight) * 100}%`,
-                background: el.type === 'text' ? 'rgba(255,255,255,0.75)' : (el.fill ?? '#02C0CC'),
+                background: el.type === 'text' ? 'rgba(255,255,255,0.75)' : (el.fill ?? '#00C4CC'),
                 opacity: el.enabled ? 0.9 : 0.25,
                 minHeight: 3,
               }}
@@ -294,7 +294,7 @@ function PageCard({
                 onClick={() => onToggleElement(page.id, el.id)}
                 className={cn(
                   'w-4 h-4 rounded border flex items-center justify-center shrink-0 transition-colors',
-                  el.enabled ? 'bg-[#02C0CC] border-[#02C0CC] text-black' : 'border-white/25 text-transparent',
+                  el.enabled ? 'bg-[#00C4CC] border-[#00C4CC] text-black' : 'border-black/25 text-transparent',
                 )}
                 aria-label={
                   el.enabled
@@ -309,15 +309,15 @@ function PageCard({
                 <input
                   value={el.text ?? ''}
                   onChange={(e) => onEditText(page.id, el.id, e.target.value)}
-                  className="flex-1 min-w-0 h-7 rounded-md bg-white/[0.05] border border-white/10 text-[11px] text-white px-2 focus:outline-none focus:border-[#02C0CC]"
+                  className="flex-1 min-w-0 h-7 rounded-md bg-black/[0.05] border border-black/10 text-[11px] text-[#0E1318] px-2 focus:outline-none focus:border-[#00C4CC]"
                   aria-label="Element text"
                   maxLength={400}
                 />
               ) : (
-                <span className="flex items-center gap-1.5 text-[11px] text-white/55 truncate">
+                <span className="flex items-center gap-1.5 text-[11px] text-[#0E1318]/55 truncate">
                   {el.enabled ? <Eye size={11} className="shrink-0" /> : <EyeOff size={11} className="shrink-0" />}
                   {el.type} — {el.width}×{el.height ?? 'auto'}
-                  <span className="w-2.5 h-2.5 rounded-sm border border-white/20 shrink-0" style={{ background: el.fill ?? '#02C0CC' }} />
+                  <span className="w-2.5 h-2.5 rounded-sm border border-black/20 shrink-0" style={{ background: el.fill ?? '#00C4CC' }} />
                 </span>
               )}
             </div>

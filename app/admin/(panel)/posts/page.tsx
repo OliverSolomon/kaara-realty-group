@@ -1,3 +1,4 @@
+import { requireAdmin } from "@/lib/auth/admin";
 import { getPool } from "@/lib/db";
 import type { PostRow } from "@/app/admin/posts-actions";
 import type { Channel } from "@/lib/social/channels";
@@ -23,6 +24,7 @@ async function insightSeed(id?: string): Promise<PostSeed | null> {
 }
 
 export default async function PostsPage({ searchParams }: { searchParams: Promise<{ insight?: string }> }) {
+  await requireAdmin("posts");
   const { insight } = await searchParams;
   const seed = await insightSeed(insight);
   const pool = getPool();

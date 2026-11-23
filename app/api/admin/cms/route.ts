@@ -1,4 +1,7 @@
 import { adminFromRequest, audit } from "@/lib/auth/admin";
+import { can } from "@/lib/auth/roles";
+import { hasAnyShare, isSharedWith } from "@/lib/auth/shares";
+import { sanityWriter } from "@/lib/sanityAdmin";
 import {
   CmsError,
   deleteDocument,
@@ -24,7 +27,26 @@ export async function POST(request: Request) {
     const rev = typeof body.rev === "string" ? body.rev : null;
     const value = (body.value && typeof body.value === "object" ? body.value : {}) as Record<string, unknown>;
 
+    if (!can(admin.role, "content")) {
+      // A co-editor may save a draft of the shared item and read what its editor needs. Never publish or delete.
+      const allowed = op === "save"
+        ? await isSharedWith("content", `${type}:${id}`, admin.email)
+        : ["references", "referenceTitle", "previewRefs"].includes(op) && (await hasAnyShare(admin.email, "content"));
+      if (!allowed) return Response.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     switch (op) {
+      case "previewRefs": {
+        const ids = Array.isArray(body.ids) ? body.ids.filter((item): item is string => typeof item === "string").slice(0, 60) : [];
+        const rows = await sanityWriter().fetch<{ _id: string }[]>(
+          `*[_id in $ids && _type in ["post", "property"]]{
+            _id, _type, title, "slug": slug.current, details, "district": district->name,
+            "imageUrl": coalesce(image.asset->url, image.externalUrl, media[_type == "image"][0].asset->url, media[_type == "externalImage"][0].url)
+          }`,
+          { ids }
+        );
+        return Response.json({ items: Object.fromEntries(rows.map((row) => [row._id, row])) });
+      }
       case "save": {
         const doc = await saveDraft(type, id, value, rev);
         await audit(admin.email, "content.draft_saved", `${type}:${id}`);

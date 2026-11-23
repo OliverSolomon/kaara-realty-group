@@ -1,3 +1,4 @@
+import { requireAdmin } from "@/lib/auth/admin";
 import Link from "next/link";
 import { createLeadFromClick } from "@/app/admin/actions";
 import { listClicks } from "@/lib/admin";
@@ -11,6 +12,7 @@ export default async function WhatsAppClicksPage({
 }: {
   searchParams: Promise<{ error?: string }>;
 }) {
+  await requireAdmin("whatsapp");
   const { error } = await searchParams;
   const clicks = await listClicks();
 

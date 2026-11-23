@@ -43,7 +43,7 @@ export function ShareDialog({ open, onOpenChange }: { open: boolean; onOpenChang
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="rounded-[28px] bg-[#16181D] border-white/10 text-white sm:max-w-md">
+      <DialogContent className="rounded-[28px] bg-[#FFFFFF] border-black/10 text-[#0E1318] sm:max-w-md">
         <ShareBody designName={designName} link={link} copied={copied} onCopy={() => void copy()} />
       </DialogContent>
     </Dialog>
@@ -66,18 +66,18 @@ function ShareBody({ designName, link, copied, onCopy }: {
         <DialogTitle className="text-lg font-bold flex items-center gap-2">
           Share “{designName || 'Untitled design'}”
         </DialogTitle>
-        <DialogDescription className="text-white/60">
+        <DialogDescription className="text-[#0E1318]/60">
           Canvix is local-first: the link points back to your Canvix instance.
         </DialogDescription>
       </DialogHeader>
 
       <div className="space-y-3">
-        <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 pl-3 pr-1.5 py-1.5 h-12">
-          <Link2 size={16} className="text-white/50 shrink-0" />
+        <div className="flex items-center gap-2 rounded-xl border border-black/10 bg-black/5 pl-3 pr-1.5 py-1.5 h-12">
+          <Link2 size={16} className="text-[#0E1318]/50 shrink-0" />
           <input
             readOnly
             value={link}
-            className="flex-1 min-w-0 bg-transparent outline-none text-[13px] text-white/80 truncate"
+            className="flex-1 min-w-0 bg-transparent outline-none text-[13px] text-[#0E1318]/80 truncate"
             aria-label="Share link"
             onFocus={(e) => e.currentTarget.select()}
           />
@@ -89,29 +89,29 @@ function ShareBody({ designName, link, copied, onCopy }: {
 
         {/* F6 (v0.11.7): the honest access model, documented where the link
             is handed out — this is the contract the server actually enforces */}
-        <div className="rounded-xl border border-white/10 bg-white/[0.03] p-3.5 space-y-2">
-          <div className="text-xs font-semibold text-white/75 flex items-center gap-1.5">
-            <Info size={13} className="text-[#02C0CC] shrink-0" /> Who can open this link
+        <div className="rounded-xl border border-black/10 bg-black/[0.03] p-3.5 space-y-2">
+          <div className="text-xs font-semibold text-[#0E1318]/75 flex items-center gap-1.5">
+            <Info size={13} className="text-[#00C4CC] shrink-0" /> Who can open this link
           </div>
-          <ul className="text-[11px] leading-relaxed text-white/55 space-y-1.5 list-none">
+          <ul className="text-[11px] leading-relaxed text-[#0E1318]/55 space-y-1.5 list-none">
             <li className="flex gap-2">
-              <span aria-hidden className="text-white/35">•</span>
+              <span aria-hidden className="text-[#0E1318]/35">•</span>
               <span>
                 Anyone who can reach this Canvix instance. There is no cloud gatekeeping — reachability is decided by
                 your deployment (LAN, VPN or reverse-proxy auth).
               </span>
             </li>
             <li className="flex gap-2">
-              <span aria-hidden className="text-white/35">•</span>
+              <span aria-hidden className="text-[#0E1318]/35">•</span>
               <span>
-                <strong className="text-white/75">Ownerless designs</strong> (created while signed out) stay editable by
+                <strong className="text-[#0E1318]/75">Ownerless designs</strong> (created while signed out) stay editable by
                 everyone with the link — the pre-accounts behaviour, kept on purpose so existing shares never break.
               </span>
             </li>
             <li className="flex gap-2">
-              <span aria-hidden className="text-white/35">•</span>
+              <span aria-hidden className="text-[#0E1318]/35">•</span>
               <span>
-                <strong className="text-white/75">Owned designs</strong> open read-only for everyone except the owner:
+                <strong className="text-[#0E1318]/75">Owned designs</strong> open read-only for everyone except the owner:
                 an honest view-only banner in the editor, and every save answers 403.
               </span>
             </li>
@@ -127,7 +127,7 @@ function ShareBody({ designName, link, copied, onCopy }: {
           )}
         </div>
 
-        <p className="text-[11px] text-white/40 flex items-center gap-1.5">
+        <p className="text-[11px] text-[#0E1318]/40 flex items-center gap-1.5">
           <QrCode size={13} /> In the open-source spirit — access control lives in your deployment, not our cloud.
         </p>
       </div>

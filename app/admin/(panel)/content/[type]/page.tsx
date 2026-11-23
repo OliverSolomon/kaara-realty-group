@@ -1,3 +1,4 @@
+import { requireAdmin } from "@/lib/auth/admin";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { PiArrowLeft, PiMagnifyingGlass, PiPlus } from "react-icons/pi";
@@ -11,15 +12,26 @@ export default async function ContentListPage({
   searchParams,
 }: {
   params: Promise<{ type: string }>;
-  searchParams: Promise<{ listing?: string; q?: string }>;
+  searchParams: Promise<{ listing?: string; q?: string; status?: string }>;
 }) {
+  await requireAdmin("content");
   const { type } = await params;
   const query = await searchParams;
   if (!CMS_TYPES[type] || HIDDEN_TYPES.has(type)) notFound();
   if (SINGLETONS.has(type)) redirect(`/admin/content/${type}/${type}`);
   const listing = type === "property" && LISTING_TITLES[query.listing ?? ""] ? query.listing! : null;
   const q = (query.q ?? "").slice(0, 80);
-  const items = await listDocuments(type, listing, q);
+  const status = query.status === "draft" || query.status === "published" ? query.status : null;
+  const all = await listDocuments(type, listing, q);
+  const items = all.filter((item) => !status || (status === "draft" ? item.draft : !item.draft));
+  const statusHref = (next: string | null) => {
+    const search = new URLSearchParams();
+    if (listing) search.set("listing", listing);
+    if (q) search.set("q", q);
+    if (next) search.set("status", next);
+    const suffix = search.toString();
+    return `/admin/content/${type}${suffix ? `?${suffix}` : ""}`;
+  };
   const title = listing ? LISTING_TITLES[listing] : CMS_TYPES[type].title;
 
   return (
@@ -40,7 +52,13 @@ export default async function ContentListPage({
         <label htmlFor="content-search" className="sr-only">Search</label>
         <input id="content-search" name="q" defaultValue={q} placeholder="Search" className="min-h-12 w-full min-w-0 bg-transparent text-sm outline-none placeholder:text-white/35" />
         {listing && <input type="hidden" name="listing" value={listing} />}
+        {status && <input type="hidden" name="status" value={status} />}
       </form>
+      <nav aria-label="Filter by status" className="mt-3 flex gap-2">
+        {([[null, "All"], ["draft", "Drafts"], ["published", "Published"]] as const).map(([value, label]) => (
+          <Link key={label} href={statusHref(value)} aria-current={status === value ? "page" : undefined} className={`inline-flex min-h-11 items-center border px-4 text-[10px] font-bold uppercase tracking-[0.14em] ${status === value ? "border-[#4f9d8f] bg-[#2e7d6f]/20" : "border-white/15 text-white/55"}`}>{label}</Link>
+        ))}
+      </nav>
       {items.length === 0 ? (
         <p className="mt-4 border border-white/10 bg-[#171232] px-6 py-12 text-center text-sm text-white/55">Nothing here yet.</p>
       ) : (

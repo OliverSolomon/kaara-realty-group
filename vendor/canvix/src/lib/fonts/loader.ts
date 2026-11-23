@@ -37,7 +37,7 @@ function broadcastFontsLoaded() {
  */
 export function ensureFontLoaded(family: string): void {
   if (typeof document === 'undefined') return
-  if (!family || PRELOADED_FONTS.has(family) || injected.has(family)) return
+  if (!family || injected.has(family)) return
   // only load catalog families through the Google path — custom uploads
   // register via registerCustomFont instead
   if (!FONTS.some((f) => f.family === family)) return
@@ -49,7 +49,7 @@ export function ensureFontLoaded(family: string): void {
   link.rel = 'stylesheet'
   link.href = `https://fonts.googleapis.com/css2?family=${family.replace(/ /g, '+')}:wght@${weightAxisFor(family)}&display=swap`
   link.onload = () => {
-    void document.fonts.ready.then(broadcastFontsLoaded)
+    void Promise.all(weightAxisFor(family).split(';').map((weight) => document.fonts.load(`${weight} 32px "${family}"`))).catch(() => undefined).then(() => document.fonts.ready).then(broadcastFontsLoaded)
   }
   document.head.appendChild(link)
 }

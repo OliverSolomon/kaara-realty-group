@@ -1,3 +1,4 @@
+import { requireAdmin } from "@/lib/auth/admin";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PiArrowLeft, PiEnvelope, PiPhone, PiWhatsappLogo } from "react-icons/pi";
@@ -32,6 +33,7 @@ export default async function LeadPage({
   params: Promise<{ id: string }>;
   searchParams: Promise<{ error?: string; whatsappError?: string }>;
 }) {
+  await requireAdmin("leads");
   const { id } = await params;
   const query = await searchParams;
   if (!/^[0-9a-f-]{36}$/i.test(id)) notFound();

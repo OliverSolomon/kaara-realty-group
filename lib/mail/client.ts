@@ -61,6 +61,8 @@ const KNOWN: Record<string, { imap: [string, number, boolean]; smtp: [string, nu
   "zoho.com": { imap: ["imap.zoho.com", 993, true], smtp: ["smtp.zoho.com", 465, true] },
 };
 
+export const knownServers = (domain: string) => KNOWN[domain] ?? null;
+
 export function detectServers(email: string) {
   const domain = email.split("@")[1]?.toLowerCase() ?? "";
   return KNOWN[domain] ?? { imap: [`mail.${domain}`, 993, true] as [string, number, boolean], smtp: [`mail.${domain}`, 465, true] as [string, number, boolean] };

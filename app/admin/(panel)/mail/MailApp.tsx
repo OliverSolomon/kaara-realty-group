@@ -675,21 +675,27 @@ function Composer({ initial, fromEmail, snippets, onClose, onSend }: {
   );
 }
 
-const MAIL_PROVIDERS = [
-  { key: "kaara", label: "Kaara mail", placeholder: "you@kaararealtygroup.com", hint: "Use your webmail password." },
-  { key: "gmail", label: "Gmail app password", placeholder: "you@gmail.com", hint: "Google Account > Security > 2-Step Verification > App passwords." },
-  { key: "yahoo", label: "Yahoo", placeholder: "you@yahoo.com", hint: "Yahoo needs an app password." },
-  { key: "icloud", label: "iCloud", placeholder: "you@icloud.com", hint: "Create an app-specific password at account.apple.com." },
-  { key: "zoho", label: "Zoho", placeholder: "you@zoho.com", hint: "Enable IMAP in Zoho Mail settings." },
-  { key: "other", label: "Other", placeholder: "you@yourdomain.com", hint: "Your server settings are detected from the address." },
-];
+interface MailDetection { provider: string | null; oauth: "google" | "microsoft" | null; help: string | null }
 
-function AccountForm({ providers, onAdded }: { providers: Providers; onAdded: (account: Account) => void }) {
+function AccountForm({ onAdded }: { providers: Providers; onAdded: (account: Account) => void }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [advanced, setAdvanced] = useState(false);
-  const [choice, setChoice] = useState("kaara");
-  const provider = MAIL_PROVIDERS.find((item) => item.key === choice) ?? MAIL_PROVIDERS[0];
+  const [email, setEmail] = useState("");
+  const [sender, setSender] = useState("");
+  const [detection, setDetection] = useState<(MailDetection & { email: string }) | null>(null);
+  const clean = email.trim().toLowerCase();
+  const current = detection?.email === clean ? detection : null;
+
+  async function detect() {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(clean) || detection?.email === clean) return;
+    try {
+      const found = await api<MailDetection>("detectMail", { email: clean });
+      setDetection({ ...found, email: clean });
+    } catch {
+      setDetection(null);
+    }
+  }
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -700,6 +706,10 @@ function AccountForm({ providers, onAdded }: { providers: Providers; onAdded: (a
     try {
       const result = await api<{ account: Account }>("addAccount", data);
       form.reset();
+      setEmail("");
+      setSender("");
+      setDetection(null);
+      setAdvanced(false);
       onAdded(result.account);
     } catch (failure) {
       setError(failure instanceof Error ? failure.message : "Could not connect.");
@@ -708,31 +718,17 @@ function AccountForm({ providers, onAdded }: { providers: Providers; onAdded: (a
     }
   }
 
+  const oauthName = current?.oauth === "google" ? "Google" : "Microsoft";
+  const oauthHref = current?.oauth ? `/api/admin/mail/oauth/${current.oauth}/start?${new URLSearchParams({ email: clean, ...(sender.trim() ? { name: sender.trim() } : {}) })}` : "";
+
   return (
     <form onSubmit={submit} className="grid gap-3">
-      <div className="grid gap-2 sm:grid-cols-2">
-        {providers.google ? (
-          <a href="/api/admin/mail/oauth/google/start" className={`${SECONDARY} inline-flex items-center justify-center`}>Continue with Google</a>
-        ) : (
-          <button type="button" disabled title="Needs Google sign-in credentials" className={SECONDARY}>Google sign-in not set up</button>
-        )}
-        {providers.microsoft ? (
-          <a href="/api/admin/mail/oauth/microsoft/start" className={`${SECONDARY} inline-flex items-center justify-center`}>Continue with Microsoft</a>
-        ) : (
-          <button type="button" disabled title="Needs Microsoft sign-in credentials" className={SECONDARY}>Microsoft sign-in not set up</button>
-        )}
-      </div>
-      <div className="flex flex-wrap gap-1.5" role="group" aria-label="Mail provider">
-        {MAIL_PROVIDERS.map((item) => (
-          <button key={item.key} type="button" aria-pressed={choice === item.key} onClick={() => setChoice(item.key)} className={`min-h-9 border px-2.5 text-xs ${choice === item.key ? "border-[#4f9d8f] bg-[#2e7d6f]/25" : "border-white/15 text-white/55"}`}>{item.label}</button>
-        ))}
-      </div>
-      <p className="text-xs leading-relaxed text-white/45">{provider.hint}</p>
-      <input name="email" type="email" required autoComplete="off" aria-label="Email address" placeholder={provider.placeholder} className={FIELD} />
-      <input name="password" type="password" required autoComplete="new-password" aria-label="Mailbox password" placeholder="Mailbox password" className={FIELD} />
-      <input name="label" aria-label="Sender name" placeholder="Sender name, such as Kaara Realty Group" className={FIELD} />
-      <button type="button" onClick={() => setAdvanced(!advanced)} className="justify-self-start text-xs text-white/55 underline underline-offset-4">Server settings</button>
-      {advanced && (
+      <input name="email" type="email" required autoComplete="off" aria-label="Email address" placeholder="Email address" value={email} onChange={(event) => setEmail(event.target.value)} onBlur={() => void detect()} className={FIELD} />
+      {!current?.oauth && <input name="password" type="password" required autoComplete="new-password" aria-label="Password" placeholder="Password" onFocus={() => void detect()} className={FIELD} />}
+      <input name="label" aria-label="Sender name" placeholder="Sender name, such as Kaara Realty Group" value={sender} onChange={(event) => setSender(event.target.value)} className={FIELD} />
+      {current?.provider && <p role="status" className="text-xs leading-relaxed text-white/55">{current.provider} mailbox detected.{current.help ? ` ${current.help}` : ""}</p>}
+      {error && !advanced && <button type="button" onClick={() => setAdvanced(true)} className="justify-self-start text-xs text-white/55 underline underline-offset-4">Enter server settings</button>}
+      {advanced && !current?.oauth && (
         <div className="grid grid-cols-2 gap-2">
           <input name="imapHost" aria-label="IMAP server" placeholder="IMAP server" className={FIELD} />
           <input name="imapPort" inputMode="numeric" aria-label="IMAP port" placeholder="993" className={FIELD} />
@@ -742,7 +738,11 @@ function AccountForm({ providers, onAdded }: { providers: Providers; onAdded: (a
         </div>
       )}
       {error && <p role="alert" className="text-sm text-[#f0a08a]">{error}</p>}
-      <button type="submit" disabled={busy} className={PRIMARY}>{busy ? "Testing connection" : "Connect mailbox"}</button>
+      {current?.oauth ? (
+        <a href={oauthHref} className={`${PRIMARY} inline-flex items-center justify-center`}>Continue with {oauthName}</a>
+      ) : (
+        <button type="submit" disabled={busy} className={PRIMARY}>{busy ? "Finding your mail settings" : "Connect mailbox"}</button>
+      )}
     </form>
   );
 }

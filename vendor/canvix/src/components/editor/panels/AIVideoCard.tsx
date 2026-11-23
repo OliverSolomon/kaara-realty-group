@@ -153,10 +153,10 @@ export function AIVideoCard() {
   const running = Boolean(status) && !done && !failed
 
   return (
-    <div className="rounded-xl border border-[#7630D7]/40 bg-[#7630D7]/[0.08] p-3 mb-3" data-testid="ai-video-card">
+    <div className="rounded-xl border border-[#7D2AE8]/40 bg-[#7D2AE8]/[0.08] p-3 mb-3" data-testid="ai-video-card">
       <div className="flex items-center gap-1.5 mb-2">
         <Clapperboard size={12} className="text-[#B79AFF]" />
-        <span className="text-[10.5px] font-bold text-white/60 uppercase tracking-wide">Generate with AI</span>
+        <span className="text-[10.5px] font-bold text-[#0E1318]/60 uppercase tracking-wide">Generate with AI</span>
       </div>
 
       <div className="flex gap-1.5">
@@ -165,14 +165,14 @@ export function AIVideoCard() {
           onChange={(e) => setPrompt(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && !running && !done && void generate()}
           placeholder="Describe a video — e.g. slow pan over misty mountains at dawn"
-          className="flex-1 h-9 rounded-lg bg-white/[0.06] border border-white/10 text-white text-[12px] px-2.5 focus:outline-none focus:border-[#7630D7]"
+          className="flex-1 h-9 rounded-lg bg-black/[0.06] border border-black/10 text-[#0E1318] text-[12px] px-2.5 focus:outline-none focus:border-[#7D2AE8]"
           aria-label="Video prompt"
           maxLength={1000}
           disabled={running}
           data-testid="ai-video-prompt"
         />
         <button
-          className="h-9 px-3 shrink-0 rounded-lg bg-[#7630D7] hover:bg-[#8a49e8] text-white text-[11.5px] font-bold flex items-center gap-1.5 disabled:opacity-60 transition-colors"
+          className="h-9 px-3 shrink-0 rounded-lg bg-[#7D2AE8] hover:bg-[#8a49e8] text-white text-[11.5px] font-bold flex items-center gap-1.5 disabled:opacity-60 transition-colors"
           onClick={() => void generate()}
           disabled={running || !prompt.trim()}
           aria-label="Generate video"
@@ -185,13 +185,13 @@ export function AIVideoCard() {
 
       {running && (
         <div className="mt-2.5">
-          <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
+          <div className="h-1.5 rounded-full bg-black/10 overflow-hidden">
             <div
-              className="h-full rounded-full bg-gradient-to-r from-[#7630D7] to-[#02C0CC] transition-all duration-500"
+              className="h-full rounded-full bg-gradient-to-r from-[#7D2AE8] to-[#00C4CC] transition-all duration-500"
               style={{ width: `${Math.max(4, status?.progress ?? 0)}%` }}
             />
           </div>
-          <p className="text-[10.5px] text-white/45 mt-1.5">
+          <p className="text-[10.5px] text-[#0E1318]/45 mt-1.5">
             Videos take a few minutes — keep this panel open. You can keep editing meanwhile.
           </p>
         </div>
@@ -205,8 +205,8 @@ export function AIVideoCard() {
           </div>
           {/* v0.23.1: provider failures often mean "no key for this slot" —
               point people at their own profile keys before they give up */}
-          <p className="mt-1.5 text-[10.5px] text-white/45 leading-snug">
-            Tip: add your own AI key in <span className="text-white/75 font-medium">Profile &amp; AI keys</span> (account menu) — your key is used before this
+          <p className="mt-1.5 text-[10.5px] text-[#0E1318]/45 leading-snug">
+            Tip: add your own AI key in <span className="text-[#0E1318]/75 font-medium">Profile &amp; AI keys</span> (account menu) — your key is used before this
             instance&apos;s providers.
           </p>
         </div>
@@ -225,7 +225,7 @@ export function AIVideoCard() {
           />
           <div className="flex gap-1.5 mt-2">
             <button
-              className="flex-1 h-9 rounded-lg bg-[#7630D7] hover:bg-[#8a49e8] text-white text-[11.5px] font-bold flex items-center justify-center gap-1.5 disabled:opacity-60 transition-colors"
+              className="flex-1 h-9 rounded-lg bg-[#7D2AE8] hover:bg-[#8a49e8] text-white text-[11.5px] font-bold flex items-center justify-center gap-1.5 disabled:opacity-60 transition-colors"
               onClick={() => void add(status.videos[0]!.url)}
               disabled={adding}
               aria-label="Add video to design"
@@ -234,7 +234,7 @@ export function AIVideoCard() {
               {adding ? 'Adding…' : 'Add to design'}
             </button>
             <button
-              className="h-9 px-3 rounded-lg border border-white/15 text-white/70 hover:text-white text-[11.5px] font-semibold transition-colors"
+              className="h-9 px-3 rounded-lg border border-black/15 text-[#0E1318]/70 hover:text-[#0E1318] text-[11.5px] font-semibold transition-colors"
               onClick={() => {
                 runToken.current += 1
                 setStatus(null)
@@ -248,7 +248,7 @@ export function AIVideoCard() {
       )}
 
       {!running && !done && !failed && (
-        <p className="text-[10.5px] text-white/35 mt-2 leading-snug">
+        <p className="text-[10.5px] text-[#0E1318]/35 mt-2 leading-snug">
           Text-to-video via the server&apos;s video provider slot (admin-configurable). Generated videos land in
           your media library like uploads.
         </p>

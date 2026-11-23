@@ -100,7 +100,7 @@ function normalise(input: PostInput) {
 
 export async function savePost(id: string | null, input: PostInput) {
   return attempt(async () => {
-    const admin = await requireAdmin();
+    const admin = await requireAdmin("posts");
     if (id && !UUID_RE.test(id)) throw new Error("Invalid post.");
     const row = normalise(input);
     const values = [row.title, row.body, row.channels, row.media, JSON.stringify(row.variants), row.link, row.status, row.when];
@@ -125,7 +125,7 @@ export async function savePost(id: string | null, input: PostInput) {
 
 export async function publishNow(id: string) {
   return attempt(async () => {
-    const admin = await requireAdmin();
+    const admin = await requireAdmin("posts");
     if (!UUID_RE.test(id)) throw new Error("Invalid post.");
     const { rows } = await db().query<PostForPublish>(
       `UPDATE content_posts SET status='publishing', updated_at=now()
@@ -144,7 +144,7 @@ export async function publishNow(id: string) {
 
 export async function markPosted(id: string) {
   return attempt(async () => {
-    const admin = await requireAdmin();
+    const admin = await requireAdmin("posts");
     if (!UUID_RE.test(id)) throw new Error("Invalid post.");
     await db().query("UPDATE content_posts SET status='posted', posted_at=now(), updated_at=now() WHERE id=$1 AND status <> 'publishing'", [id]);
     await audit(admin.email, "post.marked_posted", id);
@@ -154,7 +154,7 @@ export async function markPosted(id: string) {
 
 export async function deletePost(id: string) {
   return attempt(async () => {
-    const admin = await requireAdmin();
+    const admin = await requireAdmin("posts");
     if (!UUID_RE.test(id)) throw new Error("Invalid post.");
     await db().query("DELETE FROM content_posts WHERE id=$1 AND status <> 'publishing'", [id]);
     await audit(admin.email, "post.deleted", id);
@@ -164,7 +164,7 @@ export async function deletePost(id: string) {
 
 export async function connectChannel(channel: Channel, accountId: string, accountName: string, token: string) {
   return attempt(async () => {
-    const admin = await requireAdmin();
+    const admin = await requireAdmin("posts");
     if (!NEEDS_ACCOUNT.includes(channel)) throw new Error("Unknown network.");
     const id = accountId.trim().slice(0, 120);
     if (!id || !token.trim()) throw new Error("Enter the account and access token.");
@@ -182,7 +182,7 @@ export async function connectChannel(channel: Channel, accountId: string, accoun
 
 export async function disconnectChannel(channel: Channel) {
   return attempt(async () => {
-    const admin = await requireAdmin();
+    const admin = await requireAdmin("posts");
     await db().query("DELETE FROM social_connections WHERE channel=$1", [channel]);
     await audit(admin.email, "channel.disconnected", channel);
     revalidatePath("/admin/posts");

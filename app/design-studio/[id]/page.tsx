@@ -1,10 +1,12 @@
 import { notFound } from "next/navigation";
+import { requireItem } from "@/lib/auth/shares";
 import { getPool } from "@/lib/db";
 import StudioClient from "./StudioClient";
 
 export default async function DesignStudioPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) notFound();
+  const { shared } = await requireItem("design", "design", id);
   const pool = getPool();
   if (!pool) throw new Error("DATABASE_URL is not configured");
   const { rows } = await pool.query<{
@@ -22,6 +24,7 @@ export default async function DesignStudioPage({ params }: { params: Promise<{ i
   if (!row) notFound();
   return (
     <StudioClient
+      canShare={!shared}
       design={{
         id: row.id,
         name: row.name,

@@ -40,12 +40,12 @@ export function VersionHistoryDialog({ open, onOpenChange }: { open: boolean; on
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="rounded-[28px] bg-[#16181D] border-white/10 text-white sm:max-w-md">
+      <DialogContent className="rounded-[28px] bg-[#FFFFFF] border-black/10 text-[#0E1318] sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <History size={18} className="text-[#02C0CC]" /> Version history
+            <History size={18} className="text-[#00C4CC]" /> Version history
           </DialogTitle>
-          <DialogDescription className="text-white/55">
+          <DialogDescription className="text-[#0E1318]/55">
             Snapshots are stored in this browser for this design. Restoring keeps your current state on undo (Ctrl+Z).
           </DialogDescription>
         </DialogHeader>
@@ -58,7 +58,7 @@ export function VersionHistoryDialog({ open, onOpenChange }: { open: boolean; on
             onKeyDown={(e) => e.key === 'Enter' && save()}
             placeholder={`Version ${versions.length + 1} — e.g. "before print"`}
             maxLength={40}
-            className="flex-1 min-w-0 h-9 rounded-xl bg-white/[0.08] border border-white/10 px-3 text-[13px] placeholder:text-white/35 outline-none focus:border-[#7630D7]"
+            className="flex-1 min-w-0 h-9 rounded-xl bg-black/[0.08] border border-black/10 px-3 text-[13px] placeholder:text-[#0E1318]/35 outline-none focus:border-[#7D2AE8]"
             aria-label="Version label"
           />
           <Button size="sm" className="btn-cv-white h-9 px-4 rounded-xl font-semibold shrink-0" onClick={save}>
@@ -69,7 +69,7 @@ export function VersionHistoryDialog({ open, onOpenChange }: { open: boolean; on
         {/* version list */}
         <div className="max-h-80 overflow-y-auto cv-scroll-dark -mx-1 px-1">
           {versions.length === 0 && (
-            <div className="text-center text-[13px] text-white/40 py-10">
+            <div className="text-center text-[13px] text-[#0E1318]/40 py-10">
               No versions yet.<br />
               Save one before a big change — you can always come back.
             </div>
@@ -79,7 +79,7 @@ export function VersionHistoryDialog({ open, onOpenChange }: { open: boolean; on
               key={v.id}
               className={cn(
                 'group flex items-center gap-2.5 rounded-xl px-3 py-2.5',
-                i === 0 ? 'bg-white/[0.05]' : 'hover:bg-white/[0.04]'
+                i === 0 ? 'bg-black/[0.05]' : 'hover:bg-black/[0.04]'
               )}
             >
               <div className="flex-1 min-w-0">
@@ -87,26 +87,26 @@ export function VersionHistoryDialog({ open, onOpenChange }: { open: boolean; on
                   <span className="text-[13px] font-semibold truncate">{v.label}</span>
                   {v.auto && (
                     <span
-                      className="text-[10px] font-bold text-white/50 bg-white/[0.08] border border-white/15 rounded-full px-1.5 py-px uppercase tracking-wide shrink-0"
+                      className="text-[10px] font-bold text-[#0E1318]/50 bg-black/[0.08] border border-black/15 rounded-full px-1.5 py-px uppercase tracking-wide shrink-0"
                       title="Saved automatically before a destructive operation"
                     >
                       auto
                     </span>
                   )}
-                  {i === 0 && <span className="text-[10px] font-bold text-[#02C0CC] uppercase tracking-wide">latest</span>}
+                  {i === 0 && <span className="text-[10px] font-bold text-[#00C4CC] uppercase tracking-wide">latest</span>}
                 </div>
-                <div className="flex items-center gap-1.5 text-[11px] text-white/45 mt-0.5">
+                <div className="flex items-center gap-1.5 text-[11px] text-[#0E1318]/45 mt-0.5">
                   <Layers size={11} /> {v.pages.length} page{v.pages.length > 1 ? 's' : ''}
-                  <span className="text-white/25">·</span>
+                  <span className="text-[#0E1318]/25">·</span>
                   {v.width} × {v.height}
-                  <span className="text-white/25">·</span>
+                  <span className="text-[#0E1318]/25">·</span>
                   {timeAgo(v.at)}
                 </div>
               </div>
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-8 px-3 rounded-lg text-white/85 hover:bg-white/10 hover:text-white text-[12px] font-semibold"
+                className="h-8 px-3 rounded-lg text-[#0E1318]/85 hover:bg-black/10 hover:text-[#0E1318] text-[12px] font-semibold"
                 onClick={() => {
                   restoreVersion(v.id)
                   toast({ title: `Restored “${v.label}”`, description: 'Ctrl+Z brings your previous state back.' })

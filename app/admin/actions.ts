@@ -23,7 +23,7 @@ function leadId(form: FormData) {
 }
 
 export async function updateLeadStatus(form: FormData) {
-  const admin = await requireAdmin();
+  const admin = await requireAdmin("leads");
   const id = leadId(form);
   const status = String(form.get("status")) as LeadStatus;
   if (!LEAD_STATUSES.includes(status)) throw new Error("Invalid status");
@@ -51,7 +51,7 @@ export async function updateLeadStatus(form: FormData) {
 }
 
 export async function addLeadNote(form: FormData) {
-  const admin = await requireAdmin();
+  const admin = await requireAdmin("leads");
   const id = leadId(form);
   const body = clip(form.get("body"), 4000);
   if (!body) return;
@@ -65,7 +65,7 @@ export async function addLeadNote(form: FormData) {
 
 /** Details the person shared with the team. Nothing here is collected automatically. */
 export async function updateLeadProfile(form: FormData) {
-  const admin = await requireAdmin();
+  const admin = await requireAdmin("leads");
   const id = leadId(form);
   const email = clip(form.get("email"), 200);
   if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) redirect(`/admin/leads/${id}?error=email`);
@@ -85,7 +85,7 @@ export async function updateLeadProfile(form: FormData) {
 }
 
 export async function replyOnWhatsApp(form: FormData) {
-  const admin = await requireAdmin();
+  const admin = await requireAdmin("leads");
   const id = leadId(form);
   const body = clip(form.get("body"), 4000);
   if (!body) return;
@@ -108,7 +108,7 @@ export async function replyOnWhatsApp(form: FormData) {
 
 /** Staff enter the number from the real chat, turning an anonymous click into a lead. */
 export async function createLeadFromClick(form: FormData) {
-  await requireAdmin();
+  await requireAdmin("leads");
   const eventId = String(form.get("eventId") || "");
   const phone = clip(form.get("phone"), 40);
   const name = clip(form.get("name"), 200);

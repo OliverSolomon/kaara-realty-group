@@ -1,3 +1,5 @@
+import { requireAdmin } from "@/lib/auth/admin";
+import { requireItem } from "@/lib/auth/shares";
 import { notFound } from "next/navigation";
 import { getDocument, newDocument } from "@/lib/cms/server";
 import { CMS_TYPES, HIDDEN_TYPES, SINGLETONS } from "@/lib/cms/types";
@@ -16,11 +18,13 @@ export default async function ContentEditPage({
   const id = decodeURIComponent(rawId);
 
   if (id === "new") {
+    await requireAdmin("content");
     if (SINGLETONS.has(type)) notFound();
     const doc = newDocument(type, listing ?? null);
     return <CmsEditor key={doc._id} schema={CMS_TYPES[type]} initial={doc} rev={null} hasPublished={false} hasDraft={false} isNew singleton={false} />;
   }
 
+  const { shared } = await requireItem("content", "content", `${type}:${id}`);
   if (SINGLETONS.has(type) && id !== type) notFound();
   const { current, published, draft } = await getDocument(type, id);
   if (!current && !SINGLETONS.has(type)) notFound();
@@ -36,6 +40,7 @@ export default async function ContentEditPage({
       hasDraft={Boolean(draft)}
       isNew={!current}
       singleton={SINGLETONS.has(type)}
+      coEditor={shared}
     />
   );
 }

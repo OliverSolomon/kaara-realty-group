@@ -411,7 +411,7 @@ function AudioNode({ el, common }: { el: AudioElement; common: Record<string, un
         x={18}
         y={midY - 13}
         data="M13 0 L26 13 L13 26 Z"
-        fill="#02C0CC"
+        fill="#00C4CC"
       />
       {/* waveform */}
       {bars.length > 0 ? (
@@ -454,8 +454,8 @@ function AudioNode({ el, common }: { el: AudioElement; common: Record<string, un
       />
       {el.bpm ? (
         <Group x={el.width - 62} y={el.height - 21}>
-          <Rect width={50} height={14} cornerRadius={7} fill="#02C0CC26" />
-          <Text x={4} y={2.5} text={`${Math.round(el.bpm)} BPM`} fontSize={9} fontFamily="Inter, system-ui, sans-serif" fill="#02C0CC" />
+          <Rect width={50} height={14} cornerRadius={7} fill="#00C4CC26" />
+          <Text x={4} y={2.5} text={`${Math.round(el.bpm)} BPM`} fontSize={9} fontFamily="Inter, system-ui, sans-serif" fill="#00C4CC" />
         </Group>
       ) : null}
     </Group>

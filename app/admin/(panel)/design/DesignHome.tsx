@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { PiPlus, PiTrash } from "react-icons/pi";
+import { PiMagnifyingGlass, PiPlus, PiTrash } from "react-icons/pi";
 import { createPage } from "@canvix/lib/types";
+import type { EstateListing } from "@/lib/design/estateTemplates";
+import TemplateGallery from "./TemplateGallery";
 
 export interface DesignCard {
   id: string;
@@ -24,7 +26,15 @@ const SIZES = [
   { name: "Presentation", width: 1920, height: 1080 },
 ];
 
-export default function DesignHome({ initial }: { initial: DesignCard[] }) {
+const TABS = [
+  { id: "templates", label: "Templates" },
+  { id: "sizes", label: "Blank sizes" },
+  { id: "yours", label: "Your designs" },
+] as const;
+
+export default function DesignHome({ initial, listings }: { initial: DesignCard[]; listings: EstateListing[] }) {
+  const [tab, setTab] = useState<(typeof TABS)[number]["id"]>("templates");
+  const [query, setQuery] = useState("");
   const [designs, setDesigns] = useState(initial);
   const [busy, setBusy] = useState("");
   const [error, setError] = useState("");
@@ -60,61 +70,89 @@ export default function DesignHome({ initial }: { initial: DesignCard[] }) {
   }
 
   return (
-    <>
-      <h1 className="font-serif text-3xl">Design</h1>
-      <p className="mt-1 text-sm text-white/55">Create graphics for listings, posts and print.</p>
-      {error && <p role="alert" className="mt-4 border border-[#f0a08a]/40 bg-[#f0a08a]/10 p-3 text-sm text-[#f0a08a]">{error}</p>}
+    <div className="-mx-4 -my-6 min-h-dvh bg-white px-4 py-6 text-[#0E1318] lg:-mx-8 lg:-my-8 lg:px-8 lg:py-8">
+      <section className="rounded-3xl bg-gradient-to-br from-[#CFF3F5] via-[#EADFFF] to-[#FFE4F0] px-5 py-8 text-center sm:py-10">
+        <h1 className="text-2xl font-bold tracking-tight sm:text-4xl">
+          <span className="bg-gradient-to-r from-[#068297] to-[#7D2AE8] bg-clip-text text-transparent">What will you design today?</span>
+        </h1>
+        <p className="mt-2 text-sm text-[#0E1318]/65">Share homes for sale, to let and for short stays, ready to post.</p>
+        <label className="mx-auto mt-5 flex min-h-12 max-w-xl items-center gap-2 rounded-xl bg-white px-4 shadow-sm ring-1 ring-black/10 focus-within:ring-2 focus-within:ring-[#7D2AE8]">
+          <PiMagnifyingGlass size={18} className="shrink-0 text-[#0E1318]/50" aria-hidden="true" />
+          <span className="sr-only">Search templates</span>
+          <input
+            value={query}
+            onChange={(event) => { setQuery(event.target.value); setTab("templates"); }}
+            placeholder="Search for sale, to let, open house, gold…"
+            className="min-h-12 w-full min-w-0 bg-transparent text-sm outline-none placeholder:text-[#0E1318]/45"
+          />
+        </label>
+      </section>
+      {error && <p role="alert" className="mt-4 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">{error}</p>}
 
-      <h2 className="mt-6 text-[10px] font-bold uppercase tracking-[0.2em] text-white/50">Start a design</h2>
-      <ul className="mt-3 grid grid-cols-2 gap-3 md:grid-cols-4">
+      <div role="tablist" aria-label="Design sections" className="mt-5 inline-flex rounded-lg border border-black/15 bg-white p-0.5">
+        {TABS.map((item) => (
+          <button key={item.id} type="button" role="tab" aria-selected={tab === item.id} onClick={() => setTab(item.id)} className={`min-h-9 rounded-md px-3 text-xs font-semibold sm:px-4 ${tab === item.id ? "bg-[#7D2AE8] text-white" : "text-[#0E1318]/70 hover:bg-[#F1F1F4]"}`}>
+            {item.label}{item.id === "yours" && designs.length ? ` (${designs.length})` : ""}
+          </button>
+        ))}
+      </div>
+
+      {tab === "templates" && <div className="mt-5"><TemplateGallery listings={listings} query={query} /></div>}
+
+      {tab === "sizes" && <>
+      <h2 className="mt-6 text-base font-semibold">Start from a blank page</h2>
+      <ul className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
         {SIZES.map((size) => (
           <li key={size.name}>
-            <button type="button" disabled={Boolean(busy)} onClick={() => create(size.name, size.width, size.height)} className="press flex h-full min-h-28 w-full flex-col justify-between border border-white/10 bg-[#171232] p-3 text-left hover:border-[#4f9d8f] disabled:opacity-60">
-              <span className="flex h-10 items-center">
-                <span className="block border border-[#4f9d8f]/70 bg-[#2e7d6f]/20" style={{ width: Math.round(40 * Math.min(1, size.width / size.height)), height: Math.round(40 * Math.min(1, size.height / size.width)) }} />
+            <button type="button" disabled={Boolean(busy)} onClick={() => create(size.name, size.width, size.height)} className="group flex w-full flex-col gap-2 text-left disabled:opacity-60">
+              <span className="flex h-[132px] w-full items-center justify-center rounded-2xl bg-[#F1F1F4] transition group-hover:bg-[#E9E4F7]">
+                <span className="block rounded-sm bg-white shadow-[3px_4px_0_rgba(0,0,0,0.08)] ring-1 ring-black/10 transition-transform group-hover:-translate-y-1 group-hover:scale-105" style={{ width: Math.round(72 * Math.min(1, size.width / size.height)), height: Math.round(72 * Math.min(1, size.height / size.width)) }} />
               </span>
               <span>
-                <span className="block text-sm">{busy === size.name ? "Creating…" : size.name}</span>
-                <span className="mt-0.5 block text-[11px] tabular-nums text-white/45">{size.width} × {size.height}</span>
+                <span className="block text-sm font-medium">{busy === size.name ? "Creating…" : size.name}</span>
+                <span className="block text-xs tabular-nums text-[#0E1318]/55">{size.width} × {size.height}</span>
               </span>
             </button>
           </li>
         ))}
       </ul>
-      <form className="mt-3 flex flex-wrap items-end gap-2" onSubmit={(event) => { event.preventDefault(); void create("Custom design", Number(custom.width), Number(custom.height)); }}>
-        <label className="text-xs text-white/55">Width
-          <input inputMode="numeric" value={custom.width} onChange={(event) => setCustom({ ...custom, width: event.target.value })} className="mt-1 block min-h-11 w-24 border border-white/15 bg-transparent px-3 text-sm outline-none focus:border-[#4f9d8f]" />
+      <form className="mt-4 flex flex-wrap items-end gap-2" onSubmit={(event) => { event.preventDefault(); void create("Custom design", Number(custom.width), Number(custom.height)); }}>
+        <label className="text-xs text-[#0E1318]/65">Width
+          <input inputMode="numeric" value={custom.width} onChange={(event) => setCustom({ ...custom, width: event.target.value })} className="mt-1 block min-h-11 w-24 rounded-lg border border-black/15 bg-white px-3 text-sm outline-none focus:border-[#7D2AE8]" />
         </label>
-        <label className="text-xs text-white/55">Height
-          <input inputMode="numeric" value={custom.height} onChange={(event) => setCustom({ ...custom, height: event.target.value })} className="mt-1 block min-h-11 w-24 border border-white/15 bg-transparent px-3 text-sm outline-none focus:border-[#4f9d8f]" />
+        <label className="text-xs text-[#0E1318]/65">Height
+          <input inputMode="numeric" value={custom.height} onChange={(event) => setCustom({ ...custom, height: event.target.value })} className="mt-1 block min-h-11 w-24 rounded-lg border border-black/15 bg-white px-3 text-sm outline-none focus:border-[#7D2AE8]" />
         </label>
-        <button type="submit" disabled={Boolean(busy)} className="press inline-flex min-h-11 items-center gap-2 border border-white/20 px-4 text-[10px] font-bold uppercase tracking-[0.14em] disabled:opacity-60">
+        <button type="submit" disabled={Boolean(busy)} className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-[#7D2AE8] px-4 text-sm font-semibold text-white hover:bg-[#6a22c9] disabled:opacity-60">
           <PiPlus size={14} aria-hidden="true" />
           Custom size
         </button>
       </form>
+      </>}
 
-      <h2 className="mt-8 text-[10px] font-bold uppercase tracking-[0.2em] text-white/50">Your designs</h2>
+      {tab === "yours" && <>
+      <h2 className="mt-6 text-base font-semibold">Your designs</h2>
       {designs.length === 0 ? (
-        <p className="mt-3 border border-white/10 bg-[#171232] px-6 py-12 text-center text-sm text-white/55">No designs yet. Pick a size above.</p>
+        <p className="mt-3 rounded-2xl bg-[#F1F1F4] px-6 py-12 text-center text-sm text-[#0E1318]/60">No designs yet. Start from a template.</p>
       ) : (
-        <ul className="mt-3 grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-5">
+        <ul className="mt-3 grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-5">
           {designs.map((design) => (
-            <li key={design.id} className="min-w-0 border border-white/10 bg-[#171232]">
-              <a href={`/design-studio/${design.id}`} className="flex aspect-square items-center justify-center overflow-hidden bg-white/5">
+            <li key={design.id} className="group min-w-0">
+              <a href={`/design-studio/${design.id}`} className="flex aspect-square items-center justify-center overflow-hidden rounded-xl bg-[#F1F1F4] ring-1 ring-black/5 transition group-hover:ring-[#7D2AE8]">
                 {design.thumbnail ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={design.thumbnail} alt="" className="max-h-full max-w-full object-contain" />
-                ) : <span className="text-xs text-white/35">{design.width} × {design.height}</span>}
+                ) : <span className="text-xs text-[#0E1318]/45">{design.width} × {design.height}</span>}
               </a>
-              <div className="flex items-center gap-1 p-2">
-                <a href={`/design-studio/${design.id}`} className="min-w-0 flex-1 truncate text-xs">{design.name}</a>
-                <button type="button" aria-label={`Delete ${design.name}`} onClick={() => remove(design)} className="flex h-9 w-9 shrink-0 items-center justify-center text-[#f0a08a]"><PiTrash size={14} /></button>
+              <div className="mt-1 flex items-center gap-1">
+                <a href={`/design-studio/${design.id}`} className="min-w-0 flex-1 truncate text-sm font-medium">{design.name}</a>
+                <button type="button" aria-label={`Delete ${design.name}`} onClick={() => remove(design)} className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-red-600 hover:bg-red-50"><PiTrash size={15} /></button>
               </div>
             </li>
           ))}
         </ul>
       )}
-    </>
+      </>}
+    </div>
   );
 }

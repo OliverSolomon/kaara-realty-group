@@ -1,4 +1,5 @@
-import { adminFromRequest, audit } from "@/lib/auth/admin";
+import { audit } from "@/lib/auth/admin";
+import { uploaderFromRequest } from "@/lib/auth/shares";
 import { sanityWriter } from "@/lib/sanityAdmin";
 
 export const maxDuration = 30;
@@ -8,7 +9,7 @@ const FILE_TYPES = new Set(["application/pdf", ...IMAGE_TYPES]);
 const MAX_BYTES = 4 * 1024 * 1024;
 
 export async function POST(request: Request) {
-  const admin = await adminFromRequest(request);
+  const admin = await uploaderFromRequest(request);
   if (!admin) return Response.json({ error: "Unauthorized" }, { status: 401 });
   const form = await request.formData();
   const file = form.get("file");

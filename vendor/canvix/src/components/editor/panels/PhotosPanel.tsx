@@ -222,8 +222,8 @@ export function PhotosPanel() {
           className={cn(
             'h-7 shrink-0 whitespace-nowrap rounded-full px-3 text-[11.5px] font-semibold transition-colors border',
             cat === c.id
-              ? 'bg-white/[0.16] text-white border-white/25'
-              : 'bg-transparent text-white/65 border-white/10 hover:bg-white/[0.07] hover:text-white',
+              ? 'bg-black/[0.16] text-[#0E1318] border-black/25'
+              : 'bg-transparent text-[#0E1318]/65 border-black/10 hover:bg-black/[0.07] hover:text-[#0E1318]',
           )}
           aria-pressed={cat === c.id}
         >
@@ -247,11 +247,11 @@ export function PhotosPanel() {
       {showWeb && (
         <div className="mb-4">
           <div className="flex items-center gap-1.5 mb-2">
-            <Camera size={12} className="text-[#02C0CC]" />
-            <span className="text-[10.5px] font-bold text-white/55 uppercase tracking-wide">
+            <Camera size={12} className="text-[#00C4CC]" />
+            <span className="text-[10.5px] font-bold text-[#0E1318]/55 uppercase tracking-wide">
               Stock photos {results ? `(${results.length})` : ''}
             </span>
-            {busy && <Loader2 size={11} className="animate-spin text-white/40 ml-1" />}
+            {busy && <Loader2 size={11} className="animate-spin text-[#0E1318]/40 ml-1" />}
           </div>
           {providers.length > 1 && (
             <div className="cv-tabscroll -mx-4 mb-2 flex gap-1.5 overflow-x-auto px-4">
@@ -266,8 +266,8 @@ export function PhotosPanel() {
                   className={cn(
                     'h-6 shrink-0 whitespace-nowrap rounded-full px-2.5 text-[11px] font-semibold transition-colors border',
                     activeProvider === p
-                      ? 'bg-white/[0.16] text-white border-white/25'
-                      : 'bg-transparent text-white/65 border-white/10 hover:bg-white/[0.07] hover:text-white',
+                      ? 'bg-black/[0.16] text-[#0E1318] border-black/25'
+                      : 'bg-transparent text-[#0E1318]/65 border-black/10 hover:bg-black/[0.07] hover:text-[#0E1318]',
                   )}
                   aria-pressed={activeProvider === p}
                 >
@@ -277,18 +277,18 @@ export function PhotosPanel() {
             </div>
           )}
           {noProvider || error?.kind === 'no-provider' ? (
-            <p className="text-[11.5px] text-white/40 py-2 leading-relaxed">
+            <p className="text-[11.5px] text-[#0E1318]/40 py-2 leading-relaxed">
               Photo search runs on free stock-provider keys — set{' '}
-              <code className="text-white/55">PEXELS_API_KEY</code> or{' '}
-              <code className="text-white/55">PIXABAY_API_KEY</code> on the server (the
+              <code className="text-[#0E1318]/55">PEXELS_API_KEY</code> or{' '}
+              <code className="text-[#0E1318]/55">PIXABAY_API_KEY</code> on the server (the
               same keys as the Videos rail; see{' '}
-              <code className="text-white/55">docs/STOCK-PHOTO.md</code>). The free
+              <code className="text-[#0E1318]/55">docs/STOCK-PHOTO.md</code>). The free
               library below still works.
             </p>
           ) : error?.kind === 'service' ? (
-            <p className="text-[11.5px] text-white/40 py-2">{error.message}</p>
+            <p className="text-[11.5px] text-[#0E1318]/40 py-2">{error.message}</p>
           ) : results && results.length === 0 && !busy ? (
-            <p className="text-[11.5px] text-white/40 py-2">No stock photos matched — try other keywords.</p>
+            <p className="text-[11.5px] text-[#0E1318]/40 py-2">No stock photos matched — try other keywords.</p>
           ) : (
             <div className="grid grid-cols-2 gap-2.5">
               {(results ?? []).map((t) => {
@@ -298,7 +298,7 @@ export function PhotosPanel() {
                     key={t.id}
                     onClick={() => void addStock(t)}
                     disabled={busyTile !== null}
-                    className="group relative aspect-[7/5] rounded-xl overflow-hidden border border-white/10 hover:border-[#7630D7] transition-colors bg-[#0F1015] disabled:opacity-60"
+                    className="group relative aspect-[7/5] rounded-xl overflow-hidden border border-black/10 hover:border-[#7D2AE8] transition-colors bg-[#EBECF0] disabled:opacity-60"
                     aria-label={`Add stock photo by ${t.credit.author}`}
                     title={`${t.credit.provider} · ${t.credit.author} — ${t.credit.license}`}
                   >
@@ -316,7 +316,7 @@ export function PhotosPanel() {
                     </span>
 
                     <span className="absolute inset-0 hidden group-hover:flex items-center justify-center">
-                      <span className="h-8 px-3 rounded-full bg-[#7630D7] text-white text-[11.5px] font-bold flex items-center gap-1.5 shadow-lg">
+                      <span className="h-8 px-3 rounded-full bg-[#7D2AE8] text-white text-[11.5px] font-bold flex items-center gap-1.5 shadow-lg">
                         {isBusy ? <Loader2 size={12} className="animate-spin" /> : <Plus size={12} />}
                         {isBusy ? 'Adding…' : 'Add'}
                       </span>
@@ -340,8 +340,8 @@ export function PhotosPanel() {
               key={p.file}
               onClick={() => add(p)}
               className={cn(
-                'group relative aspect-[7/5] rounded-xl overflow-hidden border border-white/10',
-                'hover:border-[#7630D7] transition-colors'
+                'group relative aspect-[7/5] rounded-xl overflow-hidden border border-black/10',
+                'hover:border-[#7D2AE8] transition-colors'
               )}
               aria-label={`Add photo ${p.cat}`}
             >
@@ -354,7 +354,7 @@ export function PhotosPanel() {
               />
               <span className="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors" />
               <span className="absolute inset-0 hidden group-hover:flex items-center justify-center">
-                <span className="h-8 px-3 rounded-full bg-[#7630D7] text-white text-[11.5px] font-bold flex items-center gap-1.5 shadow-lg">
+                <span className="h-8 px-3 rounded-full bg-[#7D2AE8] text-white text-[11.5px] font-bold flex items-center gap-1.5 shadow-lg">
                   <Plus size={12} /> Add
                 </span>
               </span>
@@ -365,13 +365,13 @@ export function PhotosPanel() {
 
       {photos.length === 0 && !showWeb && (
         <div className="py-16 text-center">
-          <ImageDown size={28} className="mx-auto text-white/25 mb-3" />
-          <p className="text-[13px] text-white/50 font-medium">No photos match “{query}”</p>
-          <p className="text-[11.5px] text-white/35 mt-1">Try a different keyword or category.</p>
+          <ImageDown size={28} className="mx-auto text-[#0E1318]/25 mb-3" />
+          <p className="text-[13px] text-[#0E1318]/50 font-medium">No photos match “{query}”</p>
+          <p className="text-[11.5px] text-[#0E1318]/35 mt-1">Try a different keyword or category.</p>
         </div>
       )}
 
-      <p className="text-[10.5px] text-white/30 mt-3 leading-relaxed">
+      <p className="text-[10.5px] text-[#0E1318]/30 mt-3 leading-relaxed">
         Stock photos come from {providers.length > 0 ? providers.map(providerLabel).join(' and ') : 'the configured provider'} under
         their free licenses (Pexels License / Pixabay Content License) — inserted photos are downloaded
         into your media library and attribution stays on the element. Bundled photos are AI-generated

@@ -25,6 +25,7 @@ import { COLLECTION_V08_THUMBNAILS } from './collection-v08-thumbnails'
 import { COLLECTION_V08_LOGOS } from './collection-v08-logos'
 import { COLLECTION_V17_FIELDS } from './collection-v17-fields'
 import { templateVariants } from './variants'
+import { estateTemplateDefs } from '@/lib/design/estateTemplates'
 
 export type { TemplateDef } from './helpers'
 
@@ -46,7 +47,7 @@ export const BASE_TEMPLATES: TemplateDef[] = [
  * Variants are derived at module load, so the shipped bytes stay at
  * the originals' size; the DB seed materialises the same list.
  */
-export const TEMPLATES: TemplateDef[] = [...BASE_TEMPLATES, ...templateVariants(BASE_TEMPLATES)]
+export const TEMPLATES: TemplateDef[] = [...estateTemplateDefs(), ...BASE_TEMPLATES, ...templateVariants(BASE_TEMPLATES)]
 
 export function templatesAsRecords(): TemplateRecord[] {
   return TEMPLATES.map((t) => ({

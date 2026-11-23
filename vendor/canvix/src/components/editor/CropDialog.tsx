@@ -35,7 +35,7 @@ const MIN_CROP = 16
 export function CropDialog({ element, open, onOpenChange }: { element: ImageElement; open: boolean; onOpenChange: (o: boolean) => void }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="rounded-[28px] bg-[#16181D] border-white/10 text-white sm:max-w-2xl">
+      <DialogContent className="rounded-[28px] bg-[#FFFFFF] border-black/10 text-[#0E1318] sm:max-w-2xl">
         {/* keyed inner: every dialog open / image switch starts from a full frame */}
         {open && <CropDialogInner key={element.id} element={element} onClose={() => onOpenChange(false)} />}
       </DialogContent>
@@ -250,9 +250,9 @@ function CropDialogInner({ element, onClose }: { element: ImageElement; onClose:
     <div className="flex flex-col items-center gap-3">
       <DialogHeader className="text-left w-full">
         <DialogTitle className="flex items-center gap-2">
-          <Crop size={18} className="text-[#02C0CC]" /> Crop image
+          <Crop size={18} className="text-[#00C4CC]" /> Crop image
         </DialogTitle>
-        <DialogDescription className="text-white/55">
+        <DialogDescription className="text-[#0E1318]/55">
           Drag the handles, or draw a brand-new area anywhere outside the current one — aspect presets lock the shape.
         </DialogDescription>
       </DialogHeader>
@@ -297,7 +297,7 @@ function CropDialogInner({ element, onClose }: { element: ImageElement; onClose:
               <div
                 key={h.id}
                 onPointerDown={onHandleDown(h.id)}
-                className="absolute w-[11px] h-[11px] rounded-[3px] bg-white border-2 border-[#7630D7] shadow"
+                className="absolute w-[11px] h-[11px] rounded-[3px] bg-white border-2 border-[#7D2AE8] shadow"
                 style={{ ...h.style, cursor: h.cursor, touchAction: 'none' }}
                 aria-label={`Crop handle ${h.id}`}
               />
@@ -313,7 +313,7 @@ function CropDialogInner({ element, onClose }: { element: ImageElement; onClose:
               onClick={() => applyAspect(a.id)}
               className={cn(
                 'h-8 px-3 rounded-full text-[12px] font-semibold transition-colors',
-                aspectId === a.id ? 'bg-[#7630D7] text-white' : 'bg-white/[0.08] text-white/75 hover:bg-white/[0.14]'
+                aspectId === a.id ? 'bg-[#7D2AE8] text-white' : 'bg-black/[0.08] text-[#0E1318]/75 hover:bg-black/[0.14]'
               )}
             >
               {a.label}
@@ -322,14 +322,14 @@ function CropDialogInner({ element, onClose }: { element: ImageElement; onClose:
         </div>
 
         <div className="flex items-center justify-between w-full">
-          <span className="text-[12px] text-white/55 font-medium tabular-nums">
+          <span className="text-[12px] text-[#0E1318]/55 font-medium tabular-nums">
             {outW} × {outH} px
           </span>
           <div className="flex items-center gap-2">
             <Button
               variant="ghost"
               size="sm"
-              className="text-white/80 hover:bg-white/10 hover:text-white rounded-xl"
+              className="text-[#0E1318]/80 hover:bg-black/10 hover:text-[#0E1318] rounded-xl"
               onClick={reset}
             >
               <RotateCcw size={14} /> Reset

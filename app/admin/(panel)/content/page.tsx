@@ -1,6 +1,8 @@
+import { requireAdmin } from "@/lib/auth/admin";
 import Link from "next/link";
 
-export default function ContentHome() {
+export default async function ContentHome() {
+  await requireAdmin("content");
   return (
     <div className="flex h-full min-h-64 flex-col items-center justify-center gap-4 text-center">
       <p className="max-w-sm text-sm leading-relaxed text-white/50">

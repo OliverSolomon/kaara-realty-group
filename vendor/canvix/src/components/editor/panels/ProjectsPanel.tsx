@@ -59,11 +59,11 @@ export function ProjectsPanel() {
   return (
     <PanelShell title="Projects" subtitle="Your saved designs" searchPlaceholder="Search your designs" onSearch={setQuery}>
       {designs === null ? (
-        <div className="py-10 text-center text-white/40 text-sm">Loading your projects…</div>
+        <div className="py-10 text-center text-[#0E1318]/40 text-sm">Loading your projects…</div>
       ) : filtered.length === 0 ? (
         <div className="py-10 text-center">
-          <FolderOpen size={28} className="mx-auto text-white/25" />
-          <p className="mt-2 text-sm text-white/50">{designs.length === 0 ? 'No saved designs yet' : 'No matches'}</p>
+          <FolderOpen size={28} className="mx-auto text-[#0E1318]/25" />
+          <p className="mt-2 text-sm text-[#0E1318]/50">{designs.length === 0 ? 'No saved designs yet' : 'No matches'}</p>
         </div>
       ) : (
         <div className="grid grid-cols-2 gap-2.5 pt-2">
@@ -72,27 +72,27 @@ export function ProjectsPanel() {
               key={d.id}
               onClick={() => open(d)}
               className={cn(
-                'group text-left rounded-xl overflow-hidden border transition-colors hover:border-[#7630D7]',
-                d.id === designId ? 'border-[#02C0CC]' : 'border-white/10'
+                'group text-left rounded-xl overflow-hidden border transition-colors hover:border-[#7D2AE8]',
+                d.id === designId ? 'border-[#00C4CC]' : 'border-black/10'
               )}
               aria-label={`Open design ${d.name}`}
             >
-              <div className="aspect-[4/3] bg-[#0F1015] overflow-hidden relative">
+              <div className="aspect-[4/3] bg-[#EBECF0] overflow-hidden relative">
                 {d.thumbnail ? (
                    
                   <img src={d.thumbnail} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200" />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-white/20">
+                  <div className="w-full h-full flex items-center justify-center text-[#0E1318]/20">
                     <FolderOpen size={22} />
                   </div>
                 )}
                 {d.id === designId && (
-                  <span className="absolute top-1.5 left-1.5 text-[9px] font-bold bg-[#02C0CC] text-black px-1.5 py-0.5 rounded-md uppercase">Open</span>
+                  <span className="absolute top-1.5 left-1.5 text-[9px] font-bold bg-[#00C4CC] text-black px-1.5 py-0.5 rounded-md uppercase">Open</span>
                 )}
               </div>
-              <div className="px-2 py-1.5 bg-[#16181D]">
-                <div className="text-[11px] font-semibold truncate text-white/90">{d.name}</div>
-                <div className="text-[9px] text-white/40 flex items-center gap-1">
+              <div className="px-2 py-1.5 bg-[#FFFFFF]">
+                <div className="text-[11px] font-semibold truncate text-[#0E1318]/90">{d.name}</div>
+                <div className="text-[9px] text-[#0E1318]/40 flex items-center gap-1">
                   <Clock size={9} /> {new Date(d.updatedAt).toLocaleDateString()}
                 </div>
               </div>
