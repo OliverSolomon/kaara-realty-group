@@ -1,0 +1,1100 @@
+// @ts-nocheck -- vendored from Canvix (MIT). See vendor/canvix/README.md.
+// ─────────────────────────────────────────────────────────────
+// Canvix core types — the design document model
+// ─────────────────────────────────────────────────────────────
+
+export type ElementType =
+  | 'text'
+  | 'rect'
+  | 'ellipse'
+  | 'triangle'
+  | 'star'
+  | 'polygon'
+  | 'line'
+  | 'path'
+  | 'stroke'
+  | 'image'
+  | 'sticker'
+  | 'group'
+  | 'table'
+  | 'frame'
+  | 'embed'
+  | 'audio'
+  | 'video'
+  | 'plugin'
+  | 'chart'
+
+export type TextAlign = 'left' | 'center' | 'right' | 'justify'
+
+// ── v0.5: animations (model is Konva-independent — pure functions of time) ──
+
+export type AnimationKind = 'none' | 'fade' | 'rise' | 'pan' | 'pop' | 'wipe' | 'zoom' | 'rotate' | 'breathe'
+export type AnimationSpeed = 'slow' | 'medium' | 'fast'
+export type AnimationDirection = 'left' | 'right' | 'up' | 'down'
+export type AnimationEasing = 'linear' | 'easeIn' | 'easeOut' | 'easeInOut' | 'spring'
+
+export interface ElementAnimation {
+  kind: AnimationKind
+  /** seconds */
+  duration: number
+  /** seconds — start offset after the page is shown */
+  delay: number
+  easing: AnimationEasing
+  /** pan/rise travel direction */
+  direction?: AnimationDirection
+  /** Sound wave: offline pack sound played when the animation
+   *  triggers (at its delay) in preview/present. Additive —
+   *  pre-sound documents are unaffected. Validated against the
+   *  pack catalogue; unknown ids are dropped on sanitize. */
+  sfxId?: string
+}
+
+export type TransitionKind = 'none' | 'fade' | 'slide' | 'morph'
+
+export interface PageTransition {
+  kind: TransitionKind
+  /** 0.1–2.5 s */
+  duration: number
+  direction?: AnimationDirection
+  /** Sound wave: offline pack sound played when this page
+   *  appears after another (preview/present). Additive. */
+  sfxId?: string
+}
+
+/** canva speed presets (seconds) */
+export const SPEED_PRESETS: Record<AnimationSpeed, number> = { slow: 1.4, medium: 0.9, fast: 0.5 }
+
+/** Canva-style text effects (v0.3: aligned to canva 2026 naming) */
+export type TextEffect = 'none' | 'shadow' | 'lift' | 'hollow' | 'neon' | 'echo' | 'glow' | 'outline' | 'background' | 'splice'
+
+export const TEXT_EFFECTS: { id: TextEffect; label: string }[] = [
+  { id: 'none', label: 'None' },
+  { id: 'shadow', label: 'Drop' },
+  { id: 'lift', label: 'Lift' },
+  { id: 'glow', label: 'Glow' },
+  { id: 'hollow', label: 'Hollow' },
+  { id: 'outline', label: 'Outline' },
+  { id: 'background', label: 'Background' },
+  { id: 'splice', label: 'Splice' },
+  { id: 'neon', label: 'Neon' },
+  { id: 'echo', label: 'Echo' },
+]
+
+export interface ShadowConfig {
+  enabled: boolean
+  color: string
+  blur: number
+  offsetX: number
+  offsetY: number
+}
+
+/** Canva-style element gradient fill (shapes + text) */
+export interface GradientFill {
+  type: 'linear' | 'radial'
+  from: string
+  to: string
+  /** linear direction in degrees (0 = →, 90 = ↓) */
+  angle: number
+}
+
+export interface BaseElement {
+  id: string
+  type: ElementType
+  x: number
+  y: number
+  width: number
+  height: number
+  rotation: number
+  opacity: number
+  locked: boolean
+  visible: boolean
+  shadow: ShadowConfig
+  /** user-facing layer name (Layers panel; falls back to an auto label) */
+  name?: string
+  /** v0.5: entry animation (undefined = none) */
+  animation?: ElementAnimation
+  /** v0.11 Beat Sync: pulse strength on the page audio's beats
+   *  (0..1, undefined/0 = off). Applied in preview/present playback and
+   *  video export — see src/lib/media/beat-detect.ts. */
+  beatPulse?: number
+  /** v0.10 offline-merge: hybrid-logical-clock stamp of the last write to
+   * this element ("w:counter:actor"). Older documents lack it — treated as
+   * epoch "0" so stamped writes deterministically win over legacy state.
+   * See src/lib/collab/hlc.ts + merge.ts. */
+  _m?: string
+  /** v0.5 Magic Layers provenance — set on elements generated from an image analysis */
+  magicLayer?: {
+    sourceRegion: string
+    confidence: number
+    sourceType: string
+    originalBounds: { x: number; y: number; w: number; h: number }
+  }
+}
+
+/**
+ * v0.15 (R1) rich text — one styled run laid over `TextElement.text`.
+ * Concatenated span text must equal `el.text` (UTF-16 units; the
+ * textarea's selection offsets). Every key is optional: absent means
+ * INHERIT the element's flat field. See src/lib/rich-text.ts.
+ */
+export interface TextSpan {
+  text: string
+  bold?: boolean
+  italic?: boolean
+  underline?: boolean
+  strike?: boolean
+  color?: string
+  /** http(s) only — sanitizeLink() gates every write */
+  link?: string
+}
+
+export interface TextElement extends BaseElement {
+  type: 'text'
+  text: string
+  fontSize: number
+  fontFamily: string
+  bold: boolean
+  italic: boolean
+  underline: boolean
+  strike: boolean
+  uppercase: boolean
+  fill: string
+  /** gradient fill — when set, renders instead of the solid fill */
+  fillGradient?: GradientFill | null
+  align: TextAlign
+  lineHeight: number
+  letterSpacing: number
+  /** v0.6 canva curved text — arc angle in degrees (−180..180, 0 = straight) */
+  curve?: number
+  /** v0.15 (R1) rich text — optional style runs over `text`; null/absent = flat.
+   *  Malformed arrays normalize to null (fail-safe, never corrupts `text`). */
+  spans?: TextSpan[] | null
+  /** text background block colour (canva "Background" effect) */
+  effectBackground?: string
+  /** canva-style effect preset */
+  effect?: TextEffect
+  /** v0.18 (Wave 3) auto-fit — shrink the font (never grow) so the
+   *  text fits the element box. Derived at render time; the authored
+   *  `fontSize` is preserved. See lib/text-fit.ts. */
+  autoFit?: boolean
+  /** v0.18 (Wave 3) list style — every non-empty paragraph becomes a
+   *  list item with a hanging indent. See lib/list-text.ts. */
+  listStyle?: 'none' | 'bullet' | 'number'
+  /** v0.18 (Wave 3) base direction for bidi scripts (Arabic, Hebrew…).
+   *  'rtl' mirrors the list marker side and the default alignment;
+   *  within-line reordering is applied by the platform text stack
+   *  (canvas fillText runs the Unicode bidi algorithm). */
+  direction?: 'ltr' | 'rtl'
+}
+
+export interface ShapeElement extends BaseElement {
+  type: 'rect' | 'ellipse' | 'triangle' | 'star' | 'polygon' | 'path'
+  fill: string
+  /** gradient fill — when set, renders instead of the solid fill */
+  fillGradient?: GradientFill | null
+  stroke: string
+  strokeWidth: number
+  cornerRadius: number // rect only
+  pathData?: string // path only — authored in a 100×100 box
+  /** v0.18 (Wave 3) polygon — 3..12 sides (lib/shapes.ts) */
+  sides?: number
+  /** v0.18 (Wave 3) star — 3..16 points (was hardcoded 5 pre-v0.18) */
+  numPoints?: number
+  /** v0.18 (Wave 3) star — inner/outer radius ratio 0.15..0.85 (default 0.55) */
+  innerRatio?: number
+}
+
+export interface LineElement extends BaseElement {
+  type: 'line'
+  stroke: string
+  strokeWidth: number
+  dashed: boolean
+  arrowStart: boolean
+  arrowEnd: boolean
+  // width = line length, rotation = angle. height kept 0.
+}
+
+export interface ImageElement extends BaseElement {
+  type: 'image'
+  src: string // dataURL or remote URL (CORS-enabled)
+  radius: number // corner clip
+  naturalWidth: number
+  naturalHeight: number
+  flipH?: boolean
+  flipV?: boolean
+  /** basic adjustments (0 = neutral, applied via Konva filters) */
+  brightness?: number // -100..100
+  contrast?: number // -100..100
+  saturation?: number // -100..100
+  /** v0.14 (D4): filter-gallery preset id — see lib/image-filters.ts
+   *  ('none' or undefined = untouched; readers validate via
+   *  isImageFilterId() so hostile pastes can't smuggle junk in) */
+  filter?: string
+  /** preset strength 0..100 (default 100) */
+  filterIntensity?: number
+  /** v0.18 (Wave 3): shape mask — the image clips to the polygon
+   *  (lib/shapes.ts maskPolygon). 'none'/undefined = untouched.
+   *  Rides autosave/versions/collab like any element field; older
+   *  replicas ignore the unknown field (fail-safe). */
+  maskShape?: string
+  /** parametric mask: polygon sides (3..12) / star points (3..16) */
+  maskSides?: number
+  /** parametric star mask: inner/outer ratio 0.15..0.85 */
+  maskInnerRatio?: number
+  /** v0.16.4 (A4): durable stock-photo attribution (the R6 video
+   *  pattern) — set by the Photos panel's stock connectors, absent on
+   *  uploads and bundled photos. Rides autosave/versions/collab; shown
+   *  on selection, never burned into exports (neither provider license
+   *  demands on-content credit). */
+  credit?: { provider: string; author: string; license: string; url: string }
+  /** v0.19 (Wave 4): the provider-side handle for AI-generated images —
+   *  the generation/edit response's image_ent_id. VibesAI-class edit
+   *  providers only edit images THEY generated (matched by exact bytes
+   *  or this id — re-encoding the src breaks the byte match, so the id
+   *  is the durable link). Stored on the element, forwarded as
+   *  sourceEntId by the AI edit calls, refreshed on every successful
+   *  edit. Absent on uploads, stock photos and bundled assets. */
+  aiEntId?: string
+  /** v0.19 (Wave 4): accessibility alt text — AI-generatable, always
+   *  user-editable. Rides autosave/versions/collab like any element
+   *  field; consumed by screen-reader landmarks and shown in the
+   *  properties bar. Never burned into visual exports. */
+  alt?: string
+}
+
+export interface StickerElement extends BaseElement {
+  type: 'sticker'
+  char: string // emoji glyph (text stickers) or the pack sticker's name (vector stickers)
+  fontSize: number
+  /** v0.22: the authored SVG markup of a library sticker (vector
+   *  path). Empty for emoji text stickers — those render as text
+   *  runs (PPTX-native) exactly as before. When present, every
+   *  renderer draws the SVG: canvas + video via the preloaded
+   *  data-URL bitmap, SVG export nests it inline, PPTX/PDF embed
+   *  the raster. The markup is authored in-repo (src/lib/stickers)
+   *  — never user input. */
+  svg?: string
+  /** the library id (e.g. 'hearts-red') — provenance for future
+   *  pack tooling (swap pack, recolour). Absent on emoji stickers. */
+  stickerId?: string
+  /** accessibility alt text (Wave 4 parity with images) — seeded
+   *  with the library name on insert, user-editable after. */
+  alt?: string
+}
+
+/** A group nests child elements at their original page coordinates.
+ *  Selecting/moving/transforming the group transforms children with it. */
+export interface GroupElement extends BaseElement {
+  type: 'group'
+  /** full child elements (positions relative to the page, same as before grouping) */
+  children: AnyElement[]
+}
+
+/** Freehand stroke — points are [x0,y0,x1,y1,…] relative to (x, y). */
+export interface StrokeElement extends BaseElement {
+  type: 'stroke'
+  points: number[]
+  stroke: string
+  strokeWidth: number
+}
+
+// ── v0.6: canva-parity elements (tables, frames, embeds) ─────
+
+/** One cell of a table. Missing text = empty string. */
+export interface TableCell {
+  text: string
+  /** cell fill — undefined = transparent (table bg shows) */
+  fill?: string
+  bold?: boolean
+}
+
+/** Canva-style native table — rendered as rect + text per cell, every cell editable. */
+export interface TableElement extends BaseElement {
+  type: 'table'
+  rows: number
+  cols: number
+  /** row-major cells, length = rows × cols */
+  cells: TableCell[]
+  /** per-column widths in px — must sum to element width */
+  colWidths: number[]
+  /** uniform row height in px (rows × rowHeight ≈ element height) */
+  rowHeight: number
+  borderColor: string
+  borderWidth: number
+  /** first row fill (header band) */
+  headerFill: string
+  headerTextColor?: string
+  fill: string
+  textColor: string
+  fontSize: number
+  fontFamily: string
+}
+
+export const FRAME_SHAPES = ['rect', 'ellipse', 'triangle', 'hexagon', 'circle'] as const
+export type FrameShape = (typeof FRAME_SHAPES)[number]
+
+export const FRAME_SHAPE_LABELS: Record<FrameShape, string> = {
+  rect: 'Rectangle',
+  ellipse: 'Ellipse',
+  triangle: 'Triangle',
+  hexagon: 'Hexagon',
+  circle: 'Circle',
+}
+
+/** Canva-style frame — an image clipped inside a shape. `src` empty = placeholder. */
+export interface FrameElement extends BaseElement {
+  type: 'frame'
+  frameShape: FrameShape
+  /** image source (dataURL or https) — when unset the frame renders a dashed placeholder */
+  src: string
+  naturalWidth: number
+  naturalHeight: number
+  /** placeholder / empty-frame tint */
+  fill: string
+  radius: number
+}
+
+export type EmbedKind = 'youtube' | 'map' | 'link'
+
+/** Canva-style embed card — a native vector link card (YouTube / Maps / generic).
+ *  Honest scope: a *card* that opens the target in a browser, not an iframe. */
+export interface EmbedElement extends BaseElement {
+  type: 'embed'
+  url: string
+  kind: EmbedKind
+  title?: string
+  /** dominant card tint */
+  tint: string
+}
+
+// ── v0.14 D7: data-bound charts ───────────────────────────────
+
+export const CHART_KINDS = ['bar', 'line', 'donut', 'scatter'] as const
+export type ChartKind = (typeof CHART_KINDS)[number]
+
+export const CHART_KIND_LABELS: Record<ChartKind, string> = {
+  bar: 'Bar chart',
+  line: 'Line chart',
+  donut: 'Donut chart',
+  scatter: 'Scatter chart',
+}
+
+/** One data series. `values` holds one number per `labels` entry
+ *  (bar/line/donut); scatter stores flat [x0,y0,x1,y1,…] pairs instead
+ *  (labels stays empty). Both shapes are capped + whitelisted on every
+ *  untrusted boundary (paste, MCP) — see lib/chart-geometry.ts. */
+export interface ChartSeries {
+  name: string
+  color: string
+  values: number[]
+}
+
+/** v0.14 (D7): native data-bound chart element — the geometry lives in
+ *  lib/chart-geometry.ts (one pure module; the editor, the video
+ *  exporter and the SVG exporter all map the same primitives). */
+export interface ChartElement extends BaseElement {
+  type: 'chart'
+  kind: ChartKind
+  /** category labels (bar/line/donut); scatter keeps this empty */
+  labels: string[]
+  series: ChartSeries[]
+  /** bar layout: series side-by-side or stacked */
+  barMode: 'group' | 'stack'
+  /** donut inner-radius ratio 0–0.85 */
+  hole: number
+  /** line: Catmull-Rom smoothed segments */
+  smooth: boolean
+  showGrid: boolean
+  /** numeric value labels on bars / dots / slices */
+  showValues: boolean
+  showLegend: boolean
+  /** panel background ('transparent' allowed) */
+  fill: string
+  textColor: string
+  fontFamily: string
+  fontSize: number
+}
+
+// ── v0.11: audio/video elements + Beat Sync ──────────────────
+
+/** Hard caps keeping collab ops + saved documents small: the waveform and
+ *  beat grid are downsampled on upload (src/lib/media/beat-detect.ts) and
+ *  clipped here — a full-resolution analysis would blow MAX_EVENT_BYTES. */
+export const MAX_PEAKS = 200
+export const MAX_BEATS = 480
+
+/** Native audio element — renders as a waveform player card on the canvas
+ * (poster-free), and plays during presentation/preview + video export.
+ * `src` points at the media store (`/api/admin/studio/media/<id>`) or a CORS https URL.
+ * Beats/waveform are baked in at upload so every replica renders + syncs
+ * without re-decoding the (multi-MB) file. */
+export interface AudioElement extends BaseElement {
+  type: 'audio'
+  src: string
+  /** file label shown on the card */
+  name: string
+  /** seconds */
+  duration: number
+  /** 0..1 */
+  volume: number
+  loop: boolean
+  /** start playing when the page appears (presentation/export) */
+  autoplay: boolean
+  /** downsampled abs-peak envelope (0..1) for the waveform card */
+  peaks?: number[]
+  /** detected tempo — undefined when analysis found no stable beat */
+  bpm?: number
+  /** beat grid in seconds (aligned to the strongest onset) */
+  beats?: number[]
+  /** Sound wave: durable attribution for stock/recorded audio —
+   *  {provider, author, license, url} (the A4 photo pattern; shown in
+   *  the properties bar, never burned into exports). */
+  credit?: { provider: string; author: string; license: string; url: string }
+}
+
+/** Native video element — the editor renders the poster frame (captured at
+ * upload, stored as a dataURL so it replicates through the document);
+ * playback runs in presentation/preview AND in video exports (v0.15 R3:
+ * autoplay videos render their moving content frame-accurately through
+ * windowedSourceTime in src/lib/video-export.ts; non-autoplay videos and
+ * load failures keep the poster render — the presentation semantic). */
+export interface VideoElement extends BaseElement {
+  type: 'video'
+  src: string
+  /** first-frame thumbnail (dataURL) — the canvas + export representation */
+  poster: string
+  /** seconds */
+  duration: number
+  /** 0..1 */
+  volume: number
+  muted: boolean
+  loop: boolean
+  /** start playing when the page appears (presentation) */
+  autoplay: boolean
+  /** playback window (seconds into the source) */
+  trimStart: number
+  trimEnd: number
+  /** v0.15 (R6): stock-video attribution — sanitized at ingest by
+   *  src/lib/stock-video.ts and stored DURABLY so it rides autosave,
+   *  versions, collab replication and offline merge like any element
+   *  field. Surfaced in the insert toast and the properties bar;
+   *  deliberately NOT rendered on canvas or burned into exports (a
+   *  forced overlay would corrupt the design; neither provider
+   *  license demands on-content credit). Absent on user uploads. */
+  credit?: { provider: string; author: string; license: string; url: string }
+}
+
+// ── v0.13 (P4): the plugin element — research/PLUGIN-SYSTEM.md §4.5 ──
+
+/** The ONE native element type plugins add (§4.4): a single union
+ *  member whose per-plugin variety lives entirely in `data` + a
+ *  renderer registered at runtime by the owning plugin. Structural
+ *  move that dodges the "three independent switches" problem — every
+ *  renderer adds ONE `case 'plugin'` that delegates to the contract.
+ *
+ *  Durability rules (§4.9): the element is plain document data — it
+ *  rides autosave, versions, collab replication and offline merge
+ *  (LWW by id, type-agnostic) like any other element. Uninstalling
+ *  or disabling the plugin NEVER touches it; the canvas degrades to
+ *  a placeholder card and the data stays intact for reinstall. */
+export interface PluginElement extends BaseElement {
+  type: 'plugin'
+  /** owning plugin id, e.g. 'com.canvix.wordcloud' — namespaced by the manifest */
+  pluginId: string
+  /** element kind declared in the manifest's elements[] — namespaced by pluginId */
+  kind: string
+  /** plugin semver at creation time, so a later version can migrate its own data */
+  pluginVersion: string
+  /** JSON data — must pass the collab/validateOpPayload caps (≤ 500-array, ≤ 100 k strings, depth ≤ 12) */
+  data: Record<string, unknown>
+}
+
+/** Brand kit — persisted per browser (localStorage) */
+export interface BrandKit {
+  colors: string[]
+  headingFont: string
+  bodyFont: string
+  /** saved colour palettes (swatch rows) */
+  palettes?: string[][]
+  /** uploaded logo dataURLs */
+  logos?: string[]
+}
+
+export const DEFAULT_BRAND: BrandKit = {
+  colors: ['#7630D7', '#02C0CC', '#FF5C8A', '#1F142E', '#FFD166'],
+  headingFont: 'Archivo Black',
+  bodyFont: 'Inter',
+  palettes: [
+    ['#7630D7', '#02C0CC', '#FF5C8A'],
+    ['#1F142E', '#6E717F', '#E0E1E6'],
+    ['#FF5C8A', '#FFB84C', '#FFE066'],
+  ],
+  logos: [],
+}
+
+export type AnyElement =
+  | TextElement
+  | ShapeElement
+  | LineElement
+  | StrokeElement
+  | ImageElement
+  | StickerElement
+  | GroupElement
+  | TableElement
+  | FrameElement
+  | EmbedElement
+  | AudioElement
+  | VideoElement
+  | PluginElement
+  | ChartElement
+
+export type Background =
+  | { type: 'solid'; color: string }
+  | { type: 'gradient'; from: string; to: string; angle: number }
+
+export interface PageData {
+  id: string
+  background: Background
+  elements: AnyElement[]
+  /** v0.5: transition played when this page appears after another */
+  transition?: PageTransition
+  /** v0.10 offline-merge: page-level HLC stamp (background/transition writes) */
+  _pm?: string
+  /** v0.10 offline-merge: elementId → HLC stamp of its deletion. Tombstones
+   * ride the saved document so deletes merge deterministically against
+   * concurrent edits (delete wins only while it is the newer write). */
+  tombstones?: Record<string, string>
+  /** v0.18 (Wave 3): per-page size override. Absent/zero = use the
+   *  design-level width/height (the only mode pre-v0.18 documents
+   *  have). Every consumer goes through pageSize() — see editor-utils. */
+  width?: number
+  height?: number
+  /** v0.18 (Wave 3): speaker notes — plain text shown in presenter
+   *  view; never rendered on the canvas or in exports. */
+  notes?: string
+}
+
+/** user-placed ruler guide (position in page px; scoped to a page) */
+export interface ManualGuide {
+  id: string
+  axis: 'x' | 'y'
+  position: number
+  /** owning page — guides are per-page since v0.3.2 */
+  pageId: string
+}
+
+/** saved version snapshot (per design, persisted to localStorage) */
+export interface DesignVersion {
+  id: string
+  label: string
+  at: number
+  name: string
+  width: number
+  height: number
+  pages: PageData[]
+  /** v0.24 (D5): true when saved automatically before a destructive op
+   *  (template apply / Magic Resize / Translate / Magic Layers / page
+   *  delete). Auto snapshots prune first when the 30-slot list fills —
+   *  a manual snapshot is never dropped to make room for one. */
+  auto?: boolean
+}
+
+export interface DesignSnapshot {
+  // A full serializable design state (also what gets saved to DB)
+  name: string
+  width: number
+  height: number
+  pages: PageData[]
+}
+
+export interface DesignRecord extends DesignSnapshot {
+  id: string
+  thumbnail: string | null
+  source: string
+  createdAt: string
+  updatedAt: string
+  /** v0.9: true when the design belongs to another account — the editor
+   * switches to view-only (no saves; mutating APIs answer 403). */
+  readOnly?: boolean
+}
+
+export interface TemplateRecord extends DesignSnapshot {
+  id: string
+  slug: string
+  name: string
+  category: string
+  accent: string
+  /** v0.17 (Wave 2): smart-template fields (absent on plain templates) */
+  fields?: { key: string; label: string; example: string }[]
+}
+
+export const TEMPLATE_CATEGORIES = [
+  { id: 'social', label: 'Social media', icon: 'instagram' },
+  { id: 'presentation', label: 'Presentation', icon: 'presentation' },
+  { id: 'print', label: 'Print', icon: 'printer' },
+  { id: 'document', label: 'Docs & office', icon: 'file-text' },
+  { id: 'logo', label: 'Logos', icon: 'badge' },
+  { id: 'thumbnail', label: 'Video & thumbnails', icon: 'video' },
+] as const
+
+// ── Defaults factory ─────────────────────────────────────────
+
+let counter = 0
+export function uid(prefix = 'el'): string {
+  counter += 1
+  return `${prefix}_${Date.now().toString(36)}${counter.toString(36)}${Math.random()
+    .toString(36)
+    .slice(2, 7)}`
+}
+
+export const DEFAULT_SHADOW: ShadowConfig = {
+  enabled: false,
+  color: '#000000',
+  blur: 12,
+  offsetX: 0,
+  offsetY: 6,
+}
+
+interface BaseInit {
+  x?: number
+  y?: number
+  width?: number
+  height?: number
+}
+
+function baseElement(type: ElementType, init: BaseInit = {}): Omit<BaseElement, never> {
+  return {
+    id: uid(type),
+    type,
+    x: init.x ?? 120,
+    y: init.y ?? 120,
+    width: init.width ?? 240,
+    height: init.height ?? 120,
+    rotation: 0,
+    opacity: 1,
+    locked: false,
+    visible: true,
+    shadow: { ...DEFAULT_SHADOW },
+  }
+}
+
+export function createTextElement(init: BaseInit & Partial<TextElement> = {}): TextElement {
+  return {
+    ...baseElement('text', init),
+    type: 'text',
+    text: 'Add a little bit of body text',
+    fontSize: 32,
+    fontFamily: 'Poppins',
+    bold: false,
+    italic: false,
+    underline: false,
+    strike: false,
+    uppercase: false,
+    fill: '#1F2226',
+    align: 'center',
+    lineHeight: 1.25,
+    letterSpacing: 0,
+    ...init,
+  }
+}
+
+export function createShapeElement(
+  type: 'rect' | 'ellipse' | 'triangle' | 'star' | 'polygon' | 'path',
+  init: BaseInit & Partial<ShapeElement> = {}
+): ShapeElement {
+  return {
+    ...baseElement(type, init),
+    type,
+    fill: '#00C4CC',
+    stroke: 'transparent',
+    strokeWidth: 0,
+    cornerRadius: type === 'rect' ? 24 : 0,
+    pathData: init.pathData,
+    ...(type === 'polygon' ? { sides: clampSides(init.sides ?? 6) } : {}),
+    ...(type === 'star' ? { numPoints: clampStarPoints(init.numPoints ?? 5), innerRatio: init.innerRatio ?? 0.55 } : {}),
+    ...init,
+  }
+}
+
+/** v0.18 (Wave 3) — 3..12 (the Elements panel picker range). */
+function clampSides(n: number): number {
+  return Math.min(12, Math.max(3, Math.round(n)))
+}
+
+/** v0.18 (Wave 3) — 3..16. */
+function clampStarPoints(n: number): number {
+  return Math.min(16, Math.max(3, Math.round(n)))
+}
+
+export function createLineElement(init: BaseInit & Partial<LineElement> = {}): LineElement {
+  return {
+    ...baseElement('line', { width: 280, height: 0, ...init }),
+    type: 'line',
+    stroke: '#1F2226',
+    strokeWidth: 6,
+    dashed: false,
+    arrowStart: false,
+    arrowEnd: false,
+    ...init,
+  }
+}
+
+export function createImageElement(
+  src: string,
+  naturalWidth: number,
+  naturalHeight: number,
+  init: BaseInit & Partial<ImageElement> = {}
+): ImageElement {
+  return {
+    ...baseElement('image', init),
+    type: 'image',
+    src,
+    radius: 12,
+    naturalWidth,
+    naturalHeight,
+    flipH: false,
+    flipV: false,
+    brightness: 0,
+    contrast: 0,
+    saturation: 0,
+    filter: 'none',
+    filterIntensity: 100,
+    ...init,
+  }
+}
+
+/** wrap child elements into a group; children keep page coords */
+export function createGroupElement(children: AnyElement[]): GroupElement {
+  const xs = children.map((c) => c.x)
+  const ys = children.map((c) => c.y)
+  const x1 = Math.min(...xs)
+  const y1 = Math.min(...ys)
+  const x2 = Math.max(...children.map((c) => c.x + c.width))
+  const y2 = Math.max(...children.map((c) => c.y + c.height))
+  return {
+    ...baseElement('group', { x: x1, y: y1, width: x2 - x1, height: y2 - y1 }),
+    type: 'group',
+    children: children.map((c) => ({ ...c })),
+  }
+}
+
+export function createStickerElement(char: string, init: BaseInit & Partial<StickerElement> = {}): StickerElement {
+  return {
+    ...baseElement('sticker', { width: 160, height: 160, ...init }),
+    type: 'sticker',
+    char,
+    fontSize: 120,
+    ...init,
+  }
+}
+
+/** v0.6: table factory — cells default to empty, header row pre-filled from `header?`. */
+export function createTableElement(
+  init: BaseInit & Partial<TableElement> & { header?: string[] } = {}
+): TableElement {
+  const { header, cells: cellsInit, colWidths: colWidthsInit, ...rest } = init
+  const rows = rest.rows ?? 3
+  const cols = rest.cols ?? 3
+  const width = rest.width ?? 420
+  const rowHeight = rest.rowHeight ?? 44
+  const cells: TableCell[] = []
+  for (let r = 0; r < rows; r += 1) {
+    for (let c = 0; c < cols; c += 1) {
+      const provided = cellsInit?.[r * cols + c]
+      if (r === 0) {
+        const headerText = header ? (header[c] ?? '') : ''
+        cells.push({ text: headerText, bold: true, fill: rest.headerFill ?? '#1F142E', ...provided })
+      } else {
+        cells.push(provided ?? { text: '' })
+      }
+    }
+  }
+  const colWidths = colWidthsInit ?? Array.from({ length: cols }, () => Math.round(width / cols))
+  return {
+    ...baseElement('table', { width, height: rows * rowHeight, ...rest }),
+    type: 'table',
+    borderColor: '#E0E1E6',
+    borderWidth: 1.5,
+    headerFill: '#1F142E',
+    headerTextColor: '#FFFFFF',
+    fill: 'transparent',
+    textColor: '#1F2226',
+    fontSize: 14,
+    fontFamily: 'Inter',
+    ...rest,
+    rows,
+    cols,
+    cells,
+    colWidths,
+    rowHeight,
+    width,
+    height: rest.height ?? rows * rowHeight,
+  }
+}
+
+/** v0.6: frame factory */
+export function createFrameElement(
+  frameShape: FrameShape,
+  init: BaseInit & Partial<FrameElement> = {}
+): FrameElement {
+  const size = init.width ?? 320
+  return {
+    ...baseElement('frame', { width: size, height: init.height ?? Math.round(size * 0.66), ...init }),
+    type: 'frame',
+    frameShape,
+    src: '',
+    naturalWidth: 0,
+    naturalHeight: 0,
+    fill: '#8B5CF6',
+    radius: 0,
+    ...init,
+  }
+}
+
+/** v0.6: embed card factory — kind is auto-detected from the URL when omitted. */
+export function createEmbedElement(url: string, init: BaseInit & Partial<EmbedElement> = {}): EmbedElement {
+  const { kind: kindInit, title, tint, ...rest } = init
+  const kind: EmbedKind = kindInit ?? detectEmbedKind(url)
+  return {
+    ...baseElement('embed', { width: 320, height: 200, ...rest }),
+    type: 'embed',
+    url,
+    title: title ?? embedTitleFrom(url, kind),
+    tint: tint ?? (kind === 'youtube' ? '#FF0033' : kind === 'map' ? '#34A853' : '#7630D7'),
+    ...rest,
+    kind,
+  }
+}
+
+export function detectEmbedKind(url: string): EmbedKind {
+  try {
+    const u = new URL(url)
+    const host = u.hostname.replace(/^www\./, '')
+    if (host === 'youtu.be' || host === 'youtube.com' || host === 'm.youtube.com') return 'youtube'
+    if (host === 'maps.google.com') return 'map'
+    if (host === 'google.com' && u.pathname.startsWith('/maps')) return 'map'
+    return 'link'
+  } catch {
+    return 'link'
+  }
+}
+
+/** v0.14 (D7): chart factory — seeds real-looking sample data per kind so
+ *  the canvas never shows an empty shell; every field stays editable. */
+export function createChartElement(
+  kind: ChartKind,
+  init: BaseInit & Partial<ChartElement> = {}
+): ChartElement {
+  const effectiveKind = init.kind ?? kind
+  const sample = sampleChartData(effectiveKind)
+  return {
+    ...baseElement('chart', { width: 560, height: 360, ...init }),
+    type: 'chart',
+    labels: sample.labels,
+    series: sample.series,
+    barMode: 'group',
+    hole: 0.62,
+    smooth: true,
+    showGrid: true,
+    showValues: false,
+    showLegend: true,
+    fill: '#FFFFFF',
+    textColor: '#3A3F4B',
+    fontFamily: 'Inter',
+    fontSize: 13,
+    ...init,
+    kind: effectiveKind,
+  }
+}
+
+/** Default per-kind sample data (also the MCP add_chart fallback). */
+export function sampleChartData(kind: ChartKind): { labels: string[]; series: ChartSeries[] } {
+  switch (kind) {
+    case 'bar':
+      return {
+        labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+        series: [
+          { name: 'Revenue', color: '#7630D7', values: [128, 155, 141, 190] },
+          { name: 'Costs', color: '#02C0CC', values: [86, 92, 90, 104] },
+        ],
+      }
+    case 'line':
+      return {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        series: [
+          { name: 'Visitors', color: '#7630D7', values: [420, 510, 480, 610, 580, 690] },
+          { name: 'Signups', color: '#FF5C8A', values: [120, 150, 140, 180, 175, 210] },
+        ],
+      }
+    case 'donut':
+      return {
+        labels: ['Design', 'Code', 'Review', 'Test', 'Ship'],
+        series: [{ name: 'Hours', color: '#7630D7', values: [32, 41, 18, 22, 12] }],
+      }
+    case 'scatter':
+      return {
+        labels: [],
+        series: [
+          {
+            name: 'Cohort',
+            color: '#02C0CC',
+            values: [12, 34, 18, 52, 24, 47, 31, 66, 38, 58, 45, 74, 52, 81, 58, 77],
+          },
+        ],
+      }
+  }
+}
+
+/** v0.11: audio factory — media-store src + the analysis baked in at upload. */
+export function createAudioElement(
+  src: string,
+  name: string,
+  duration: number,
+  init: BaseInit & Partial<AudioElement> = {}
+): AudioElement {
+  return {
+    ...baseElement('audio', { width: 420, height: 96, ...init }),
+    type: 'audio',
+    src,
+    name,
+    duration,
+    volume: 0.8,
+    loop: false,
+    autoplay: false,
+    ...init,
+  }
+}
+
+/** v0.11: video factory — poster dataURL captured at upload. */
+export function createVideoElement(
+  src: string,
+  poster: string,
+  duration: number,
+  naturalWidth: number,
+  naturalHeight: number,
+  init: BaseInit & Partial<VideoElement> = {}
+): VideoElement {
+  const width = init.width ?? Math.min(560, naturalWidth || 560)
+  const height = init.height ?? (naturalHeight ? Math.round((width * naturalHeight) / (naturalWidth || 1)) : 315)
+  return {
+    ...baseElement('video', { width, height, ...init }),
+    type: 'video',
+    src,
+    poster,
+    duration,
+    volume: 0.8,
+    muted: false,
+    loop: false,
+    autoplay: false,
+    trimStart: 0,
+    trimEnd: duration,
+    ...init,
+    width,
+    height,
+  }
+}
+
+function embedTitleFrom(url: string, kind: EmbedKind): string {
+  try {
+    const u = new URL(url)
+    if (kind === 'youtube') {
+      const v = u.searchParams.get('v') || u.pathname.split('/').pop() || ''
+      return v ? `YouTube video · ${v.slice(0, 20)}` : 'YouTube video'
+    }
+    if (kind === 'map') {
+      const q = u.searchParams.get('q') || u.searchParams.get('query')
+      return q ? `Google Maps · ${q}` : 'Google Maps'
+    }
+    return u.hostname.replace(/^www\./, '')
+  } catch {
+    return 'Link'
+  }
+}
+
+export function createStrokeElement(init: BaseInit & Partial<StrokeElement>): StrokeElement {
+  return {
+    ...baseElement('stroke', init),
+    type: 'stroke',
+    points: [],
+    stroke: '#FFFFFF',
+    strokeWidth: 6,
+    ...init,
+  }
+}
+
+/** v0.13 (P4): factory for plugin elements. The caller (the
+ *  addPluginElement design action) has ALREADY validated kind against
+ *  the install's manifest and data against the clone caps — the
+ *  factory only stamps defaults. Default box: a 480×320 card that
+ *  reads well as a placeholder when the plugin cannot render. */
+export function createPluginElement(
+  pluginId: string,
+  kind: string,
+  pluginVersion: string,
+  data: Record<string, unknown>,
+  init: BaseInit & Partial<PluginElement> = {}
+): PluginElement {
+  return {
+    ...baseElement('plugin', { width: 480, height: 320, ...init }),
+    type: 'plugin',
+    pluginId,
+    kind,
+    pluginVersion,
+    data,
+    ...init,
+  }
+}
+
+/** hex/rgb → rgba with alpha — used by text effect rendering */
+export function withAlpha(color: string, alpha: number): string {
+  if (color.startsWith('#')) {
+    const hex = color.slice(1)
+    const full = hex.length === 3 ? hex.split('').map((c) => c + c).join('') : hex
+    const r = parseInt(full.slice(0, 2), 16)
+    const g = parseInt(full.slice(2, 4), 16)
+    const b = parseInt(full.slice(4, 6), 16)
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`
+  }
+  if (color.startsWith('rgb(')) return color.replace('rgb(', 'rgba(').replace(')', `, ${alpha})`)
+  return color
+}
+
+export function createPage(background: Background = { type: 'solid', color: '#FFFFFF' }): PageData {
+  return { id: uid('page'), background, elements: [] }
+}
+
+// ── Element helpers ──────────────────────────────────────────
+
+export function isText(el: AnyElement): el is TextElement {
+  return el.type === 'text'
+}
+export function isShape(el: AnyElement): el is ShapeElement {
+  return ['rect', 'ellipse', 'triangle', 'star', 'path'].includes(el.type)
+}
+export function isLine(el: AnyElement): el is LineElement {
+  return el.type === 'line'
+}
+export function isStroke(el: AnyElement): el is StrokeElement {
+  return el.type === 'stroke'
+}
+export function isImage(el: AnyElement): el is ImageElement {
+  return el.type === 'image'
+}
+export function isSticker(el: AnyElement): el is StickerElement {
+  return el.type === 'sticker'
+}
+export function isGroup(el: AnyElement): el is GroupElement {
+  return el.type === 'group'
+}
+export function isTable(el: AnyElement): el is TableElement {
+  return el.type === 'table'
+}
+export function isFrame(el: AnyElement): el is FrameElement {
+  return el.type === 'frame'
+}
+export function isEmbed(el: AnyElement): el is EmbedElement {
+  return el.type === 'embed'
+}
+export function isChart(el: AnyElement): el is ChartElement {
+  return el.type === 'chart'
+}

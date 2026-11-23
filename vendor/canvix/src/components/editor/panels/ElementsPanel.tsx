@@ -1,0 +1,498 @@
+// @ts-nocheck -- vendored from Canvix (MIT). See vendor/canvix/README.md.
+'use client'
+
+import { useMemo, useState } from 'react'
+import { Square, Circle, Triangle, Star, Minus, ArrowRight, MoveHorizontal, Search, Hexagon, Frame, Play as Youtube, MapPin, Link2 } from 'lucide-react'
+import { GRAPHICS, STICKER_GROUPS } from '@canvix/lib/editor-utils'
+import { EMOJI_STICKERS, STICKER_PACKS, VECTOR_STICKER_COUNT } from '@canvix/lib/stickers'
+import { polygonPoints, starPointsEx, ptsToSvg } from '@canvix/lib/shapes'
+import { addChart, addEmbed, addFrame, addGraphic, addLine, addPolygon, addShape, addStarVariant, addSticker, addPackSticker, addTable, type TableStyle } from '../add-element'
+import { useEditorStore } from '@canvix/store/editor-store'
+import { cn } from '@canvix/lib/utils'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@canvix/components/ui/tabs'
+import { FRAME_SHAPES, type ChartKind } from '@canvix/lib/types'
+
+function GraphicIcon({ path }: { path: string }) {
+  return (
+    <svg viewBox="0 0 100 100" className="h-7 w-7" fill="currentColor" aria-hidden="true">
+      <path d={path} fillRule="evenodd" />
+    </svg>
+  )
+}
+
+/** v0.22: one hero sticker per pack for the Elements-panel teaser row */
+const FEATURED_STICKERS = STICKER_PACKS.map((p) => {
+  const s = p.stickers[0]
+  return { ...s, packName: p.name }
+}).filter((s) => !!s.svg)
+
+/** v0.18 (Wave 3): native polygon / star tiles — the SAME geometry the
+ *  canvas and the SVG exporter draw (lib/shapes.ts), so the palette
+ *  preview is always honest. */
+function PolygonMini({ sides }: { sides: number }) {
+  return (
+    <svg viewBox="0 0 100 100" className="h-[26px] w-[26px]" aria-hidden="true">
+      <polygon points={ptsToSvg(polygonPoints(sides))} fill="none" stroke="rgba(255,255,255,0.8)" strokeWidth={5} />
+    </svg>
+  )
+}
+
+function StarMini({ points, ratio }: { points: number; ratio: number }) {
+  return (
+    <svg viewBox="0 0 100 100" className="h-[26px] w-[26px]" aria-hidden="true">
+      <polygon points={ptsToSvg(starPointsEx(points, ratio))} fill="none" stroke="rgba(255,255,255,0.8)" strokeWidth={5} />
+    </svg>
+  )
+}
+
+const BASIC_SHAPES = [
+  { id: 'rect', label: 'Square', icon: Square },
+  { id: 'rounded', label: 'Rounded', icon: null },
+  { id: 'ellipse', label: 'Circle', icon: Circle },
+  { id: 'triangle', label: 'Triangle', icon: Triangle },
+  { id: 'star', label: 'Star', icon: Star },
+] as const
+
+const POLY_TILES: { label: string; sides: number }[] = [
+  { label: 'Pentagon', sides: 5 },
+  { label: 'Hexagon', sides: 6 },
+  { label: 'Heptagon', sides: 7 },
+  { label: 'Octagon', sides: 8 },
+  { label: 'Nonagon', sides: 9 },
+  { label: 'Decagon', sides: 10 },
+]
+
+/** v0.18 (Wave 3): star variants — parametric, editable post-insert */
+const STAR_TILES: { label: string; points: number; ratio?: number }[] = [
+  { label: '6-point', points: 6 },
+  { label: '8-point', points: 8 },
+  { label: '12-point', points: 12, ratio: 0.72 },
+  { label: '16-point burst', points: 16, ratio: 0.8 },
+  { label: 'Thin spike', points: 5, ratio: 0.3 },
+  { label: 'Soft star', points: 5, ratio: 0.75 },
+]
+
+const GRAPHIC_GROUPS: { name: string; ids: string[] }[] = [
+  { name: 'Decorative', ids: ['heart', 'blob', 'cloud', 'moon', 'sparkle', 'wave'] },
+  { name: 'Badges & labels', ids: ['badge', 'banner', 'ribbon', 'frame', 'speech'] },
+  { name: 'Icons', ids: ['bolt', 'check-circle', 'arrow'] },
+]
+
+const TABLE_STYLES: { id: TableStyle; label: string; swatch: React.CSSProperties }[] = [
+  { id: 'classic', label: 'Classic', swatch: { background: '#FFFFFF', border: '1px solid #E0E1E6' } },
+  { id: 'minimal', label: 'Minimal', swatch: { background: '#FFFFFF', borderTop: '2px solid #7630D7' } },
+  { id: 'bold', label: 'Bold', swatch: { background: '#F6F2FC', border: '2px solid #7630D7' } },
+  { id: 'soft', label: 'Soft', swatch: { background: '#F2FBFC', border: '1px solid #02C0CC' } },
+]
+
+/** v0.11.3: category strip config — one source of truth so every tab shares metrics. */
+const CATEGORY_TABS = [
+  { value: 'shapes', label: 'Shapes' },
+  { value: 'lines', label: 'Lines' },
+  { value: 'graphics', label: 'Graphics' },
+  { value: 'stickers', label: 'Stickers' },
+  { value: 'charts', label: 'Charts' },
+  { value: 'tables', label: 'Tables' },
+  { value: 'frames', label: 'Frames' },
+  { value: 'embeds', label: 'Embeds' },
+] as const
+
+/** v0.14 (D7): chart tiles — small pure-SVG minis (decorative, not live). */
+const CHART_TILES: { kind: ChartKind; label: string; mini: React.ReactNode }[] = [
+  {
+    kind: 'bar',
+    label: 'Bar',
+    mini: (
+      <svg viewBox="0 0 56 40" className="h-10 w-14" aria-hidden="true">
+        <rect x="4" y="14" width="8" height="22" rx="2" fill="#7630D7" />
+        <rect x="16" y="8" width="8" height="28" rx="2" fill="#02C0CC" />
+        <rect x="28" y="18" width="8" height="18" rx="2" fill="#FF5C8A" />
+        <rect x="40" y="4" width="8" height="32" rx="2" fill="#FFD166" />
+      </svg>
+    ),
+  },
+  {
+    kind: 'line',
+    label: 'Line',
+    mini: (
+      <svg viewBox="0 0 56 40" className="h-10 w-14" aria-hidden="true">
+        <polyline points="4,30 18,22 30,26 44,10 52,14" fill="none" stroke="#7630D7" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+        <circle cx="4" cy="30" r="3" fill="#7630D7" />
+        <circle cx="18" cy="22" r="3" fill="#7630D7" />
+        <circle cx="30" cy="26" r="3" fill="#7630D7" />
+        <circle cx="44" cy="10" r="3" fill="#7630D7" />
+        <circle cx="52" cy="14" r="3" fill="#7630D7" />
+      </svg>
+    ),
+  },
+  {
+    kind: 'donut',
+    label: 'Donut',
+    mini: (
+      <svg viewBox="0 0 56 40" className="h-10 w-14" aria-hidden="true">
+        <circle cx="28" cy="20" r="14" fill="none" stroke="#7630D7" strokeWidth="8" strokeDasharray="44 88" transform="rotate(-90 28 20)" />
+        <circle cx="28" cy="20" r="14" fill="none" stroke="#02C0CC" strokeWidth="8" strokeDasharray="30 88" strokeDashoffset="-44" transform="rotate(-90 28 20)" />
+        <circle cx="28" cy="20" r="14" fill="none" stroke="#FFD166" strokeWidth="8" strokeDasharray="14 88" strokeDashoffset="-74" transform="rotate(-90 28 20)" />
+      </svg>
+    ),
+  },
+  {
+    kind: 'scatter',
+    label: 'Scatter',
+    mini: (
+      <svg viewBox="0 0 56 40" className="h-10 w-14" aria-hidden="true">
+        <circle cx="8" cy="32" r="3" fill="#02C0CC" />
+        <circle cx="16" cy="24" r="3" fill="#02C0CC" />
+        <circle cx="22" cy="30" r="3" fill="#02C0CC" />
+        <circle cx="30" cy="16" r="3" fill="#02C0CC" />
+        <circle cx="38" cy="22" r="3" fill="#02C0CC" />
+        <circle cx="46" cy="8" r="3" fill="#02C0CC" />
+        <circle cx="50" cy="18" r="3" fill="#02C0CC" />
+      </svg>
+    ),
+  },
+]
+
+/** One shared class ⇒ identical height, padding, type size and states on every tab.
+ *  text-white/65 on the white@5% bar = 7.38:1 (WCAG AA, was ~1.3:1 via text-foreground). */
+const CATEGORY_TAB_CLS =
+  'h-7 flex-none whitespace-nowrap rounded-md px-3 text-xs text-white/65 hover:text-white/90 transition-colors data-[state=active]:bg-[#7630D7] data-[state=active]:text-white'
+
+export function ElementsPanel() {
+  const [tab, setTab] = useState('shapes')
+  const [query, setQuery] = useState('')
+
+  const filteredGraphics = useMemo(() => {
+    const q = query.trim().toLowerCase()
+    if (!q) return null
+    return GRAPHICS.filter((g) => g.name.toLowerCase().includes(q))
+  }, [query])
+
+  const searchPlaceholder = 'Search shapes & graphics'
+
+  return (
+    <Tabs value={tab} onValueChange={setTab} className="flex flex-col h-full bg-[#16181D] text-[#EDEEF2]">
+      <div className="px-4 pt-4 pb-3 border-b border-white/[0.07] shrink-0">
+        <h3 className="font-bold text-sm">Elements</h3>
+        <div className="flex items-center gap-2 h-9 rounded-lg bg-white/[0.06] border border-white/10 px-2.5 mt-2.5">
+          <Search size={13} className="text-white/40 shrink-0" />
+          <input
+            value={query}
+            onChange={(e) => {
+              setQuery(e.target.value)
+              if (e.target.value) setTab('graphics')
+            }}
+            className="bg-transparent outline-none text-[12px] text-white w-full placeholder:text-white/35"
+            placeholder={searchPlaceholder}
+            aria-label={searchPlaceholder}
+          />
+        </div>
+        {/* v0.11.3: single-row swipeable strip. The old grid-cols-4 wrapped 7 tabs
+            into a second row that painted outside the fixed h-8 bar, over the
+            panel divider and content ("Tables" floating mid-panel on mobile). */}
+        <TabsList
+          aria-label="Element categories"
+          className="cv-tabscroll mt-3 flex h-9 w-full items-center justify-start gap-1 overflow-x-auto rounded-lg bg-white/[0.05] p-1"
+        >
+          {CATEGORY_TABS.map((t) => (
+            <TabsTrigger key={t.value} value={t.value} className={CATEGORY_TAB_CLS}>
+              {t.label}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+      </div>
+
+      <TabsContent value="shapes" className="flex-1 overflow-y-auto cv-scroll-dark p-4 mt-0">
+        <SectionTitle>Basic shapes</SectionTitle>
+        <div className="grid grid-cols-3 gap-2 mb-4">
+          {BASIC_SHAPES.map((s) => (
+            <ShapeTile key={s.id} label={s.label} onClick={() => addShape(s.id as 'rect')}>
+              {s.icon ? <s.icon size={26} strokeWidth={1.6} className="text-white/80" /> : <span className="h-[22px] w-[22px] rounded-md border-2 border-white/80" aria-hidden="true" />}
+            </ShapeTile>
+          ))}
+        </div>
+        <SectionTitle>Polygons</SectionTitle>
+        <div className="grid grid-cols-3 gap-2 mb-4">
+          {POLY_TILES.map((s) => (
+            <ShapeTile key={s.label} label={s.label} onClick={() => addPolygon(s.sides)}>
+              <PolygonMini sides={s.sides} />
+            </ShapeTile>
+          ))}
+        </div>
+        <SectionTitle>Stars</SectionTitle>
+        <div className="grid grid-cols-3 gap-2">
+          {STAR_TILES.map((s) => (
+            <ShapeTile key={s.label} label={s.label} onClick={() => addStarVariant(s.points, s.ratio)}>
+              <StarMini points={s.points} ratio={s.ratio ?? 0.55} />
+            </ShapeTile>
+          ))}
+        </div>
+      </TabsContent>
+
+      <TabsContent value="lines" className="flex-1 overflow-y-auto cv-scroll-dark p-4 mt-0">
+        <div className="grid grid-cols-2 gap-2">
+          {[
+            { id: 'solid', label: 'Line', icon: Minus },
+            { id: 'dashed', label: 'Dashed', icon: MoveHorizontal },
+            { id: 'arrow', label: 'Arrow', icon: ArrowRight },
+            { id: 'arrowBoth', label: 'Two-way', icon: MoveHorizontal },
+          ].map((l) => (
+            <button
+              key={l.id}
+              onClick={() => addLine(l.id as 'solid')}
+              className="flex flex-col items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.03] p-4 hover:border-[#7630D7] hover:bg-[#7630D7]/10 transition-all"
+              aria-label={`Add ${l.label}`}
+            >
+              <l.icon size={24} strokeWidth={1.6} className="text-white/80" />
+              <span className="text-[11px] text-white/55">{l.label}</span>
+            </button>
+          ))}
+        </div>
+      </TabsContent>
+
+      <TabsContent value="graphics" className="flex-1 overflow-y-auto cv-scroll-dark p-4 mt-0">
+        {filteredGraphics ? (
+          <>
+            <SectionTitle>{filteredGraphics.length ? `Results for “${query}”` : `No results for “${query}”`}</SectionTitle>
+            <div className="grid grid-cols-3 gap-2">
+              {filteredGraphics.map((g) => (
+                <GraphicTile key={g.id} g={g} />
+              ))}
+            </div>
+          </>
+        ) : (
+          GRAPHIC_GROUPS.map((group) => (
+            <div key={group.name} className="mb-4">
+              <SectionTitle>{group.name}</SectionTitle>
+              <div className="grid grid-cols-3 gap-2">
+                {group.ids
+                  .map((id) => GRAPHICS.find((g) => g.id === id))
+                  .filter((g): g is NonNullable<typeof g> => !!g)
+                  .map((g) => (
+                    <GraphicTile key={g.id} g={g} />
+                  ))}
+              </div>
+            </div>
+          ))
+        )}
+      </TabsContent>
+
+      <TabsContent value="stickers" className="flex-1 overflow-y-auto cv-scroll-dark p-4 mt-0">
+        {/* v0.22: the vector pack library — featured row + full-library launcher */}
+        <h4 className="text-xs font-semibold text-white/50 mb-2">Sticker packs</h4>
+        <div className="grid grid-cols-4 gap-1.5 mb-3">
+          {FEATURED_STICKERS.map((s) => (
+            <button
+              key={s.id}
+              onClick={() => addPackSticker(s)}
+              className="aspect-square rounded-xl bg-white/[0.04] hover:bg-[#7630D7]/25 border border-white/10 hover:border-[#7630D7] hover:scale-105 transition-all flex items-center justify-center p-1"
+              aria-label={`Add sticker ${s.name}`}
+              title={`${s.name} — from the ${s.packName} pack`}
+            >
+              <span
+                className="w-full h-full flex items-center justify-center [&>svg]:max-w-full [&>svg]:max-h-full"
+                dangerouslySetInnerHTML={{ __html: s.svg }}
+                aria-hidden="true"
+              />
+            </button>
+          ))}
+        </div>
+        <button
+          onClick={() => useEditorStore.getState().setPanel('apps')}
+          className="w-full mb-5 h-9 rounded-lg border border-[#7630D7]/50 text-[12px] font-semibold text-white/85 hover:bg-[#7630D7]/25 transition-colors"
+        >
+          Browse all {VECTOR_STICKER_COUNT + EMOJI_STICKERS.length} stickers in apps →
+        </button>
+
+        {STICKER_GROUPS.map((group) => (
+          <div key={group.name} className="mb-5">
+            <h4 className="text-xs font-semibold text-white/50 mb-2">{group.name}</h4>
+            <div className="grid grid-cols-6 gap-1">
+              {group.emojis.map((e) => (
+                <button
+                  key={e}
+                  onClick={() => addSticker(e)}
+                  className="h-9 w-9 rounded-lg text-xl leading-none flex items-center justify-center hover:bg-[#7630D7]/25 hover:scale-110 transition-all"
+                  aria-label={`Add sticker ${e}`}
+                >
+                  {e}
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
+      </TabsContent>
+
+      {/* v0.14 (D7): data-bound charts */}
+      <TabsContent value="charts" className="flex-1 overflow-y-auto cv-scroll-dark p-4 mt-0">
+        <p className="text-[11px] text-white/45 leading-relaxed mb-3">
+          Charts are data-bound elements — select one on the canvas and use <span className="text-white/70">Edit data</span> in the toolbar to change labels, values, colours and kind.
+        </p>
+        <SectionTitle>Types</SectionTitle>
+        <div className="grid grid-cols-2 gap-2">
+          {CHART_TILES.map((t) => (
+            <button
+              key={t.kind}
+              onClick={() => addChart(t.kind)}
+              className="flex flex-col items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.03] p-3 h-[92px] hover:border-[#7630D7] hover:bg-[#7630D7]/10 transition-all"
+              aria-label={`Add ${t.label} chart`}
+            >
+              {t.mini}
+              <span className="text-[11px] text-white/55">{t.label}</span>
+            </button>
+          ))}
+        </div>
+      </TabsContent>
+
+      {/* v0.6: native tables */}
+      <TabsContent value="tables" className="flex-1 overflow-y-auto cv-scroll-dark p-4 mt-0">
+        <p className="text-[11px] text-white/45 leading-relaxed mb-3">
+          Tables are native elements — click a cell on the canvas to edit it. Add or remove rows &amp; columns from the toolbar.
+        </p>
+        <SectionTitle>Styles</SectionTitle>
+        <div className="grid grid-cols-2 gap-2">
+          {TABLE_STYLES.map((t) => (
+            <button
+              key={t.id}
+              onClick={() => addTable(t.id)}
+              className="flex flex-col items-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] p-3 h-[92px] hover:border-[#7630D7] hover:bg-[#7630D7]/10 transition-all"
+              aria-label={`Add ${t.label} table`}
+            >
+              <span className="w-14 h-10 rounded-md grid grid-cols-3 grid-rows-2 gap-px overflow-hidden" style={t.swatch} aria-hidden="true">
+                {Array.from({ length: 6 }, (_, i) => (
+                  <span key={i} className={cn('bg-current opacity-10', i < 3 && 'opacity-40')} />
+                ))}
+              </span>
+              <span className="text-[11px] text-white/55">{t.label}</span>
+            </button>
+          ))}
+        </div>
+      </TabsContent>
+
+      {/* v0.6: frames (image-in-shape) */}
+      <TabsContent value="frames" className="flex-1 overflow-y-auto cv-scroll-dark p-4 mt-0">
+        <p className="text-[11px] text-white/45 leading-relaxed mb-3">
+          Drop an upload or photo onto a frame to fill it — the image is clipped to the shape.
+        </p>
+        <SectionTitle>Shapes</SectionTitle>
+        <div className="grid grid-cols-3 gap-2">
+          {FRAME_SHAPES.map((fs) => (
+            <ShapeTile key={fs} label={fs === 'rect' ? 'Rectangle' : fs === 'ellipse' ? 'Ellipse' : fs === 'triangle' ? 'Triangle' : fs === 'hexagon' ? 'Hexagon' : 'Circle'} onClick={() => addFrame(fs)}>
+              <FrameIconFor shape={fs} />
+            </ShapeTile>
+          ))}
+        </div>
+      </TabsContent>
+
+      {/* v0.6: embed link cards */}
+      <TabsContent value="embeds" className="flex-1 overflow-y-auto cv-scroll-dark p-4 mt-0">
+        <p className="text-[11px] text-white/45 leading-relaxed mb-3">
+          Embed cards open their link when clicked in Preview or shared views. Paste any URL — YouTube and Maps get a styled card.
+        </p>
+        <EmbedComposer />
+      </TabsContent>
+    </Tabs>
+  )
+}
+
+function SectionTitle({ children }: { children: React.ReactNode }) {
+  return <h4 className="text-[11px] font-bold text-white/45 uppercase tracking-wide mb-2.5">{children}</h4>
+}
+
+function FrameIconFor({ shape }: { shape: string }) {
+  if (shape === 'ellipse') return <span className="h-6 w-6 rounded-full border-2 border-dashed border-white/80" aria-hidden="true" />
+  if (shape === 'circle') return <span className="h-6 w-6 rounded-full border-2 border-dashed border-[#7630D7]" aria-hidden="true" />
+  if (shape === 'triangle') return <span className="w-0 h-0 border-l-[14px] border-r-[14px] border-b-[24px] border-l-transparent border-r-transparent border-b-white/60" aria-hidden="true" />
+  if (shape === 'hexagon') return <Hexagon size={26} strokeWidth={1.8} className="text-white/80" />
+  return <Frame size={26} strokeWidth={1.8} className="text-white/80" />
+}
+
+function EmbedComposer() {
+  const [url, setUrl] = useState('')
+  return (
+    <div>
+      <SectionTitle>Add a link card</SectionTitle>
+      <div className="flex items-center gap-2 h-10 rounded-lg bg-white/[0.06] border border-white/10 px-3">
+        <Link2 size={14} className="text-white/40 shrink-0" />
+        <input
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && url.trim()) {
+              addEmbed(url)
+              setUrl('')
+            }
+          }}
+          className="bg-transparent outline-none text-[12px] text-white w-full placeholder:text-white/35"
+          placeholder="https://youtube.com/watch?v=…"
+          aria-label="Embed URL"
+        />
+        <button
+          className="btn-cv h-7 px-3 text-[11px] shrink-0"
+          onClick={() => {
+            if (url.trim()) {
+              addEmbed(url)
+              setUrl('')
+            }
+          }}
+        >
+          Add
+        </button>
+      </div>
+      <div className="grid grid-cols-2 gap-2 mt-4">
+        <QuickEmbed
+          icon={Youtube}
+          label="YouTube video"
+          placeholder="https://youtube.com/watch?v=dQw4w9WgXcQ"
+        />
+        <QuickEmbed
+          icon={MapPin}
+          label="Google Maps"
+          placeholder="https://maps.google.com/?q=Paris"
+        />
+      </div>
+    </div>
+  )
+}
+
+function QuickEmbed({ icon: Icon, label, placeholder }: { icon: typeof Youtube; label: string; placeholder: string }) {
+  return (
+    <button
+      onClick={() => addEmbed(placeholder)}
+      className="flex flex-col items-center justify-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.03] p-3 h-[92px] hover:border-[#7630D7] hover:bg-[#7630D7]/10 transition-all"
+      aria-label={`Add ${label} embed`}
+    >
+      <Icon size={24} strokeWidth={1.6} className="text-white/80" />
+      <span className="text-[11px] text-white/55">{label}</span>
+    </button>
+  )
+}
+
+function ShapeTile({ label, children, onClick }: { label: string; children: React.ReactNode; onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className="flex flex-col items-center justify-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.03] p-3 h-[84px] hover:border-[#7630D7] hover:bg-[#7630D7]/10 transition-all"
+      aria-label={`Add ${label}`}
+    >
+      <span className="h-7 flex items-center">{children}</span>
+      <span className="text-[11px] text-white/55">{label}</span>
+    </button>
+  )
+}
+
+function GraphicTile({ g }: { g: { id: string; name: string; path: string } }) {
+  return (
+    <button
+      onClick={() => addGraphic(g.id)}
+      className={cn(
+        'flex flex-col items-center justify-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.03] p-3 h-[84px] text-white/80',
+        'hover:border-[#7630D7] hover:bg-[#7630D7]/10 hover:text-white transition-all'
+      )}
+      aria-label={`Add ${g.name}`}
+    >
+      <GraphicIcon path={g.path} />
+      <span className="text-[11px] text-white/55">{g.name}</span>
+    </button>
+  )
+}

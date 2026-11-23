@@ -19,7 +19,8 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@canvix/*": ["./vendor/canvix/src/*"]
     }
   },
   "include": [

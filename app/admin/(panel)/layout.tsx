@@ -5,6 +5,7 @@ import {
   PiEnvelopeSimple,
   PiFiles,
   PiImages,
+  PiPaintBrush,
   PiUserCircle,
   PiWhatsappLogo,
 } from "react-icons/pi";
@@ -20,6 +21,7 @@ const NAV = [
   { href: "/admin/posts", label: "Posts", Icon: PiCalendarDots },
   { href: "/admin/mail", label: "Mail", Icon: PiEnvelopeSimple },
   { href: "/admin/content", label: "Content", Icon: PiFiles },
+  { href: "/admin/design", label: "Design", Icon: PiPaintBrush },
   { href: "/admin/library", label: "Library", Icon: PiImages },
   { href: "/admin/account", label: "Account", Icon: PiUserCircle },
 ];
